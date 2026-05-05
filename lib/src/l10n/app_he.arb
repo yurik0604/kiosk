@@ -1,0 +1,125 @@
+{
+  "@@locale": "he",
+  "appName": "Kiosk",
+  "splashTagline": "קופה עצמית · FW26",
+  "topBarSubtitle": "קופה עצמית",
+  "online": "מחובר",
+  "heroEyebrow": "קולקציית FW26",
+  "heroTitle": "סטייל,\nבלי הפרעות.",
+  "heroSubtitle": "קופה בגישה חדשה.\nבלי תורים. בלי לחץ.",
+  "clickToStart": "לחצו להתחלה",
+  "language": "שפה",
+  "adFw26Title": "עד 30% הנחה על קולקציית FW26",
+  "adFw26Subtitle": "מעילים וסריגים נבחרים",
+  "adAlterationsTitle": "תיקונים חינם לחברי מועדון",
+  "adAlterationsSubtitle": "תפירה על כל פריט במחיר מלא",
+  "adSpringTitle": "חדש: קולקציית אביב",
+  "adSpringSubtitle": "גלו את החדשים",
+  "yourBag": "התיק שלך",
+  "placePieces": "הניחו כל פריט על הקורא",
+  "piecesAdded": "{count, plural, =1{נוסף פריט אחד} two{נוספו {count} פריטים} other{נוספו {count} פריטים}}",
+  "@piecesAdded": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "bagEmpty": "התיק ריק",
+  "bagEmptyHint": "הניחו את הפריטים שבחרתם\nעל המשטח כדי להוסיף אותם.",
+  "simulateScan": "סריקה לדוגמה",
+  "total": "סה״כ",
+  "subtotal": "מחיר מקורי",
+  "youSaved": "חסכת {amount}",
+  "@youSaved": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "cancel": "ביטול",
+  "checkout": "תשלום",
+  "cancelSessionTitle": "לבטל את הקנייה?",
+  "cancelSessionBody": "התיק יתרוקן ותחזרו למסך הפתיחה.",
+  "keepShopping": "להמשיך בקנייה",
+  "cancelSession": "בטלו את הקנייה",
+  "removeFromBag": "הסירו מהתיק",
+  "size": "מידה {size}",
+  "@size": {
+    "placeholders": {
+      "size": {"type": "String"}
+    }
+  },
+  "stockCount": "{count} במלאי",
+  "@stockCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "skuLabel": "מק״ט {sku}",
+  "@skuLabel": {
+    "placeholders": {
+      "sku": {"type": "String"}
+    }
+  },
+  "barcodeLabel": "ברקוד {code}",
+  "@barcodeLabel": {
+    "placeholders": {
+      "code": {"type": "String"}
+    }
+  },
+  "sectionMaterial": "חומר",
+  "sectionOrigin": "מקור",
+  "sectionCare": "טיפול",
+  "genderMen": "גברים",
+  "genderWomen": "נשים",
+  "genderUnisex": "יוניסקס",
+  "checkoutTitle": "תשלום",
+  "back": "חזרה",
+  "finishDemo": "סיום (הדגמה)",
+  "paymentComingSoon": "שילוב תשלומים בקרוב",
+  "paymentSelectMethods": "בחרו אמצעי תשלום",
+  "paymentSplitHint": "הקישו על אמצעי תשלום כדי להזין סכום. ניתן לשלב מספר אמצעים.",
+  "paymentMethodCreditCard": "כרטיס אשראי",
+  "paymentMethodMemberCard": "כרטיס חבר",
+  "paymentMethodGiftCard": "כרטיס מתנה",
+  "paymentAmount": "סכום",
+  "paymentRemaining": "נותר לתשלום",
+  "paymentAllocated": "הוקצה",
+  "paymentPayRemaining": "שלמו את היתרה",
+  "paymentClear": "ניקוי",
+  "paymentApply": "אישור",
+  "paymentPayNow": "תשלום {amount}",
+  "@paymentPayNow": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "paymentEnterAmountTitle": "הזינו סכום עבור {method}",
+  "@paymentEnterAmountTitle": {
+    "placeholders": {
+      "method": {"type": "String"}
+    }
+  },
+  "paymentMaxAmount": "מקסימום {amount}",
+  "@paymentMaxAmount": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "paymentSuccessTitle": "התשלום בוצע בהצלחה",
+  "paymentSuccessBody": "תודה שקניתם אצלנו.",
+  "paymentDone": "סיום",
+  "itemsCount": "{count, plural, =1{פריט אחד} two{{count} פריטים} other{{count} פריטים}}",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "loginTitle": "התחברות",
+  "loginSubtitle": "גישה למורשים בלבד",
+  "loginEmail": "אימייל",
+  "loginPassword": "סיסמה",
+  "loginSignIn": "התחברות",
+  "loginSigningIn": "מתחבר…",
+  "loginEmailRequired": "נא להזין אימייל",
+  "loginPasswordRequired": "נא להזין סיסמה",
+  "logout": "התנתקות"
+}

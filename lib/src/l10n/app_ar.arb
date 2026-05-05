@@ -1,0 +1,125 @@
+{
+  "@@locale": "ar",
+  "appName": "Kiosk",
+  "splashTagline": "الدفع الذاتي · FW26",
+  "topBarSubtitle": "الدفع الذاتي",
+  "online": "متصل",
+  "heroEyebrow": "مجموعة FW26",
+  "heroTitle": "أناقة\nبلا انتظار.",
+  "heroSubtitle": "تجربة دفع متجددة.\nبلا طوابير. بلا استعجال.",
+  "clickToStart": "انقر للبدء",
+  "language": "اللغة",
+  "adFw26Title": "خصم حتى 30٪ على مجموعة FW26",
+  "adFw26Subtitle": "ملابس خارجية ومحبوكات مختارة",
+  "adAlterationsTitle": "تعديلات مجانية للأعضاء",
+  "adAlterationsSubtitle": "خياطة لكل قطعة بالسعر الكامل",
+  "adSpringTitle": "وصل حديثاً: مجموعة الربيع",
+  "adSpringSubtitle": "اكتشف الإضافات الجديدة",
+  "yourBag": "حقيبتك",
+  "placePieces": "ضع كل قطعة على القارئ",
+  "piecesAdded": "{count, plural, zero{لا توجد قطع} one{قطعة واحدة} two{قطعتان} few{{count} قطع} many{{count} قطعة} other{{count} قطعة}}",
+  "@piecesAdded": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "bagEmpty": "حقيبتك فارغة",
+  "bagEmptyHint": "ضع القطع المختارة على\nلوحة القارئ لإضافتها.",
+  "simulateScan": "محاكاة مسح",
+  "total": "المجموع",
+  "subtotal": "السعر الأصلي",
+  "youSaved": "وفّرت {amount}",
+  "@youSaved": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "cancel": "إلغاء",
+  "checkout": "الدفع",
+  "cancelSessionTitle": "إلغاء الجلسة؟",
+  "cancelSessionBody": "ستُفرَّغ حقيبتك وستعود إلى شاشة الترحيب.",
+  "keepShopping": "متابعة التسوق",
+  "cancelSession": "إلغاء الجلسة",
+  "removeFromBag": "إزالة من الحقيبة",
+  "size": "المقاس {size}",
+  "@size": {
+    "placeholders": {
+      "size": {"type": "String"}
+    }
+  },
+  "stockCount": "{count} في المخزون",
+  "@stockCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "skuLabel": "رمز {sku}",
+  "@skuLabel": {
+    "placeholders": {
+      "sku": {"type": "String"}
+    }
+  },
+  "barcodeLabel": "الباركود {code}",
+  "@barcodeLabel": {
+    "placeholders": {
+      "code": {"type": "String"}
+    }
+  },
+  "sectionMaterial": "الخامة",
+  "sectionOrigin": "المنشأ",
+  "sectionCare": "العناية",
+  "genderMen": "رجال",
+  "genderWomen": "نساء",
+  "genderUnisex": "للجنسين",
+  "checkoutTitle": "الدفع",
+  "back": "رجوع",
+  "finishDemo": "إنهاء (تجريبي)",
+  "paymentComingSoon": "تكامل الدفع قريباً",
+  "paymentSelectMethods": "اختر طرق الدفع",
+  "paymentSplitHint": "اضغط على طريقة لتحديد المبلغ. يمكنك الجمع بين عدة طرق.",
+  "paymentMethodCreditCard": "بطاقة ائتمان",
+  "paymentMethodMemberCard": "بطاقة عضوية",
+  "paymentMethodGiftCard": "بطاقة هدية",
+  "paymentAmount": "المبلغ",
+  "paymentRemaining": "المتبقي",
+  "paymentAllocated": "المخصص",
+  "paymentPayRemaining": "دفع المتبقي",
+  "paymentClear": "مسح",
+  "paymentApply": "تطبيق",
+  "paymentPayNow": "دفع {amount}",
+  "@paymentPayNow": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "paymentEnterAmountTitle": "أدخل المبلغ لـ {method}",
+  "@paymentEnterAmountTitle": {
+    "placeholders": {
+      "method": {"type": "String"}
+    }
+  },
+  "paymentMaxAmount": "الحد الأقصى {amount}",
+  "@paymentMaxAmount": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "paymentSuccessTitle": "تم الدفع بنجاح",
+  "paymentSuccessBody": "شكراً للتسوق معنا.",
+  "paymentDone": "تم",
+  "itemsCount": "{count, plural, zero{لا توجد عناصر} one{عنصر واحد} two{عنصران} few{{count} عناصر} many{{count} عنصراً} other{{count} عنصر}}",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "loginTitle": "تسجيل الدخول",
+  "loginSubtitle": "للمستخدمين المصرح لهم فقط",
+  "loginEmail": "البريد الإلكتروني",
+  "loginPassword": "كلمة المرور",
+  "loginSignIn": "تسجيل الدخول",
+  "loginSigningIn": "جاري تسجيل الدخول…",
+  "loginEmailRequired": "يرجى إدخال البريد الإلكتروني",
+  "loginPasswordRequired": "يرجى إدخال كلمة المرور",
+  "logout": "تسجيل الخروج"
+}

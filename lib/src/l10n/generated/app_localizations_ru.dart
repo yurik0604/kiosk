@@ -1,0 +1,265 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Russian (`ru`).
+class AppLocalizationsRu extends AppLocalizations {
+  AppLocalizationsRu([String locale = 'ru']) : super(locale);
+
+  @override
+  String get appName => 'Kiosk';
+
+  @override
+  String get splashTagline => 'САМООБСЛУЖИВАНИЕ · FW26';
+
+  @override
+  String get topBarSubtitle => 'САМООБСЛУЖИВАНИЕ';
+
+  @override
+  String get online => 'В сети';
+
+  @override
+  String get heroEyebrow => 'КОЛЛЕКЦИЯ FW26';
+
+  @override
+  String get heroTitle => 'Стиль\nбез ожидания.';
+
+  @override
+  String get heroSubtitle => 'Оплата по-новому.\nБез очередей и спешки.';
+
+  @override
+  String get clickToStart => 'Нажмите для начала';
+
+  @override
+  String get language => 'Язык';
+
+  @override
+  String get adFw26Title => 'До 30% на коллекцию FW26';
+
+  @override
+  String get adFw26Subtitle => 'Избранная верхняя одежда и трикотаж';
+
+  @override
+  String get adAlterationsTitle => 'Бесплатная подгонка для участников';
+
+  @override
+  String get adAlterationsSubtitle => 'На каждую вещь без скидки';
+
+  @override
+  String get adSpringTitle => 'Только что: весенний резорт';
+
+  @override
+  String get adSpringSubtitle => 'Новые поступления';
+
+  @override
+  String get yourBag => 'Ваша корзина';
+
+  @override
+  String get placePieces => 'Поместите каждую вещь на считыватель';
+
+  @override
+  String piecesAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'добавлено $count вещи',
+      many: 'добавлено $count вещей',
+      few: 'добавлено $count вещи',
+      one: 'добавлена 1 вещь',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bagEmpty => 'Корзина пуста';
+
+  @override
+  String get bagEmptyHint =>
+      'Положите выбранные вещи на\nсчитыватель, чтобы добавить их.';
+
+  @override
+  String get simulateScan => 'Имитация сканирования';
+
+  @override
+  String get total => 'Итого';
+
+  @override
+  String get subtotal => 'Без скидки';
+
+  @override
+  String youSaved(String amount) {
+    return 'Вы экономите $amount';
+  }
+
+  @override
+  String get cancel => 'Отмена';
+
+  @override
+  String get checkout => 'К оплате';
+
+  @override
+  String get cancelSessionTitle => 'Отменить сессию?';
+
+  @override
+  String get cancelSessionBody =>
+      'Корзина будет очищена, и вы вернётесь на главный экран.';
+
+  @override
+  String get keepShopping => 'Продолжить';
+
+  @override
+  String get cancelSession => 'Отменить сессию';
+
+  @override
+  String get removeFromBag => 'Удалить из корзины';
+
+  @override
+  String size(String size) {
+    return 'Размер $size';
+  }
+
+  @override
+  String stockCount(int count) {
+    return '$count в наличии';
+  }
+
+  @override
+  String skuLabel(String sku) {
+    return 'Артикул $sku';
+  }
+
+  @override
+  String barcodeLabel(String code) {
+    return 'Штрих-код $code';
+  }
+
+  @override
+  String get sectionMaterial => 'Материал';
+
+  @override
+  String get sectionOrigin => 'Происхождение';
+
+  @override
+  String get sectionCare => 'Уход';
+
+  @override
+  String get genderMen => 'Мужское';
+
+  @override
+  String get genderWomen => 'Женское';
+
+  @override
+  String get genderUnisex => 'Унисекс';
+
+  @override
+  String get checkoutTitle => 'Оплата';
+
+  @override
+  String get back => 'Назад';
+
+  @override
+  String get finishDemo => 'Завершить (демо)';
+
+  @override
+  String get paymentComingSoon => 'Интеграция оплаты скоро';
+
+  @override
+  String get paymentSelectMethods => 'Выберите способы оплаты';
+
+  @override
+  String get paymentSplitHint =>
+      'Нажмите на способ, чтобы указать сумму. Можно комбинировать.';
+
+  @override
+  String get paymentMethodCreditCard => 'Кредитная карта';
+
+  @override
+  String get paymentMethodMemberCard => 'Карта клиента';
+
+  @override
+  String get paymentMethodGiftCard => 'Подарочная карта';
+
+  @override
+  String get paymentAmount => 'Сумма';
+
+  @override
+  String get paymentRemaining => 'Остаток';
+
+  @override
+  String get paymentAllocated => 'Назначено';
+
+  @override
+  String get paymentPayRemaining => 'Оплатить остаток';
+
+  @override
+  String get paymentClear => 'Очистить';
+
+  @override
+  String get paymentApply => 'Применить';
+
+  @override
+  String paymentPayNow(String amount) {
+    return 'Оплатить $amount';
+  }
+
+  @override
+  String paymentEnterAmountTitle(String method) {
+    return 'Введите сумму для $method';
+  }
+
+  @override
+  String paymentMaxAmount(String amount) {
+    return 'Макс. $amount';
+  }
+
+  @override
+  String get paymentSuccessTitle => 'Оплата прошла успешно';
+
+  @override
+  String get paymentSuccessBody => 'Спасибо за покупку.';
+
+  @override
+  String get paymentDone => 'Готово';
+
+  @override
+  String itemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count товара',
+      many: '$count товаров',
+      few: '$count товара',
+      one: '1 товар',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get loginTitle => 'Вход';
+
+  @override
+  String get loginSubtitle => 'Доступ только для авторизованных сотрудников';
+
+  @override
+  String get loginEmail => 'Эл. почта';
+
+  @override
+  String get loginPassword => 'Пароль';
+
+  @override
+  String get loginSignIn => 'ВОЙТИ';
+
+  @override
+  String get loginSigningIn => 'Вход…';
+
+  @override
+  String get loginEmailRequired => 'Введите эл. почту';
+
+  @override
+  String get loginPasswordRequired => 'Введите пароль';
+
+  @override
+  String get logout => 'Выйти';
+}

@@ -1,0 +1,125 @@
+{
+  "@@locale": "en",
+  "appName": "Kiosk",
+  "splashTagline": "SELF-CHECKOUT · FW26",
+  "topBarSubtitle": "SELF-CHECKOUT",
+  "online": "Online",
+  "heroEyebrow": "FW26 COLLECTION",
+  "heroTitle": "Style,\nuninterrupted.",
+  "heroSubtitle": "Checkout, reimagined.\nNo queues. No rush.",
+  "clickToStart": "Click To Start",
+  "language": "Language",
+  "adFw26Title": "Up to 30% off the FW26 edit",
+  "adFw26Subtitle": "Selected outerwear & knitwear",
+  "adAlterationsTitle": "Free alterations for members",
+  "adAlterationsSubtitle": "Tailoring on every full-price piece",
+  "adSpringTitle": "Just landed: Spring resort",
+  "adSpringSubtitle": "Discover the new arrivals",
+  "yourBag": "Your Bag",
+  "placePieces": "Place each piece on the reader",
+  "piecesAdded": "{count, plural, =1{1 piece added} other{{count} pieces added}}",
+  "@piecesAdded": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "bagEmpty": "Your bag is empty",
+  "bagEmptyHint": "Place your selected pieces on\nthe reader pad to add them.",
+  "simulateScan": "Simulate Scan",
+  "total": "Total",
+  "subtotal": "Subtotal",
+  "youSaved": "You saved {amount}",
+  "@youSaved": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "cancel": "Cancel",
+  "checkout": "Checkout",
+  "cancelSessionTitle": "Cancel session?",
+  "cancelSessionBody": "Your bag will be emptied and you will return to the welcome screen.",
+  "keepShopping": "Keep shopping",
+  "cancelSession": "Cancel session",
+  "removeFromBag": "Remove from bag",
+  "size": "Size {size}",
+  "@size": {
+    "placeholders": {
+      "size": {"type": "String"}
+    }
+  },
+  "stockCount": "{count} in stock",
+  "@stockCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "skuLabel": "SKU {sku}",
+  "@skuLabel": {
+    "placeholders": {
+      "sku": {"type": "String"}
+    }
+  },
+  "barcodeLabel": "Barcode {code}",
+  "@barcodeLabel": {
+    "placeholders": {
+      "code": {"type": "String"}
+    }
+  },
+  "sectionMaterial": "Material",
+  "sectionOrigin": "Origin",
+  "sectionCare": "Care",
+  "genderMen": "Men",
+  "genderWomen": "Women",
+  "genderUnisex": "Unisex",
+  "checkoutTitle": "Checkout",
+  "back": "Back",
+  "finishDemo": "Finish (demo)",
+  "paymentComingSoon": "Payment integration coming next",
+  "paymentSelectMethods": "Select payment methods",
+  "paymentSplitHint": "Tap a method to assign an amount. You can combine several.",
+  "paymentMethodCreditCard": "Credit card",
+  "paymentMethodMemberCard": "Member card",
+  "paymentMethodGiftCard": "Gift card",
+  "paymentAmount": "Amount",
+  "paymentRemaining": "Remaining",
+  "paymentAllocated": "Allocated",
+  "paymentPayRemaining": "Pay remaining",
+  "paymentClear": "Clear",
+  "paymentApply": "Apply",
+  "paymentPayNow": "Pay {amount}",
+  "@paymentPayNow": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "paymentEnterAmountTitle": "Enter amount for {method}",
+  "@paymentEnterAmountTitle": {
+    "placeholders": {
+      "method": {"type": "String"}
+    }
+  },
+  "paymentMaxAmount": "Max {amount}",
+  "@paymentMaxAmount": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "paymentSuccessTitle": "Payment successful",
+  "paymentSuccessBody": "Thank you for shopping with us.",
+  "paymentDone": "Done",
+  "itemsCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "loginTitle": "Sign in",
+  "loginSubtitle": "Authorized staff access only",
+  "loginEmail": "Email",
+  "loginPassword": "Password",
+  "loginSignIn": "SIGN IN",
+  "loginSigningIn": "Signing in…",
+  "loginEmailRequired": "Please enter your email",
+  "loginPasswordRequired": "Please enter your password",
+  "logout": "Sign out"
+}

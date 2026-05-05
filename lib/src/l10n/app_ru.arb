@@ -1,0 +1,125 @@
+{
+  "@@locale": "ru",
+  "appName": "Kiosk",
+  "splashTagline": "САМООБСЛУЖИВАНИЕ · FW26",
+  "topBarSubtitle": "САМООБСЛУЖИВАНИЕ",
+  "online": "В сети",
+  "heroEyebrow": "КОЛЛЕКЦИЯ FW26",
+  "heroTitle": "Стиль\nбез ожидания.",
+  "heroSubtitle": "Оплата по-новому.\nБез очередей и спешки.",
+  "clickToStart": "Нажмите для начала",
+  "language": "Язык",
+  "adFw26Title": "До 30% на коллекцию FW26",
+  "adFw26Subtitle": "Избранная верхняя одежда и трикотаж",
+  "adAlterationsTitle": "Бесплатная подгонка для участников",
+  "adAlterationsSubtitle": "На каждую вещь без скидки",
+  "adSpringTitle": "Только что: весенний резорт",
+  "adSpringSubtitle": "Новые поступления",
+  "yourBag": "Ваша корзина",
+  "placePieces": "Поместите каждую вещь на считыватель",
+  "piecesAdded": "{count, plural, =1{добавлена 1 вещь} few{добавлено {count} вещи} many{добавлено {count} вещей} other{добавлено {count} вещи}}",
+  "@piecesAdded": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "bagEmpty": "Корзина пуста",
+  "bagEmptyHint": "Положите выбранные вещи на\nсчитыватель, чтобы добавить их.",
+  "simulateScan": "Имитация сканирования",
+  "total": "Итого",
+  "subtotal": "Без скидки",
+  "youSaved": "Вы экономите {amount}",
+  "@youSaved": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "cancel": "Отмена",
+  "checkout": "К оплате",
+  "cancelSessionTitle": "Отменить сессию?",
+  "cancelSessionBody": "Корзина будет очищена, и вы вернётесь на главный экран.",
+  "keepShopping": "Продолжить",
+  "cancelSession": "Отменить сессию",
+  "removeFromBag": "Удалить из корзины",
+  "size": "Размер {size}",
+  "@size": {
+    "placeholders": {
+      "size": {"type": "String"}
+    }
+  },
+  "stockCount": "{count} в наличии",
+  "@stockCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "skuLabel": "Артикул {sku}",
+  "@skuLabel": {
+    "placeholders": {
+      "sku": {"type": "String"}
+    }
+  },
+  "barcodeLabel": "Штрих-код {code}",
+  "@barcodeLabel": {
+    "placeholders": {
+      "code": {"type": "String"}
+    }
+  },
+  "sectionMaterial": "Материал",
+  "sectionOrigin": "Происхождение",
+  "sectionCare": "Уход",
+  "genderMen": "Мужское",
+  "genderWomen": "Женское",
+  "genderUnisex": "Унисекс",
+  "checkoutTitle": "Оплата",
+  "back": "Назад",
+  "finishDemo": "Завершить (демо)",
+  "paymentComingSoon": "Интеграция оплаты скоро",
+  "paymentSelectMethods": "Выберите способы оплаты",
+  "paymentSplitHint": "Нажмите на способ, чтобы указать сумму. Можно комбинировать.",
+  "paymentMethodCreditCard": "Кредитная карта",
+  "paymentMethodMemberCard": "Карта клиента",
+  "paymentMethodGiftCard": "Подарочная карта",
+  "paymentAmount": "Сумма",
+  "paymentRemaining": "Остаток",
+  "paymentAllocated": "Назначено",
+  "paymentPayRemaining": "Оплатить остаток",
+  "paymentClear": "Очистить",
+  "paymentApply": "Применить",
+  "paymentPayNow": "Оплатить {amount}",
+  "@paymentPayNow": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "paymentEnterAmountTitle": "Введите сумму для {method}",
+  "@paymentEnterAmountTitle": {
+    "placeholders": {
+      "method": {"type": "String"}
+    }
+  },
+  "paymentMaxAmount": "Макс. {amount}",
+  "@paymentMaxAmount": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "paymentSuccessTitle": "Оплата прошла успешно",
+  "paymentSuccessBody": "Спасибо за покупку.",
+  "paymentDone": "Готово",
+  "itemsCount": "{count, plural, =1{1 товар} few{{count} товара} many{{count} товаров} other{{count} товара}}",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "loginTitle": "Вход",
+  "loginSubtitle": "Доступ только для авторизованных сотрудников",
+  "loginEmail": "Эл. почта",
+  "loginPassword": "Пароль",
+  "loginSignIn": "ВОЙТИ",
+  "loginSigningIn": "Вход…",
+  "loginEmailRequired": "Введите эл. почту",
+  "loginPasswordRequired": "Введите пароль",
+  "logout": "Выйти"
+}

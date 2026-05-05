@@ -1,0 +1,135 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:4540404020969726288",
+      "lastPropertyId": "23:4065309040729867541",
+      "name": "Product",
+      "properties": [
+        {
+          "id": "1:4318051796355501538",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5217587239940126087",
+          "name": "rfidTag",
+          "indexId": "1:9024342127771394645",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:4337140269689558051",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:6790937530051066910",
+          "name": "brand",
+          "type": 9
+        },
+        {
+          "id": "5:1734938009085500417",
+          "name": "description",
+          "type": 9
+        },
+        {
+          "id": "6:2743578270744146881",
+          "name": "category",
+          "type": 9
+        },
+        {
+          "id": "7:1066522559189186156",
+          "name": "priceCents",
+          "type": 8
+        },
+        {
+          "id": "8:5417369160916133270",
+          "name": "imageUrl",
+          "type": 9
+        },
+        {
+          "id": "10:2014029228108435066",
+          "name": "origin",
+          "type": 9
+        },
+        {
+          "id": "13:4973093135799185841",
+          "name": "stockQty",
+          "type": 6
+        },
+        {
+          "id": "14:6355832286635096535",
+          "name": "sku",
+          "indexId": "2:5331415458403998681",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "15:8629758526488630214",
+          "name": "subCategory",
+          "type": 9
+        },
+        {
+          "id": "16:5891696281918474198",
+          "name": "gender",
+          "type": 9
+        },
+        {
+          "id": "17:8230906776629014151",
+          "name": "size",
+          "type": 9
+        },
+        {
+          "id": "18:6273840302294597253",
+          "name": "color",
+          "type": 9
+        },
+        {
+          "id": "19:5037790091883113870",
+          "name": "colorHex",
+          "type": 9
+        },
+        {
+          "id": "20:1607701590784636450",
+          "name": "material",
+          "type": 9
+        },
+        {
+          "id": "21:1883370538253063395",
+          "name": "careInstructions",
+          "type": 9
+        },
+        {
+          "id": "22:129232267074258458",
+          "name": "season",
+          "type": 9
+        },
+        {
+          "id": "23:4065309040729867541",
+          "name": "originalPriceCents",
+          "type": 8
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "1:4540404020969726288",
+  "lastIndexId": "2:5331415458403998681",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    2101835290539610267,
+    1295538421748961593,
+    2681148820280449275
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}
