@@ -25,7 +25,6 @@ class SessionScreen extends ConsumerWidget {
           child: Column(
             children: [
               _Header(
-                itemCount: session.itemCount,
                 onSimulateScan: () {
                   HapticFeedback.lightImpact();
                   ref.read(sessionControllerProvider.notifier).simulateScan();
@@ -51,13 +50,11 @@ class SessionScreen extends ConsumerWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.itemCount, required this.onSimulateScan});
-  final int itemCount;
+  const _Header({required this.onSimulateScan});
   final VoidCallback onSimulateScan;
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -69,23 +66,11 @@ class _Header extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.yourBag,
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  itemCount == 0
-                      ? l10n.placePieces
-                      : l10n.piecesAdded(itemCount),
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
-                ),
-              ],
+            child: Text(
+              l10n.yourBag,
+              style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
           ),
           _SimulateScanButton(onPressed: onSimulateScan),
@@ -192,8 +177,42 @@ class _ScanIndicatorState extends State<_ScanIndicator>
   }
 }
 
-class _EmptyState extends StatelessWidget {
+class _EmptyState extends StatefulWidget {
   const _EmptyState();
+
+  @override
+  State<_EmptyState> createState() => _EmptyStateState();
+}
+
+class _EmptyStateState extends State<_EmptyState>
+    with TickerProviderStateMixin {
+  static const _hintImageAsset = 'assets/images/rfid_bin_hint.png';
+  static const double _illustrationSize = 320;
+
+  late final AnimationController _pulseController;
+  late final Animation<double> _scale;
+  late final Animation<double> _float;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2400),
+    )..repeat(reverse: true);
+    final curve = CurvedAnimation(
+      parent: _pulseController,
+      curve: Curves.easeInOut,
+    );
+    _scale = Tween<double>(begin: 1.0, end: 1.05).animate(curve);
+    _float = Tween<double>(begin: -6, end: 6).animate(curve);
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,31 +224,55 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                color: scheme.surfaceContainer,
-                shape: BoxShape.circle,
+            AnimatedBuilder(
+              animation: _pulseController,
+              builder: (context, child) {
+                return Transform.translate(
+                  offset: Offset(0, _float.value),
+                  child: Transform.scale(
+                    scale: _scale.value,
+                    child: child,
+                  ),
+                );
+              },
+              child: SizedBox(
+                width: _illustrationSize,
+                height: _illustrationSize,
+                child: Image.asset(
+                  _hintImageAsset,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: scheme.surfaceContainer,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.shopping_bag_rounded,
+                        size: _illustrationSize * 0.5,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    );
+                  },
+                ),
               ),
-              child: Icon(
-                Icons.checkroom_rounded,
-                size: 80,
-                color: scheme.onSurfaceVariant,
-              ),
+            ),
+            const SizedBox(height: KioskTokens.spaceXL),
+            Text(
+              l10n.bagEmpty,
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: KioskTokens.spaceL),
             Text(
-              l10n.bagEmpty,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: KioskTokens.spaceXS),
-            Text(
               l10n.bagEmptyHint,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: scheme.onSurfaceVariant,
                     height: 1.4,
+                    fontWeight: FontWeight.w500,
                   ),
             ),
           ],

@@ -213,13 +213,13 @@ abstract class AppLocalizations {
   /// No description provided for @bagEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Your bag is empty'**
+  /// **'The bin is empty'**
   String get bagEmpty;
 
   /// No description provided for @bagEmptyHint.
   ///
   /// In en, this message translates to:
-  /// **'Place your selected pieces on\nthe reader pad to add them.'**
+  /// **'Place all your items in the\nRFID bin and they will be\nadded automatically.'**
   String get bagEmptyHint;
 
   /// No description provided for @simulateScan.

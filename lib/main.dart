@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,6 +13,7 @@ import 'src/core/locale/locale_controller.dart';
 import 'src/core/router/app_router.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/features/catalog/data/catalog_repository.dart';
+import 'src/features/rfid/data/rfid_reader_controller.dart';
 import 'src/l10n/generated/app_localizations.dart';
 
 Future<void> main() async {
@@ -31,9 +34,18 @@ Future<void> main() async {
 
   final objectBox = await ObjectBox.create();
 
+  final container = ProviderContainer(
+    overrides: [objectBoxProvider.overrideWithValue(objectBox)],
+  );
+
+  // Fire-and-forget: reader auto-connect must not block UI boot.
+  unawaited(
+    container.read(rfidReaderControllerProvider.notifier).bootstrap(),
+  );
+
   runApp(
-    ProviderScope(
-      overrides: [objectBoxProvider.overrideWithValue(objectBox)],
+    UncontrolledProviderScope(
+      container: container,
       child: const KioskApp(),
     ),
   );

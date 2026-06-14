@@ -23,8 +23,8 @@
       "count": {"type": "int"}
     }
   },
-  "bagEmpty": "Your bag is empty",
-  "bagEmptyHint": "Place your selected pieces on\nthe reader pad to add them.",
+  "bagEmpty": "The bin is empty",
+  "bagEmptyHint": "Place all your items in the\nRFID bin and they will be\nadded automatically.",
   "simulateScan": "Simulate Scan",
   "total": "Total",
   "subtotal": "Subtotal",

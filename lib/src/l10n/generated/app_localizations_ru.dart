@@ -73,11 +73,11 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get bagEmpty => 'Корзина пуста';
+  String get bagEmpty => 'Лоток пуст';
 
   @override
   String get bagEmptyHint =>
-      'Положите выбранные вещи на\nсчитыватель, чтобы добавить их.';
+      'Положите все товары в\nRFID-лоток — они добавятся\nавтоматически.';
 
   @override
   String get simulateScan => 'Имитация сканирования';

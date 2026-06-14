@@ -75,10 +75,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get bagEmpty => 'حقيبتك فارغة';
+  String get bagEmpty => 'الصندوق فارغ';
 
   @override
-  String get bagEmptyHint => 'ضع القطع المختارة على\nلوحة القارئ لإضافتها.';
+  String get bagEmptyHint =>
+      'ضع كل القطع في صندوق\nالـ RFID وسيتم إضافتها\nتلقائياً.';
 
   @override
   String get simulateScan => 'محاكاة مسح';

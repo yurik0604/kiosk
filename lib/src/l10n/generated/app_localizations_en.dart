@@ -71,11 +71,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get bagEmpty => 'Your bag is empty';
+  String get bagEmpty => 'The bin is empty';
 
   @override
   String get bagEmptyHint =>
-      'Place your selected pieces on\nthe reader pad to add them.';
+      'Place all your items in the\nRFID bin and they will be\nadded automatically.';
 
   @override
   String get simulateScan => 'Simulate Scan';

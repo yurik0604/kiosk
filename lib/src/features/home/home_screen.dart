@@ -9,6 +9,8 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../auth/data/auth_controller.dart';
+import '../rfid/data/rfid_reader_controller.dart';
+import '../rfid/domain/reader_status.dart';
 import '../session/data/session_controller.dart';
 import 'widgets/ad_card.dart';
 
@@ -31,6 +33,7 @@ class HomeScreen extends ConsumerWidget {
                 _TopBar(
                   onLogout: () =>
                       ref.read(authControllerProvider.notifier).logout(),
+                  onAdmin: () => context.push(AppRoutes.readerSettings),
                 ),
                 const SizedBox(height: KioskTokens.spaceL),
                 const Expanded(flex: 2, child: _Hero()),
@@ -56,15 +59,19 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class _TopBar extends StatelessWidget {
-  const _TopBar({required this.onLogout});
+class _TopBar extends ConsumerWidget {
+  const _TopBar({required this.onLogout, required this.onAdmin});
 
   final VoidCallback onLogout;
+  final VoidCallback onAdmin;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
+    final readerStatus = ref.watch(
+      rfidReaderControllerProvider.select((s) => s.status),
+    );
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -115,35 +122,39 @@ class _TopBar extends StatelessWidget {
           children: [
             Icon(Icons.wifi_rounded, color: scheme.onSurfaceVariant),
             const SizedBox(width: KioskTokens.spaceS),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: KioskTokens.spaceS,
-                vertical: KioskTokens.spaceXS,
-              ),
-              decoration: BoxDecoration(
-                color: scheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(KioskTokens.radiusSmall),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: scheme.tertiary,
-                      shape: BoxShape.circle,
+            // Long-press the status pill to open admin reader settings.
+            GestureDetector(
+              onLongPress: onAdmin,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: KioskTokens.spaceS,
+                  vertical: KioskTokens.spaceXS,
+                ),
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainer,
+                  borderRadius: BorderRadius.circular(KioskTokens.radiusSmall),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: _statusColor(readerStatus, scheme),
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    l10n.online,
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontSize: 14,
-                          color: scheme.onSurfaceVariant,
-                        ),
-                  ),
-                ],
+                    const SizedBox(width: 6),
+                    Text(
+                      readerStatus.isConnected ? l10n.online : 'OFFLINE',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            fontSize: 14,
+                            color: scheme.onSurfaceVariant,
+                          ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: KioskTokens.spaceS),
@@ -161,6 +172,22 @@ class _TopBar extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Color _statusColor(ReaderStatus s, ColorScheme scheme) {
+    switch (s) {
+      case ReaderStatus.reading:
+      case ReaderStatus.connected:
+      case ReaderStatus.idle:
+        return scheme.tertiary;
+      case ReaderStatus.connecting:
+        return scheme.secondary;
+      case ReaderStatus.error:
+        return scheme.error;
+      case ReaderStatus.offline:
+      case ReaderStatus.disconnected:
+        return scheme.outline;
+    }
   }
 }
 

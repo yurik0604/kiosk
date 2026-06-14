@@ -72,11 +72,11 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
-  String get bagEmpty => 'התיק ריק';
+  String get bagEmpty => 'הסל ריק';
 
   @override
   String get bagEmptyHint =>
-      'הניחו את הפריטים שבחרתם\nעל המשטח כדי להוסיף אותם.';
+      'הניחו את כל הפריטים בסל ה-RFID\nוהם יתווספו אוטומטית.';
 
   @override
   String get simulateScan => 'סריקה לדוגמה';

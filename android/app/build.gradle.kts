@@ -42,3 +42,15 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // LLRP Toolkit (Java) — used by the Sensormatic IDX-4000 driver.
+    // LTK references org.apache.log4j.Logger directly, so we replace log4j 1.x
+    // with the SLF4J shim (same package/classes, routes to SLF4J under the hood).
+    implementation("org.llrp:ltkjava:1.0.0.7") {
+        exclude(group = "log4j", module = "log4j")
+        exclude(group = "ch.qos.logback", module = "logback-classic")
+    }
+    implementation("org.slf4j:log4j-over-slf4j:2.0.13")
+    implementation("org.slf4j:slf4j-android:1.7.36")
+}

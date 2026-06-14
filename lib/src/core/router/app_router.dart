@@ -7,6 +7,7 @@ import '../../features/auth/domain/auth_state.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/checkout/checkout_screen.dart';
 import '../../features/home/home_screen.dart';
+import '../../features/rfid/presentation/reader_settings_screen.dart';
 import '../../features/session/presentation/session_screen.dart';
 import '../../features/splash/splash_screen.dart';
 
@@ -16,6 +17,7 @@ abstract class AppRoutes {
   static const home = '/home';
   static const session = '/session';
   static const checkout = '/checkout';
+  static const readerSettings = '/admin/reader';
 }
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -60,6 +62,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.checkout,
         pageBuilder: (_, st) => _slide(st, const CheckoutScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.readerSettings,
+        pageBuilder: (_, st) => _slide(st, const ReaderSettingsScreen()),
       ),
     ],
   );
