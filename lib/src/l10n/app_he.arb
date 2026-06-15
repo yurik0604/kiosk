@@ -88,8 +88,9 @@
   "paymentSelectMethods": "בחרו אמצעי תשלום",
   "paymentSplitHint": "הקישו על אמצעי תשלום כדי להזין סכום. ניתן לשלב מספר אמצעים.",
   "paymentMethodCreditCard": "כרטיס אשראי",
-  "paymentMethodMemberCard": "כרטיס חבר",
   "paymentMethodGiftCard": "כרטיס מתנה",
+  "paymentMethodCreditCardSubtitle": "Visa, Mastercard, American Express · הצמדה או הכנסה",
+  "paymentMethodGiftCardSubtitle": "מימוש כרטיס מתנה או שובר",
   "paymentAmount": "סכום",
   "paymentRemaining": "נותר לתשלום",
   "paymentAllocated": "הוקצה",
@@ -117,6 +118,26 @@
   "paymentSuccessTitle": "התשלום בוצע בהצלחה",
   "paymentSuccessBody": "תודה שקניתם אצלנו.",
   "paymentDone": "סיום",
+  "paymentTerminalTitle": "פעלו לפי ההוראות על המסוף",
+  "paymentTerminalBody": "הכניסו, הצמידו או העבירו את הכרטיס במסוף התשלום.",
+  "paymentTerminalProcessing": "מבצע תשלום",
+  "paymentTerminalProcessingBody": "אנא אל תוציאו את הכרטיס.",
+  "paymentTerminalAmount": "סכום לתשלום",
+  "paymentApprovedBody": "הכרטיס אושר.",
+  "paymentReceiptTitle": "אנא קחו את הקבלה",
+  "paymentReceiptBody": "הקבלה מודפסת. קחו אותה מהמדפסת והקישו על סיום.",
+  "paymentFinish": "סיום",
+  "paymentDeclinedTitle": "התשלום נדחה",
+  "paymentDeclinedBody": "המסוף לא הצליח להשלים את העסקה. נסו שוב.",
+  "paymentRetry": "ניסיון נוסף",
+  "thankYouTitle": "תודה רבה!",
+  "thankYouBody": "נשמח לראותכם שוב בקרוב.",
+  "thankYouAutoClose": "{seconds, plural, =0{סוגר…} =1{נסגר בעוד שנייה…} two{נסגר בעוד {seconds} שניות…} other{נסגר בעוד {seconds} שניות…}}",
+  "@thankYouAutoClose": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
   "itemsCount": "{count, plural, =1{פריט אחד} two{{count} פריטים} other{{count} פריטים}}",
   "@itemsCount": {
     "placeholders": {

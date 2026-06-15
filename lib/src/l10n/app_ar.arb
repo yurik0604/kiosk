@@ -88,8 +88,9 @@
   "paymentSelectMethods": "اختر طرق الدفع",
   "paymentSplitHint": "اضغط على طريقة لتحديد المبلغ. يمكنك الجمع بين عدة طرق.",
   "paymentMethodCreditCard": "بطاقة ائتمان",
-  "paymentMethodMemberCard": "بطاقة عضوية",
   "paymentMethodGiftCard": "بطاقة هدية",
+  "paymentMethodCreditCardSubtitle": "Visa, Mastercard, American Express · تقريب أو إدخال",
+  "paymentMethodGiftCardSubtitle": "استرداد بطاقة هدية أو قسيمة",
   "paymentAmount": "المبلغ",
   "paymentRemaining": "المتبقي",
   "paymentAllocated": "المخصص",
@@ -117,6 +118,26 @@
   "paymentSuccessTitle": "تم الدفع بنجاح",
   "paymentSuccessBody": "شكراً للتسوق معنا.",
   "paymentDone": "تم",
+  "paymentTerminalTitle": "اتبع التعليمات على الجهاز",
+  "paymentTerminalBody": "أدخل البطاقة أو مررها أو قربها من جهاز الدفع.",
+  "paymentTerminalProcessing": "جارٍ معالجة الدفع",
+  "paymentTerminalProcessingBody": "يرجى عدم إزالة البطاقة.",
+  "paymentTerminalAmount": "المبلغ المستحق",
+  "paymentApprovedBody": "تمت الموافقة على البطاقة.",
+  "paymentReceiptTitle": "يرجى أخذ الإيصال",
+  "paymentReceiptBody": "تتم طباعة الإيصال. خذه من الطابعة ثم اضغط إنهاء.",
+  "paymentFinish": "إنهاء",
+  "paymentDeclinedTitle": "تم رفض الدفع",
+  "paymentDeclinedBody": "تعذّر على الجهاز إتمام المعاملة. يرجى المحاولة مرة أخرى.",
+  "paymentRetry": "حاول مجدداً",
+  "thankYouTitle": "شكراً لك!",
+  "thankYouBody": "نأمل أن نراك مجدداً قريباً.",
+  "thankYouAutoClose": "{seconds, plural, zero{جارٍ الإغلاق…} one{الإغلاق خلال ثانية…} two{الإغلاق خلال ثانيتين…} few{الإغلاق خلال {seconds} ثوانٍ…} many{الإغلاق خلال {seconds} ثانية…} other{الإغلاق خلال {seconds} ثانية…}}",
+  "@thankYouAutoClose": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
   "itemsCount": "{count, plural, zero{لا توجد عناصر} one{عنصر واحد} two{عنصران} few{{count} عناصر} many{{count} عنصراً} other{{count} عنصر}}",
   "@itemsCount": {
     "placeholders": {

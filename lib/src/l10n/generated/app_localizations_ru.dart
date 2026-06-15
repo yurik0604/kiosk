@@ -201,10 +201,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get paymentMethodCreditCard => 'Кредитная карта';
 
   @override
-  String get paymentMethodMemberCard => 'Карта клиента';
+  String get paymentMethodGiftCard => 'Подарочная карта';
 
   @override
-  String get paymentMethodGiftCard => 'Подарочная карта';
+  String get paymentMethodCreditCardSubtitle =>
+      'Visa, Mastercard, American Express · бесконтактно или чип';
+
+  @override
+  String get paymentMethodGiftCardSubtitle =>
+      'Погасить подарочную карту или ваучер';
 
   @override
   String get paymentAmount => 'Сумма';
@@ -247,6 +252,66 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get paymentDone => 'Готово';
+
+  @override
+  String get paymentTerminalTitle => 'Следуйте инструкциям на терминале';
+
+  @override
+  String get paymentTerminalBody =>
+      'Вставьте, приложите или проведите картой по платёжному терминалу.';
+
+  @override
+  String get paymentTerminalProcessing => 'Обработка платежа';
+
+  @override
+  String get paymentTerminalProcessingBody =>
+      'Пожалуйста, не извлекайте карту.';
+
+  @override
+  String get paymentTerminalAmount => 'Сумма к оплате';
+
+  @override
+  String get paymentApprovedBody => 'Карта подтверждена.';
+
+  @override
+  String get paymentReceiptTitle => 'Заберите чек';
+
+  @override
+  String get paymentReceiptBody =>
+      'Чек печатается. Возьмите его из принтера и нажмите «Готово».';
+
+  @override
+  String get paymentFinish => 'Готово';
+
+  @override
+  String get paymentDeclinedTitle => 'Платёж отклонён';
+
+  @override
+  String get paymentDeclinedBody =>
+      'Терминал не смог завершить операцию. Попробуйте ещё раз.';
+
+  @override
+  String get paymentRetry => 'Повторить';
+
+  @override
+  String get thankYouTitle => 'Спасибо!';
+
+  @override
+  String get thankYouBody => 'Будем рады видеть вас снова.';
+
+  @override
+  String thankYouAutoClose(int seconds) {
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: 'Закрытие через $seconds секунды…',
+      many: 'Закрытие через $seconds секунд…',
+      few: 'Закрытие через $seconds секунды…',
+      one: 'Закрытие через 1 секунду…',
+      zero: 'Закрывается…',
+    );
+    return '$_temp0';
+  }
 
   @override
   String itemsCount(int count) {

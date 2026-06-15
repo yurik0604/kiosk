@@ -204,10 +204,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paymentMethodCreditCard => 'بطاقة ائتمان';
 
   @override
-  String get paymentMethodMemberCard => 'بطاقة عضوية';
+  String get paymentMethodGiftCard => 'بطاقة هدية';
 
   @override
-  String get paymentMethodGiftCard => 'بطاقة هدية';
+  String get paymentMethodCreditCardSubtitle =>
+      'Visa, Mastercard, American Express · تقريب أو إدخال';
+
+  @override
+  String get paymentMethodGiftCardSubtitle => 'استرداد بطاقة هدية أو قسيمة';
 
   @override
   String get paymentAmount => 'المبلغ';
@@ -250,6 +254,66 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paymentDone => 'تم';
+
+  @override
+  String get paymentTerminalTitle => 'اتبع التعليمات على الجهاز';
+
+  @override
+  String get paymentTerminalBody =>
+      'أدخل البطاقة أو مررها أو قربها من جهاز الدفع.';
+
+  @override
+  String get paymentTerminalProcessing => 'جارٍ معالجة الدفع';
+
+  @override
+  String get paymentTerminalProcessingBody => 'يرجى عدم إزالة البطاقة.';
+
+  @override
+  String get paymentTerminalAmount => 'المبلغ المستحق';
+
+  @override
+  String get paymentApprovedBody => 'تمت الموافقة على البطاقة.';
+
+  @override
+  String get paymentReceiptTitle => 'يرجى أخذ الإيصال';
+
+  @override
+  String get paymentReceiptBody =>
+      'تتم طباعة الإيصال. خذه من الطابعة ثم اضغط إنهاء.';
+
+  @override
+  String get paymentFinish => 'إنهاء';
+
+  @override
+  String get paymentDeclinedTitle => 'تم رفض الدفع';
+
+  @override
+  String get paymentDeclinedBody =>
+      'تعذّر على الجهاز إتمام المعاملة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get paymentRetry => 'حاول مجدداً';
+
+  @override
+  String get thankYouTitle => 'شكراً لك!';
+
+  @override
+  String get thankYouBody => 'نأمل أن نراك مجدداً قريباً.';
+
+  @override
+  String thankYouAutoClose(int seconds) {
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: 'الإغلاق خلال $seconds ثانية…',
+      many: 'الإغلاق خلال $seconds ثانية…',
+      few: 'الإغلاق خلال $seconds ثوانٍ…',
+      two: 'الإغلاق خلال ثانيتين…',
+      one: 'الإغلاق خلال ثانية…',
+      zero: 'جارٍ الإغلاق…',
+    );
+    return '$_temp0';
+  }
 
   @override
   String itemsCount(int count) {

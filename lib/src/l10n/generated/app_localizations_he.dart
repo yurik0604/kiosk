@@ -198,10 +198,14 @@ class AppLocalizationsHe extends AppLocalizations {
   String get paymentMethodCreditCard => 'כרטיס אשראי';
 
   @override
-  String get paymentMethodMemberCard => 'כרטיס חבר';
+  String get paymentMethodGiftCard => 'כרטיס מתנה';
 
   @override
-  String get paymentMethodGiftCard => 'כרטיס מתנה';
+  String get paymentMethodCreditCardSubtitle =>
+      'Visa, Mastercard, American Express · הצמדה או הכנסה';
+
+  @override
+  String get paymentMethodGiftCardSubtitle => 'מימוש כרטיס מתנה או שובר';
 
   @override
   String get paymentAmount => 'סכום';
@@ -244,6 +248,63 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get paymentDone => 'סיום';
+
+  @override
+  String get paymentTerminalTitle => 'פעלו לפי ההוראות על המסוף';
+
+  @override
+  String get paymentTerminalBody =>
+      'הכניסו, הצמידו או העבירו את הכרטיס במסוף התשלום.';
+
+  @override
+  String get paymentTerminalProcessing => 'מבצע תשלום';
+
+  @override
+  String get paymentTerminalProcessingBody => 'אנא אל תוציאו את הכרטיס.';
+
+  @override
+  String get paymentTerminalAmount => 'סכום לתשלום';
+
+  @override
+  String get paymentApprovedBody => 'הכרטיס אושר.';
+
+  @override
+  String get paymentReceiptTitle => 'אנא קחו את הקבלה';
+
+  @override
+  String get paymentReceiptBody =>
+      'הקבלה מודפסת. קחו אותה מהמדפסת והקישו על סיום.';
+
+  @override
+  String get paymentFinish => 'סיום';
+
+  @override
+  String get paymentDeclinedTitle => 'התשלום נדחה';
+
+  @override
+  String get paymentDeclinedBody => 'המסוף לא הצליח להשלים את העסקה. נסו שוב.';
+
+  @override
+  String get paymentRetry => 'ניסיון נוסף';
+
+  @override
+  String get thankYouTitle => 'תודה רבה!';
+
+  @override
+  String get thankYouBody => 'נשמח לראותכם שוב בקרוב.';
+
+  @override
+  String thankYouAutoClose(int seconds) {
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: 'נסגר בעוד $seconds שניות…',
+      two: 'נסגר בעוד $seconds שניות…',
+      one: 'נסגר בעוד שנייה…',
+      zero: 'סוגר…',
+    );
+    return '$_temp0';
+  }
 
   @override
   String itemsCount(int count) {

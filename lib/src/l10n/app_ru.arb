@@ -88,8 +88,9 @@
   "paymentSelectMethods": "Выберите способы оплаты",
   "paymentSplitHint": "Нажмите на способ, чтобы указать сумму. Можно комбинировать.",
   "paymentMethodCreditCard": "Кредитная карта",
-  "paymentMethodMemberCard": "Карта клиента",
   "paymentMethodGiftCard": "Подарочная карта",
+  "paymentMethodCreditCardSubtitle": "Visa, Mastercard, American Express · бесконтактно или чип",
+  "paymentMethodGiftCardSubtitle": "Погасить подарочную карту или ваучер",
   "paymentAmount": "Сумма",
   "paymentRemaining": "Остаток",
   "paymentAllocated": "Назначено",
@@ -117,6 +118,26 @@
   "paymentSuccessTitle": "Оплата прошла успешно",
   "paymentSuccessBody": "Спасибо за покупку.",
   "paymentDone": "Готово",
+  "paymentTerminalTitle": "Следуйте инструкциям на терминале",
+  "paymentTerminalBody": "Вставьте, приложите или проведите картой по платёжному терминалу.",
+  "paymentTerminalProcessing": "Обработка платежа",
+  "paymentTerminalProcessingBody": "Пожалуйста, не извлекайте карту.",
+  "paymentTerminalAmount": "Сумма к оплате",
+  "paymentApprovedBody": "Карта подтверждена.",
+  "paymentReceiptTitle": "Заберите чек",
+  "paymentReceiptBody": "Чек печатается. Возьмите его из принтера и нажмите «Готово».",
+  "paymentFinish": "Готово",
+  "paymentDeclinedTitle": "Платёж отклонён",
+  "paymentDeclinedBody": "Терминал не смог завершить операцию. Попробуйте ещё раз.",
+  "paymentRetry": "Повторить",
+  "thankYouTitle": "Спасибо!",
+  "thankYouBody": "Будем рады видеть вас снова.",
+  "thankYouAutoClose": "{seconds, plural, =0{Закрывается…} =1{Закрытие через 1 секунду…} few{Закрытие через {seconds} секунды…} many{Закрытие через {seconds} секунд…} other{Закрытие через {seconds} секунды…}}",
+  "@thankYouAutoClose": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
   "itemsCount": "{count, plural, =1{1 товар} few{{count} товара} many{{count} товаров} other{{count} товара}}",
   "@itemsCount": {
     "placeholders": {

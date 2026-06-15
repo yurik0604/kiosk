@@ -88,8 +88,9 @@
   "paymentSelectMethods": "Select payment methods",
   "paymentSplitHint": "Tap a method to assign an amount. You can combine several.",
   "paymentMethodCreditCard": "Credit card",
-  "paymentMethodMemberCard": "Member card",
   "paymentMethodGiftCard": "Gift card",
+  "paymentMethodCreditCardSubtitle": "Visa, Mastercard, American Express · Tap or insert",
+  "paymentMethodGiftCardSubtitle": "Redeem a gift card or voucher",
   "paymentAmount": "Amount",
   "paymentRemaining": "Remaining",
   "paymentAllocated": "Allocated",
@@ -117,6 +118,26 @@
   "paymentSuccessTitle": "Payment successful",
   "paymentSuccessBody": "Thank you for shopping with us.",
   "paymentDone": "Done",
+  "paymentTerminalTitle": "Follow instructions on the terminal",
+  "paymentTerminalBody": "Insert, tap, or swipe your card on the payment terminal.",
+  "paymentTerminalProcessing": "Processing payment",
+  "paymentTerminalProcessingBody": "Please don't remove your card.",
+  "paymentTerminalAmount": "Amount due",
+  "paymentApprovedBody": "Your card was approved.",
+  "paymentReceiptTitle": "Please take your receipt",
+  "paymentReceiptBody": "Your receipt is printing. Take it from the printer and tap Finish.",
+  "paymentFinish": "Finish",
+  "paymentDeclinedTitle": "Payment declined",
+  "paymentDeclinedBody": "The terminal could not complete the transaction. Please try again.",
+  "paymentRetry": "Try again",
+  "thankYouTitle": "Thank you!",
+  "thankYouBody": "We hope to see you again soon.",
+  "thankYouAutoClose": "{seconds, plural, =0{Closing…} =1{Closing in 1 second…} other{Closing in {seconds} seconds…}}",
+  "@thankYouAutoClose": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
   "itemsCount": "{count, plural, =1{1 item} other{{count} items}}",
   "@itemsCount": {
     "placeholders": {

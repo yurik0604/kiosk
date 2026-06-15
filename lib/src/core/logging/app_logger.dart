@@ -8,13 +8,6 @@ class AppLogger {
 
   static final Logger instance = Logger(
     level: _level,
-    printer: PrettyPrinter(
-      methodCount: 0,
-      errorMethodCount: 3,
-      lineLength: 100,
-      colors: false,
-      printEmojis: false,
-      dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
-    ),
+    printer: SimplePrinter(printTime: true, colors: false),
   );
 }

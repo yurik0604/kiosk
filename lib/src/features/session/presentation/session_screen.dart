@@ -69,7 +69,8 @@ class _Header extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
     final titleStyle = Theme.of(context).textTheme.displayMedium?.copyWith(
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
+          color: scheme.onSurface.withValues(alpha: 0.72),
           height: 1.0,
         );
     return Padding(

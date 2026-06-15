@@ -197,10 +197,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentMethodCreditCard => 'Credit card';
 
   @override
-  String get paymentMethodMemberCard => 'Member card';
+  String get paymentMethodGiftCard => 'Gift card';
 
   @override
-  String get paymentMethodGiftCard => 'Gift card';
+  String get paymentMethodCreditCardSubtitle =>
+      'Visa, Mastercard, American Express · Tap or insert';
+
+  @override
+  String get paymentMethodGiftCardSubtitle => 'Redeem a gift card or voucher';
 
   @override
   String get paymentAmount => 'Amount';
@@ -243,6 +247,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paymentDone => 'Done';
+
+  @override
+  String get paymentTerminalTitle => 'Follow instructions on the terminal';
+
+  @override
+  String get paymentTerminalBody =>
+      'Insert, tap, or swipe your card on the payment terminal.';
+
+  @override
+  String get paymentTerminalProcessing => 'Processing payment';
+
+  @override
+  String get paymentTerminalProcessingBody => 'Please don\'t remove your card.';
+
+  @override
+  String get paymentTerminalAmount => 'Amount due';
+
+  @override
+  String get paymentApprovedBody => 'Your card was approved.';
+
+  @override
+  String get paymentReceiptTitle => 'Please take your receipt';
+
+  @override
+  String get paymentReceiptBody =>
+      'Your receipt is printing. Take it from the printer and tap Finish.';
+
+  @override
+  String get paymentFinish => 'Finish';
+
+  @override
+  String get paymentDeclinedTitle => 'Payment declined';
+
+  @override
+  String get paymentDeclinedBody =>
+      'The terminal could not complete the transaction. Please try again.';
+
+  @override
+  String get paymentRetry => 'Try again';
+
+  @override
+  String get thankYouTitle => 'Thank you!';
+
+  @override
+  String get thankYouBody => 'We hope to see you again soon.';
+
+  @override
+  String thankYouAutoClose(int seconds) {
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: 'Closing in $seconds seconds…',
+      one: 'Closing in 1 second…',
+      zero: 'Closing…',
+    );
+    return '$_temp0';
+  }
 
   @override
   String itemsCount(int count) {

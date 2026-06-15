@@ -420,17 +420,23 @@ abstract class AppLocalizations {
   /// **'Credit card'**
   String get paymentMethodCreditCard;
 
-  /// No description provided for @paymentMethodMemberCard.
-  ///
-  /// In en, this message translates to:
-  /// **'Member card'**
-  String get paymentMethodMemberCard;
-
   /// No description provided for @paymentMethodGiftCard.
   ///
   /// In en, this message translates to:
   /// **'Gift card'**
   String get paymentMethodGiftCard;
+
+  /// No description provided for @paymentMethodCreditCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Visa, Mastercard, American Express · Tap or insert'**
+  String get paymentMethodCreditCardSubtitle;
+
+  /// No description provided for @paymentMethodGiftCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem a gift card or voucher'**
+  String get paymentMethodGiftCardSubtitle;
 
   /// No description provided for @paymentAmount.
   ///
@@ -503,6 +509,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get paymentDone;
+
+  /// No description provided for @paymentTerminalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow instructions on the terminal'**
+  String get paymentTerminalTitle;
+
+  /// No description provided for @paymentTerminalBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert, tap, or swipe your card on the payment terminal.'**
+  String get paymentTerminalBody;
+
+  /// No description provided for @paymentTerminalProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing payment'**
+  String get paymentTerminalProcessing;
+
+  /// No description provided for @paymentTerminalProcessingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please don\'t remove your card.'**
+  String get paymentTerminalProcessingBody;
+
+  /// No description provided for @paymentTerminalAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount due'**
+  String get paymentTerminalAmount;
+
+  /// No description provided for @paymentApprovedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your card was approved.'**
+  String get paymentApprovedBody;
+
+  /// No description provided for @paymentReceiptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please take your receipt'**
+  String get paymentReceiptTitle;
+
+  /// No description provided for @paymentReceiptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your receipt is printing. Take it from the printer and tap Finish.'**
+  String get paymentReceiptBody;
+
+  /// No description provided for @paymentFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get paymentFinish;
+
+  /// No description provided for @paymentDeclinedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment declined'**
+  String get paymentDeclinedTitle;
+
+  /// No description provided for @paymentDeclinedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The terminal could not complete the transaction. Please try again.'**
+  String get paymentDeclinedBody;
+
+  /// No description provided for @paymentRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get paymentRetry;
+
+  /// No description provided for @thankYouTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you!'**
+  String get thankYouTitle;
+
+  /// No description provided for @thankYouBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We hope to see you again soon.'**
+  String get thankYouBody;
+
+  /// No description provided for @thankYouAutoClose.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds, plural, =0{Closing…} =1{Closing in 1 second…} other{Closing in {seconds} seconds…}}'**
+  String thankYouAutoClose(int seconds);
 
   /// No description provided for @itemsCount.
   ///

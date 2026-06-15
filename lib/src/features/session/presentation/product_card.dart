@@ -117,7 +117,11 @@ class _ProductBody extends StatelessWidget {
                   Text(
                     product.name,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.72),
                           height: 1.15,
                         ),
                     maxLines: 2,
