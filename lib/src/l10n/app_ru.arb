@@ -39,18 +39,39 @@
   "checkout": "К оплате",
   "cancelSessionTitle": "Отменить сессию?",
   "cancelSessionBody": "Корзина будет очищена, и вы вернётесь на главный экран.",
-  "confirmQtyTitle": "Подтвердите количество",
+  "confirmQtyTitle": "Подтвердите заказ",
   "confirmQtyBody": "{count, plural, =1{Убедитесь, что в лотке 1 товар, прежде чем оплатить.} few{Убедитесь, что в лотке {count} товара, прежде чем оплатить.} many{Убедитесь, что в лотке {count} товаров, прежде чем оплатить.} other{Убедитесь, что в лотке {count} товара, прежде чем оплатить.}}",
   "@confirmQtyBody": {
     "placeholders": {
       "count": {"type": "int"}
     }
   },
+  "confirmQtyItemsSection": "Товары",
+  "confirmQtyItemsLabel": "{count, plural, =0{Нет товаров} =1{1 товар к проверке} few{{count} товара к проверке} many{{count} товаров к проверке} other{{count} товара к проверке}}",
+  "@confirmQtyItemsLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyBagsSection": "Пакеты",
+  "confirmQtyBagsLabel": "{count, plural, =1{Добавлен 1 пакет} few{Добавлено {count} пакета} many{Добавлено {count} пакетов} other{Добавлено {count} пакета}}",
+  "@confirmQtyBagsLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyNoBagsTitle": "Пакет не добавлен",
+  "confirmQtyNoBagsBody": "В заказе нет пакета.",
+  "confirmQtyNoBagsYes": "Добавить",
+  "confirmQtyNoBagsNo": "Нет, продолжить",
   "confirmQtyConfirm": "Подтвердить и оплатить",
   "confirmQtyBack": "Назад к проверке",
   "keepShopping": "Продолжить",
   "cancelSession": "Отменить сессию",
   "removeFromBag": "Удалить из корзины",
+  "removeFromBagTitle": "Удалить этот товар?",
+  "removeFromBagBody": "Эта вещь будет убрана из корзины.",
+  "removeFromBagConfirm": "Удалить товар",
   "size": "Размер {size}",
   "@size": {
     "placeholders": {
@@ -152,5 +173,97 @@
   "loginSigningIn": "Вход…",
   "loginEmailRequired": "Введите эл. почту",
   "loginPasswordRequired": "Введите пароль",
-  "logout": "Выйти"
+  "logout": "Выйти",
+  "memberLookupTitle": "Вы участник клуба?",
+  "memberLookupSubtitle": "Введите номер телефона или номер участника, чтобы воспользоваться привилегиями — или пропустите и продолжите как гость.",
+  "memberInputPlaceholder": "Телефон или номер участника",
+  "memberSkip": "Пропустить",
+  "memberNext": "Далее",
+  "memberLooking": "Проверяем ваше членство…",
+  "memberNotFoundTitle": "Участник не найден",
+  "memberNotFoundBody": "Не удалось найти участника по запросу «{query}». Проверьте номер или продолжите как гость.",
+  "@memberNotFoundBody": {
+    "placeholders": {
+      "query": {"type": "String"}
+    }
+  },
+  "memberRetry": "Попробовать снова",
+  "memberAttachedTitle": "С возвращением, {name}!",
+  "@memberAttachedTitle": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberAttachedBody": "Ваша карта участника привязана к этой сессии.",
+  "memberContinue": "Продолжить",
+  "memberWelcome": "Здравствуйте, {name}",
+  "@memberWelcome": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberTierLabel": "Участник {tier}",
+  "@memberTierLabel": {
+    "placeholders": {
+      "tier": {"type": "String"}
+    }
+  },
+  "memberTierGold": "Gold",
+  "memberTierSilver": "Silver",
+  "memberTierPlatinum": "Platinum",
+  "memberTierStandard": "Участник",
+  "memberBenefitDiscountLabel": "Скидка {percent}%",
+  "@memberBenefitDiscountLabel": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "memberBenefitDiscountDescription": "Применяется автоматически к каждому товару",
+  "memberDiscountLineLabel": "Скидка участника ({percent}%)",
+  "@memberDiscountLineLabel": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "memberDiscountShort": "Скидка участника",
+  "saleDiscountShort": "Скидка акции",
+  "memberBenefitFreeAlterationsLabel": "Бесплатная подгонка",
+  "memberBenefitFreeAlterationsDescription": "На каждую вещь по полной цене",
+  "memberBenefitBirthdayGiftLabel": "Подарок ко дню рождения",
+  "memberBenefitBirthdayGiftDescription": "Сюрприз в месяц вашего дня рождения",
+  "memberBenefitEarlyAccessLabel": "Ранний доступ",
+  "memberBenefitEarlyAccessDescription": "Новые коллекции на 24 часа раньше публичного релиза",
+  "idleWarningTitle": "Вы ещё здесь?",
+  "idleWarningBody": "Мы не зафиксировали активности некоторое время. Нажмите кнопку ниже, чтобы продолжить покупки, иначе сессия завершится автоматически.",
+  "idleWarningCta": "Продолжить покупки",
+  "bagTileTitle": "Нужен пакет?",
+  "bagTileSubtitle": "Нажмите, чтобы добавить",
+  "bagTileFromPrice": "От {amount}",
+  "@bagTileFromPrice": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "bagTileInCartBadge": "{count, plural, one{1 в корзине} few{{count} в корзине} other{{count} в корзине}}",
+  "@bagTileInCartBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "bagTileEach": "{amount} за штуку",
+  "@bagTileEach": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "bagTileDecrease": "Убрать пакет",
+  "bagTileIncrease": "Добавить пакет",
+  "bagPickerTitle": "Выберите пакет",
+  "bagPickerSubtitle": "Добавьте сколько нужно — используйте кнопки + и −.",
+  "bagPickerDone": "Готово",
+  "bagPickerClose": "Закрыть",
+  "bagSmallName": "Маленький пакет",
+  "bagSmallDescription": "Компактный пакет — для одной-двух вещей.",
+  "bagLargeName": "Большой пакет",
+  "bagLargeDescription": "Просторный пакет с усиленными ручками."
 }

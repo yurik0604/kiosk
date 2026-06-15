@@ -6,22 +6,56 @@ import 'package:intl/intl.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/cancel_session_dialog.dart';
+import '../../core/widgets/idle_timeout_detector.dart';
+import '../../core/widgets/idle_warning_dialog.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../session/data/session_controller.dart';
 import '../session/domain/cart_item.dart';
 import 'data/payment_controller.dart';
 import 'data/payment_process_controller.dart';
 import 'domain/payment_method.dart';
+import 'domain/payment_transaction.dart';
 import 'presentation/payment_process_dialog.dart';
-import 'presentation/thank_you_dialog.dart';
 
-class CheckoutScreen extends ConsumerWidget {
+class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CheckoutScreen> createState() => _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
+  /// After this much wall-clock inactivity, the warning dialog is shown.
+  static const Duration _idleTimeout = Duration(minutes: 1);
+
+  /// Guard against re-entrant timeouts firing while the warning is already
+  /// on screen.
+  bool _warningOpen = false;
+
+  Future<void> _onIdleTimeout() async {
+    if (_warningOpen) return;
+    setState(() => _warningOpen = true);
+    try {
+      final keepShopping = await showIdleWarningDialog(context);
+      if (!mounted) return;
+      if (!keepShopping) {
+        // User didn't respond — abort the checkout entirely and reset.
+        ref.read(sessionControllerProvider.notifier).reset();
+        context.go(AppRoutes.home);
+      }
+    } finally {
+      if (mounted) setState(() => _warningOpen = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final session = ref.watch(sessionControllerProvider);
     final payment = ref.watch(paymentControllerProvider);
+    final paymentStatus = ref.watch(
+      paymentProcessControllerProvider.select((s) => s.status),
+    );
     final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
     final fmt = NumberFormat.simpleCurrency(
@@ -29,69 +63,82 @@ class CheckoutScreen extends ConsumerWidget {
       name: 'ILS',
     );
 
-    final remaining = (session.total - payment.allocated)
-        .clamp(0.0, double.infinity);
+    final remaining = (session.total - payment.allocated).clamp(
+      0.0,
+      double.infinity,
+    );
+
+    // Pause the idle timer while a transaction is actively running on the
+    // terminal — we don't want to pop the user out mid-PIN-entry.
+    final isPaymentInFlight =
+        paymentStatus != PaymentTransactionStatus.idle &&
+        paymentStatus != PaymentTransactionStatus.completed;
 
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(KioskTokens.spaceL),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _Header(l10n: l10n),
-                const SizedBox(height: KioskTokens.spaceL),
-                _TotalsCard(
-                  total: session.total,
-                  allocated: payment.allocated,
-                  remaining: remaining,
-                  itemCount: session.itemCount,
-                  items: session.items,
-                  fmt: fmt,
-                ),
-                const SizedBox(height: KioskTokens.spaceXXL),
-                Text(
-                  l10n.paymentSelectMethods,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: scheme.onSurface.withValues(alpha: 0.72),
-                      ),
-                ),
-                const SizedBox(height: KioskTokens.spaceXS),
-                Text(
-                  l10n.paymentSplitHint,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
-                ),
-                const SizedBox(height: KioskTokens.spaceM),
-                Expanded(
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: KioskTokens.spaceM,
-                      crossAxisSpacing: KioskTokens.spaceM,
-                      childAspectRatio: 1.15,
-                    ),
-                    itemCount: PaymentMethod.values.length,
-                    itemBuilder: (_, index) {
-                      final method = PaymentMethod.values[index];
-                      return _PaymentMethodTile(
-                        method: method,
-                        amount: payment.amountFor(method),
-                        total: session.total,
-                        fmt: fmt,
-                        l10n: l10n,
-                      );
-                    },
+      child: IdleTimeoutDetector(
+        enabled: !_warningOpen && !isPaymentInFlight,
+        timeout: _idleTimeout,
+        onTimeout: _onIdleTimeout,
+        child: Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(KioskTokens.spaceL),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _Header(l10n: l10n),
+                  const SizedBox(height: KioskTokens.spaceL),
+                  _TotalsCard(
+                    total: session.total,
+                    allocated: payment.allocated,
+                    remaining: remaining,
+                    itemCount: session.itemCount,
+                    items: session.items,
+                    fmt: fmt,
                   ),
-                ),
-                const SizedBox(height: KioskTokens.spaceM),
-                _Footer(l10n: l10n),
-              ],
+                  const SizedBox(height: KioskTokens.spaceXXL),
+                  Text(
+                    l10n.paymentSelectMethods,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: scheme.onSurface.withValues(alpha: 0.72),
+                    ),
+                  ),
+                  const SizedBox(height: KioskTokens.spaceXS),
+                  Text(
+                    l10n.paymentSplitHint,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: KioskTokens.spaceM),
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: KioskTokens.spaceM,
+                            crossAxisSpacing: KioskTokens.spaceM,
+                            childAspectRatio: 1.15,
+                          ),
+                      itemCount: PaymentMethod.values.length,
+                      itemBuilder: (_, index) {
+                        final method = PaymentMethod.values[index];
+                        return _PaymentMethodTile(
+                          method: method,
+                          amount: payment.amountFor(method),
+                          total: session.total,
+                          fmt: fmt,
+                          l10n: l10n,
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: KioskTokens.spaceM),
+                  _Footer(l10n: l10n),
+                ],
+              ),
             ),
           ),
         ),
@@ -116,13 +163,10 @@ class _Header extends StatelessWidget {
         Text(
           l10n.checkoutTitle,
           style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface
-                    .withValues(alpha: 0.72),
-                height: 1.0,
-              ),
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.onSurface,
+            height: 1.0,
+          ),
         ),
       ],
     );
@@ -182,41 +226,34 @@ class _TotalsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            l10n.total.toUpperCase(),
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: muted,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 2.0,
+            ),
+          ),
+          const SizedBox(height: KioskTokens.spaceS),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.total.toUpperCase(),
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: muted,
-                            letterSpacing: 1.6,
-                            fontSize: 15,
-                          ),
-                    ),
-                    const SizedBox(height: KioskTokens.spaceXS),
-                    Text(
-                      fmt.format(total),
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayLarge
-                          ?.copyWith(
-                            color: scheme.primary,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -1.8,
-                            height: 1.0,
-                          ),
-                    ),
-                  ],
+                child: Text(
+                  fmt.format(total),
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                    color: scheme.primary,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -1.8,
+                    height: 1.0,
+                  ),
                 ),
               ),
+              const SizedBox(width: KioskTokens.spaceM),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: KioskTokens.spaceL,
-                  vertical: 14,
+                  vertical: KioskTokens.spaceM,
                 ),
                 decoration: BoxDecoration(
                   color: scheme.primary.withValues(alpha: 0.08),
@@ -228,17 +265,16 @@ class _TotalsCard extends StatelessWidget {
                     Icon(
                       Icons.shopping_bag_rounded,
                       color: scheme.primary,
-                      size: 26,
+                      size: 36,
                     ),
                     const SizedBox(width: KioskTokens.spaceS),
                     Text(
                       l10n.itemsCount(itemCount),
-                      style:
-                          Theme.of(context).textTheme.titleLarge?.copyWith(
-                                color: scheme.primary,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 20,
-                              ),
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: scheme.primary,
+                            fontWeight: FontWeight.w800,
+                          ),
                     ),
                   ],
                 ),
@@ -268,19 +304,16 @@ class _TotalsCard extends StatelessWidget {
                     children: [
                       Text(
                         l10n.paymentAllocated.toUpperCase(),
-                        style:
-                            Theme.of(context).textTheme.labelLarge?.copyWith(
-                                  color: muted,
-                                  letterSpacing: 1.2,
-                                  fontSize: 12,
-                                ),
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: muted,
+                          letterSpacing: 1.2,
+                          fontSize: 12,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         fmt.format(allocated),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
+                        style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
                               color: onCard,
                               fontWeight: FontWeight.w700,
@@ -293,25 +326,22 @@ class _TotalsCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      (fullyPaid ? l10n.paymentAllocated : l10n.paymentRemaining)
+                      (fullyPaid
+                              ? l10n.paymentAllocated
+                              : l10n.paymentRemaining)
                           .toUpperCase(),
-                      style:
-                          Theme.of(context).textTheme.labelLarge?.copyWith(
-                                color: muted,
-                                letterSpacing: 1.2,
-                                fontSize: 12,
-                              ),
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: muted,
+                        letterSpacing: 1.2,
+                        fontSize: 12,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       fmt.format(fullyPaid ? allocated : remaining),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium
+                      style: Theme.of(context).textTheme.headlineMedium
                           ?.copyWith(
-                            color: fullyPaid
-                                ? scheme.tertiary
-                                : onCard,
+                            color: fullyPaid ? scheme.tertiary : onCard,
                             fontWeight: FontWeight.w700,
                           ),
                     ),
@@ -358,12 +388,10 @@ class _CartPreview extends StatelessWidget {
     const thumbSize = 56.0;
     const overlap = 14.0;
     final stackWidth =
-        thumbSize + (shown.length - 1).clamp(0, maxThumbs) * (thumbSize - overlap);
+        thumbSize +
+        (shown.length - 1).clamp(0, maxThumbs) * (thumbSize - overlap);
 
-    final names = items
-        .take(3)
-        .map((i) => i.product.name)
-        .join(' · ');
+    final names = items.take(3).map((i) => i.product.name).join(' · ');
 
     return Row(
       children: [
@@ -375,10 +403,7 @@ class _CartPreview extends StatelessWidget {
               for (var i = 0; i < shown.length; i++)
                 PositionedDirectional(
                   start: i * (thumbSize - overlap),
-                  child: _Thumb(
-                    item: shown[i],
-                    size: thumbSize,
-                  ),
+                  child: _Thumb(item: shown[i], size: thumbSize),
                 ),
               if (overflow > 0)
                 PositionedDirectional(
@@ -388,12 +413,13 @@ class _CartPreview extends StatelessWidget {
                     height: thumbSize,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withValues(alpha: 0.10),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.10),
                       border: Border.all(
-                        color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHigh,
                         width: 2,
                       ),
                     ),
@@ -401,10 +427,10 @@ class _CartPreview extends StatelessWidget {
                     child: Text(
                       '+$overflow',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                          ),
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
@@ -417,10 +443,9 @@ class _CartPreview extends StatelessWidget {
             names,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: muted,
-                  height: 1.3,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: muted, height: 1.3),
           ),
         ),
       ],
@@ -444,16 +469,13 @@ class _Thumb extends StatelessWidget {
     } catch (_) {
       fallback = Theme.of(context).colorScheme.tertiary;
     }
+    final radius = BorderRadius.circular(size / 4);
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
+        borderRadius: radius,
         color: fallback,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.surfaceContainerHigh,
-          width: 3,
-        ),
       ),
       clipBehavior: Clip.antiAlias,
       child: hasImage
@@ -542,11 +564,11 @@ class _PaymentMethodTile extends ConsumerWidget {
           borderRadius: borderRadius,
           onTap: canStartPayment
               ? () => runPaymentFlow(
-                    context: context,
-                    ref: ref,
-                    method: method,
-                    total: total,
-                  )
+                  context: context,
+                  ref: ref,
+                  method: method,
+                  total: total,
+                )
               : null,
           child: Padding(
             padding: const EdgeInsets.all(KioskTokens.spaceM),
@@ -554,56 +576,68 @@ class _PaymentMethodTile extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: 140,
-                      height: 140,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: iconBg,
-                      ),
+                // The icon block flexes to whatever height is left after the
+                // title + subtitle, so the card never overflows regardless of how
+                // many lines the subtitle wraps to.
+                Flexible(
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: LayoutBuilder(
+                      builder: (context, c) {
+                        final d = c.biggest.shortestSide;
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: d,
+                              height: d,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: iconBg,
+                              ),
+                            ),
+                            Container(
+                              width: d * 0.72,
+                              height: d * 0.72,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isActive
+                                    ? Colors.white.withValues(alpha: 0.10)
+                                    : scheme.primary.withValues(alpha: 0.06),
+                              ),
+                            ),
+                            Icon(method.icon, size: d * 0.52, color: iconColor),
+                          ],
+                        );
+                      },
                     ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isActive
-                            ? Colors.white.withValues(alpha: 0.10)
-                            : scheme.primary.withValues(alpha: 0.06),
-                      ),
-                    ),
-                    Icon(method.icon, size: 72, color: iconColor),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: KioskTokens.spaceM),
+                const SizedBox(height: KioskTokens.spaceS),
                 Text(
                   method.label(l10n),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: titleColor,
-                        letterSpacing: -0.4,
-                        fontSize: 34,
-                      ),
+                    fontWeight: FontWeight.w600,
+                    color: titleColor,
+                    letterSpacing: -0.4,
+                    fontSize: 34,
+                  ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
                   isActive ? fmt.format(amount) : method.subtitle(l10n),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: subtitleColor,
-                        fontWeight:
-                            isActive ? FontWeight.w700 : FontWeight.w400,
-                        fontSize: 18,
-                        height: 1.3,
-                      ),
+                    color: subtitleColor,
+                    fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+                    fontSize: 18,
+                    height: 1.3,
+                  ),
                 ),
               ],
             ),
@@ -622,21 +656,43 @@ class _Footer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
-    return SizedBox(
-      width: double.infinity,
-      child: FilledButton.icon(
-        style: FilledButton.styleFrom(
-          backgroundColor: scheme.primary,
-          foregroundColor: scheme.onPrimary,
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: scheme.onSurfaceVariant,
+            ),
+            onPressed: () => _confirmCancel(context, ref),
+            child: Text(l10n.cancel.toUpperCase()),
+          ),
         ),
-        onPressed: () {
-          ref.read(paymentControllerProvider.notifier).reset();
-          context.go(AppRoutes.session);
-        },
-        icon: const Icon(Icons.arrow_back_rounded),
-        label: Text(l10n.back),
-      ),
+        const SizedBox(width: KioskTokens.spaceS),
+        Expanded(
+          flex: 2,
+          child: FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: scheme.primary,
+              foregroundColor: scheme.onPrimary,
+            ),
+            onPressed: () {
+              ref.read(paymentControllerProvider.notifier).reset();
+              context.go(AppRoutes.session);
+            },
+            child: Text(l10n.back.toUpperCase()),
+          ),
+        ),
+      ],
     );
+  }
+
+  Future<void> _confirmCancel(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showCancelSessionDialog(context);
+    if (confirmed && context.mounted) {
+      ref.read(paymentControllerProvider.notifier).reset();
+      ref.read(sessionControllerProvider.notifier).reset();
+      context.go(AppRoutes.home);
+    }
   }
 }
 
@@ -648,20 +704,10 @@ Future<void> runPaymentFlow({
 }) async {
   if (total <= 0.005) return;
   HapticFeedback.mediumImpact();
-  ref.read(paymentControllerProvider.notifier).payRemainingWith(method);
-  final completed = await showPaymentProcessDialog(
+  final paymentProcess = ref.read(paymentProcessControllerProvider.notifier);
+  await showPaymentProcessDialog(
     context: context,
     amount: total,
   );
-  if (!context.mounted) return;
-  ref.read(paymentProcessControllerProvider.notifier).reset();
-  if (!completed) {
-    ref.read(paymentControllerProvider.notifier).clear(method);
-    return;
-  }
-  await showThankYouDialog(context: context);
-  if (!context.mounted) return;
-  ref.read(paymentControllerProvider.notifier).reset();
-  ref.read(sessionControllerProvider.notifier).reset();
-  context.go(AppRoutes.home);
+  paymentProcess.reset();
 }

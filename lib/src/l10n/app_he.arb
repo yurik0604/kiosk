@@ -39,18 +39,39 @@
   "checkout": "תשלום",
   "cancelSessionTitle": "לבטל את הקנייה?",
   "cancelSessionBody": "התיק יתרוקן ותחזרו למסך הפתיחה.",
-  "confirmQtyTitle": "אישור כמות פריטים",
+  "confirmQtyTitle": "אישור התיק שלכם",
   "confirmQtyBody": "{count, plural, =1{ודאו שיש פריט אחד בסל לפני התשלום.} two{ודאו שיש {count} פריטים בסל לפני התשלום.} other{ודאו שיש {count} פריטים בסל לפני התשלום.}}",
   "@confirmQtyBody": {
     "placeholders": {
       "count": {"type": "int"}
     }
   },
+  "confirmQtyItemsSection": "פריטים",
+  "confirmQtyItemsLabel": "{count, plural, =0{אין פריטים} =1{פריט אחד לאימות} two{{count} פריטים לאימות} other{{count} פריטים לאימות}}",
+  "@confirmQtyItemsLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyBagsSection": "שקיות קנייה",
+  "confirmQtyBagsLabel": "{count, plural, =1{שקית אחת נוספה} two{{count} שקיות נוספו} other{{count} שקיות נוספו}}",
+  "@confirmQtyBagsLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyNoBagsTitle": "לא נוספה שקית",
+  "confirmQtyNoBagsBody": "לא הוספתם שקית להזמנה.",
+  "confirmQtyNoBagsYes": "הוסף",
+  "confirmQtyNoBagsNo": "לא, להמשיך",
   "confirmQtyConfirm": "אישור והמשך לתשלום",
   "confirmQtyBack": "חזרה לבדיקה",
   "keepShopping": "להמשיך בקנייה",
   "cancelSession": "בטלו את הקנייה",
   "removeFromBag": "הסירו מהתיק",
+  "removeFromBagTitle": "להסיר את הפריט?",
+  "removeFromBagBody": "הפריט הזה יוסר מהתיק שלכם.",
+  "removeFromBagConfirm": "הסר פריט",
   "size": "מידה {size}",
   "@size": {
     "placeholders": {
@@ -152,5 +173,97 @@
   "loginSigningIn": "מתחבר…",
   "loginEmailRequired": "נא להזין אימייל",
   "loginPasswordRequired": "נא להזין סיסמה",
-  "logout": "התנתקות"
+  "logout": "התנתקות",
+  "memberLookupTitle": "האם אתם חברי מועדון?",
+  "memberLookupSubtitle": "הזינו מספר טלפון או מספר חבר כדי ליהנות מההטבות — או דלגו והמשיכו כאורח.",
+  "memberInputPlaceholder": "טלפון או מספר חבר",
+  "memberSkip": "דלג",
+  "memberNext": "הבא",
+  "memberLooking": "בודק את חברותך…",
+  "memberNotFoundTitle": "לא הצלחנו לאתר חבר מועדון",
+  "memberNotFoundBody": "לא נמצא חבר מועדון עבור „{query}”. אנא בדקו את המספר שוב, או המשיכו כאורח.",
+  "@memberNotFoundBody": {
+    "placeholders": {
+      "query": {"type": "String"}
+    }
+  },
+  "memberRetry": "נסה שוב",
+  "memberAttachedTitle": "ברוך שובך, {name}!",
+  "@memberAttachedTitle": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberAttachedBody": "החברות שלך צורפה לעסקה זו בהצלחה.",
+  "memberContinue": "המשך",
+  "memberWelcome": "שלום, {name}",
+  "@memberWelcome": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberTierLabel": "חבר {tier}",
+  "@memberTierLabel": {
+    "placeholders": {
+      "tier": {"type": "String"}
+    }
+  },
+  "memberTierGold": "זהב",
+  "memberTierSilver": "כסף",
+  "memberTierPlatinum": "פלטינה",
+  "memberTierStandard": "חבר",
+  "memberBenefitDiscountLabel": "הנחה של {percent}%",
+  "@memberBenefitDiscountLabel": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "memberBenefitDiscountDescription": "מוחל אוטומטית על כל פריט",
+  "memberDiscountLineLabel": "הנחת חבר ({percent}%)",
+  "@memberDiscountLineLabel": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "memberDiscountShort": "הנחת חבר",
+  "saleDiscountShort": "הנחת מבצע",
+  "memberBenefitFreeAlterationsLabel": "תיקוני חינם",
+  "memberBenefitFreeAlterationsDescription": "על כל פריט במחיר מלא",
+  "memberBenefitBirthdayGiftLabel": "מתנת יום הולדת",
+  "memberBenefitBirthdayGiftDescription": "הפתעה בחודש יום ההולדת שלך",
+  "memberBenefitEarlyAccessLabel": "גישה מוקדמת",
+  "memberBenefitEarlyAccessDescription": "קולקציות חדשות 24 שעות לפני ההשקה לציבור",
+  "idleWarningTitle": "עדיין כאן?",
+  "idleWarningBody": "לא זוהתה פעילות במשך זמן מה. הקישו על הכפתור למטה כדי להמשיך לקנות, אחרת הסשן יסתיים אוטומטית.",
+  "idleWarningCta": "המשך קניות",
+  "bagTileTitle": "צריך שקית?",
+  "bagTileSubtitle": "הקישו להוספה",
+  "bagTileFromPrice": "החל מ-{amount}",
+  "@bagTileFromPrice": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "bagTileInCartBadge": "{count, plural, =1{1 בעגלה} other{{count} בעגלה}}",
+  "@bagTileInCartBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "bagTileEach": "{amount} ליחידה",
+  "@bagTileEach": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "bagTileDecrease": "הסר שקית",
+  "bagTileIncrease": "הוסף שקית",
+  "bagPickerTitle": "בחרו שקית",
+  "bagPickerSubtitle": "ניתן להוסיף כמה שצריך — הקישו על הכפתורים + ו-−.",
+  "bagPickerDone": "סיום",
+  "bagPickerClose": "סגור",
+  "bagSmallName": "שקית קניות קטנה",
+  "bagSmallDescription": "שקית קומפקטית — מושלמת לפריט או שניים.",
+  "bagLargeName": "שקית קניות גדולה",
+  "bagLargeDescription": "שקית מרווחת עם ידיות מחוזקות."
 }

@@ -76,10 +76,6 @@ class _PaymentProcessDialogState extends ConsumerState<_PaymentProcessDialog> {
           next.status == PaymentTransactionStatus.approved) {
         HapticFeedback.mediumImpact();
       }
-      if (prev?.status != PaymentTransactionStatus.completed &&
-          next.status == PaymentTransactionStatus.completed) {
-        if (mounted) Navigator.of(context).pop(true);
-      }
     });
 
     return Dialog(
@@ -87,26 +83,30 @@ class _PaymentProcessDialogState extends ConsumerState<_PaymentProcessDialog> {
       insetPadding: const EdgeInsets.all(KioskTokens.spaceL),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 560),
-        child: AnimatedSize(
-          duration: KioskTokens.motionMedium,
-          curve: Curves.easeOutCubic,
-          alignment: Alignment.topCenter,
-          child: _StageContainer(
-            child: AnimatedSwitcher(
-              duration: KioskTokens.motionMedium,
-              switchInCurve: Curves.easeOutCubic,
-              switchOutCurve: Curves.easeInCubic,
-              transitionBuilder: (child, animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: ScaleTransition(
-                    scale: Tween<double>(begin: 0.92, end: 1).animate(animation),
-                    child: child,
-                  ),
-                );
-              },
-              child: _buildStage(context, txn, l10n, fmt),
-            ),
+        child: _StageContainer(
+          child: AnimatedSwitcher(
+            duration: KioskTokens.motionMedium,
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: ScaleTransition(
+                  scale: Tween<double>(begin: 0.94, end: 1).animate(animation),
+                  child: child,
+                ),
+              );
+            },
+            layoutBuilder: (currentChild, previousChildren) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  ...previousChildren,
+                  ?currentChild,
+                ],
+              );
+            },
+            child: _buildStage(context, txn, l10n, fmt),
           ),
         ),
       ),
@@ -145,6 +145,7 @@ class _PaymentProcessDialogState extends ConsumerState<_PaymentProcessDialog> {
             ref
                 .read(paymentProcessControllerProvider.notifier)
                 .acknowledgeReceipt();
+            if (mounted) Navigator.of(context).pop(true);
           },
         );
       case PaymentTransactionStatus.declined:
@@ -179,6 +180,7 @@ class _StageContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.fromLTRB(
         KioskTokens.spaceL,
         KioskTokens.spaceXL,
@@ -223,6 +225,7 @@ class _TerminalStageState extends State<_TerminalStage>
     with TickerProviderStateMixin {
   late final AnimationController _pulse;
   late final AnimationController _tap;
+  late final AnimationController _progress;
 
   @override
   void initState() {
@@ -235,12 +238,29 @@ class _TerminalStageState extends State<_TerminalStage>
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     )..repeat(reverse: true);
+    _progress = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1600),
+    );
+    if (widget.processing) _progress.repeat();
+  }
+
+  @override
+  void didUpdateWidget(covariant _TerminalStage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.processing && !oldWidget.processing) {
+      _progress.repeat();
+    } else if (!widget.processing && oldWidget.processing) {
+      _progress.stop();
+      _progress.reset();
+    }
   }
 
   @override
   void dispose() {
     _pulse.dispose();
     _tap.dispose();
+    _progress.dispose();
     super.dispose();
   }
 
@@ -248,24 +268,35 @@ class _TerminalStageState extends State<_TerminalStage>
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = widget.l10n;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return SizedBox(
+      height: 540,
+      child: Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(
-          height: 200,
-          child: _AnimatedTerminalIcon(
-            pulse: _pulse,
-            tap: _tap,
-            processing: widget.processing,
+        // Flexible (up to 260) so the icon yields height when the text/amount
+        // block is tall — e.g. at larger locale font scales — instead of the
+        // fixed-height stage overflowing at the bottom.
+        Flexible(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 260),
+            child: _AnimatedTerminalIcon(
+              pulse: _pulse,
+              tap: _tap,
+              processing: widget.processing,
+            ),
           ),
         ),
-        const SizedBox(height: KioskTokens.spaceL),
+        const SizedBox(height: KioskTokens.spaceXL),
         Text(
           widget.processing
               ? l10n.paymentTerminalProcessing
               : l10n.paymentTerminalTitle,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium,
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: scheme.onSurface,
+          ),
         ),
         const SizedBox(height: KioskTokens.spaceS),
         Text(
@@ -275,38 +306,68 @@ class _TerminalStageState extends State<_TerminalStage>
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: scheme.onSurfaceVariant,
+                height: 1.4,
               ),
         ),
         const SizedBox(height: KioskTokens.spaceL),
+        if (widget.processing) ...[
+          _DashedProgress(
+            progress: _progress,
+            color: scheme.primary,
+            active: true,
+          ),
+          const SizedBox(height: KioskTokens.spaceL),
+        ],
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: KioskTokens.spaceL,
-            vertical: KioskTokens.spaceM,
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(
+            KioskTokens.spaceL,
+            KioskTokens.spaceM,
+            KioskTokens.spaceL,
+            KioskTokens.spaceM,
           ),
           decoration: BoxDecoration(
-            color: scheme.surfaceContainer,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                scheme.primary.withValues(alpha: 0.10),
+                scheme.primary.withValues(alpha: 0.04),
+              ],
+            ),
             borderRadius: BorderRadius.circular(KioskTokens.radiusMedium),
+            border: Border.all(
+              color: scheme.primary.withValues(alpha: 0.18),
+              width: 1.5,
+            ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                l10n.paymentTerminalAmount,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                l10n.paymentTerminalAmount.toUpperCase(),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       color: scheme.onSurfaceVariant,
+                      letterSpacing: 1.4,
+                      fontWeight: FontWeight.w700,
                     ),
               ),
+              const SizedBox(height: 2),
               Text(
                 widget.fmt.format(widget.amount),
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
                       color: scheme.primary,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.6,
+                      height: 1.0,
                     ),
               ),
             ],
           ),
         ),
       ],
+    ),
     );
   }
 }
@@ -330,47 +391,48 @@ class _AnimatedTerminalIcon extends StatelessWidget {
       builder: (context, _) {
         final p = pulse.value;
         final t = Curves.easeInOut.transform(tap.value);
+        final cardLift = processing ? 0.0 : (-18 * t);
         return Stack(
           alignment: Alignment.center,
+          clipBehavior: Clip.none,
           children: [
+            // Outer soft glow.
+            Container(
+              width: 240,
+              height: 240,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    scheme.primary.withValues(alpha: 0.16),
+                    scheme.primary.withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
+            ),
+            // NFC ripple waves above the card.
             for (var i = 0; i < 3; i++)
-              Opacity(
-                opacity: (1 - ((p + i / 3) % 1)).clamp(0.0, 1.0) * 0.35,
-                child: Container(
-                  width: 80 + ((p + i / 3) % 1) * 140,
-                  height: 80 + ((p + i / 3) % 1) * 140,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: scheme.primary,
-                      width: 2,
-                    ),
+              Positioned(
+                top: 8 + ((p + i / 3) % 1) * -40,
+                child: Opacity(
+                  opacity: (1 - ((p + i / 3) % 1)).clamp(0.0, 1.0) * 0.55,
+                  child: _NfcArc(
+                    color: scheme.primary,
+                    width: 70 + ((p + i / 3) % 1) * 60,
                   ),
                 ),
               ),
-            Container(
-              width: 132,
-              height: 132,
-              decoration: BoxDecoration(
-                color: scheme.primaryContainer,
-                shape: BoxShape.circle,
-              ),
+            // Payment terminal (bottom slab).
+            Positioned(
+              bottom: 6,
+              child: _TerminalDevice(scheme: scheme, processing: processing),
             ),
-            if (processing)
-              SizedBox(
-                width: 110,
-                height: 110,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: scheme.primary,
-                ),
-              ),
+            // Floating credit card.
             Transform.translate(
-              offset: Offset(0, -10 * t),
-              child: Icon(
-                Icons.credit_card_rounded,
-                size: 72,
-                color: scheme.primary,
+              offset: Offset(0, -56 + cardLift),
+              child: Transform.rotate(
+                angle: processing ? 0 : -0.06 + 0.02 * t,
+                child: _CreditCard(scheme: scheme),
               ),
             ),
           ],
@@ -378,6 +440,273 @@ class _AnimatedTerminalIcon extends StatelessWidget {
       },
     );
   }
+}
+
+class _CreditCard extends StatelessWidget {
+  const _CreditCard({required this.scheme});
+
+  final ColorScheme scheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      height: 124,
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            scheme.primary,
+            Color.lerp(scheme.primary, Colors.black, 0.35) ?? scheme.primary,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: scheme.primary.withValues(alpha: 0.45),
+            blurRadius: 28,
+            spreadRadius: -4,
+            offset: const Offset(0, 14),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Chip.
+              Container(
+                width: 32,
+                height: 24,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFFFFD86B), Color(0xFFB68A2C)],
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      height: 1,
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      color: Colors.black.withValues(alpha: 0.2),
+                    ),
+                    Container(
+                      height: 1,
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      color: Colors.black.withValues(alpha: 0.2),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.wifi_rounded,
+                size: 22,
+                color: Colors.white.withValues(alpha: 0.85),
+              ),
+            ],
+          ),
+          const Spacer(),
+          // Faux card number.
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (var i = 0; i < 4; i++)
+                Container(
+                  width: 30,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.85),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'KIOSK PAY',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.9),
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TerminalDevice extends StatelessWidget {
+  const _TerminalDevice({required this.scheme, required this.processing});
+
+  final ColorScheme scheme;
+  final bool processing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 140,
+      height: 48,
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(14),
+          bottom: Radius.circular(6),
+        ),
+        border: Border.all(
+          color: scheme.outlineVariant,
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.10),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 88,
+            height: 6,
+            decoration: BoxDecoration(
+              color: processing
+                  ? scheme.primary
+                  : scheme.primary.withValues(alpha: 0.35),
+              borderRadius: BorderRadius.circular(3),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              5,
+              (i) => Container(
+                width: 6,
+                height: 6,
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                decoration: BoxDecoration(
+                  color: scheme.outline.withValues(alpha: 0.5),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DashedProgress extends StatelessWidget {
+  const _DashedProgress({
+    required this.progress,
+    required this.color,
+    required this.active,
+  });
+
+  final Animation<double> progress;
+  final Color color;
+  final bool active;
+
+  static const int segments = 4;
+
+  @override
+  Widget build(BuildContext context) {
+    final mutedColor = color.withValues(alpha: 0.18);
+    return AnimatedBuilder(
+      animation: progress,
+      builder: (context, _) {
+        final activeIndex = active
+            ? (progress.value * segments).floor().clamp(0, segments - 1)
+            : -1;
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(segments, (i) {
+            final isOn = i == activeIndex;
+            return Padding(
+              padding: EdgeInsets.only(
+                left: i == 0 ? 0 : 4,
+                right: i == segments - 1 ? 0 : 4,
+              ),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                curve: Curves.easeOut,
+                width: 42,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: isOn ? color : mutedColor,
+                  borderRadius: BorderRadius.circular(3),
+                  boxShadow: isOn
+                      ? [
+                          BoxShadow(
+                            color: color.withValues(alpha: 0.45),
+                            blurRadius: 8,
+                            spreadRadius: -1,
+                          ),
+                        ]
+                      : null,
+                ),
+              ),
+            );
+          }),
+        );
+      },
+    );
+  }
+}
+
+class _NfcArc extends StatelessWidget {
+  const _NfcArc({required this.color, required this.width});
+
+  final Color color;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(width, width * 0.55),
+      painter: _NfcArcPainter(color: color),
+    );
+  }
+}
+
+class _NfcArcPainter extends CustomPainter {
+  _NfcArcPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5
+      ..strokeCap = StrokeCap.round;
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height * 2);
+    canvas.drawArc(rect, math.pi * 1.15, math.pi * 0.7, false, paint);
+  }
+
+  @override
+  bool shouldRepaint(_NfcArcPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 class _SuccessStage extends StatefulWidget {
@@ -422,8 +751,11 @@ class _SuccessStageState extends State<_SuccessStage>
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = widget.l10n;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return SizedBox(
+      height: 540,
+      child: Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
           height: 200,
@@ -513,6 +845,7 @@ class _SuccessStageState extends State<_SuccessStage>
               ),
         ),
       ],
+    ),
     );
   }
 }
@@ -630,114 +963,123 @@ class _ReceiptStageState extends State<_ReceiptStage>
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = widget.l10n;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return SizedBox(
+      height: 540,
+      child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(
-          height: 200,
-          child: AnimatedBuilder(
-            animation: _slide,
-            builder: (context, _) {
-              final t = Curves.easeInOut.transform(_slide.value);
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Printer body
-                  Positioned(
-                    top: 60,
-                    child: Container(
-                      width: 180,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: scheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(
-                          KioskTokens.radiusMedium,
-                        ),
-                        border: Border.all(
-                          color: scheme.outlineVariant,
-                          width: 2,
-                        ),
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: 140,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: scheme.outline,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Receipt paper sliding out
-                  Positioned(
-                    top: 60 - (40 * t),
-                    child: Container(
-                      width: 130,
-                      height: 70 + (60 * t),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(4),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.12),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            for (var i = 0; i < 5; i++) ...[
-                              Container(
-                                height: 4,
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 200,
+                child: AnimatedBuilder(
+                  animation: _slide,
+                  builder: (context, _) {
+                    final t = Curves.easeInOut.transform(_slide.value);
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Printer body
+                        Positioned(
+                          top: 60,
+                          child: Container(
+                            width: 180,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: scheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(
+                                KioskTokens.radiusMedium,
+                              ),
+                              border: Border.all(
+                                color: scheme.outlineVariant,
+                                width: 2,
+                              ),
+                            ),
+                            child: Center(
+                              child: Container(
+                                width: 140,
+                                height: 6,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade400,
-                                  borderRadius: BorderRadius.circular(2),
+                                  color: scheme.outline,
+                                  borderRadius: BorderRadius.circular(4),
                                 ),
                               ),
-                              const SizedBox(height: 6),
-                            ],
-                          ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: KioskTokens.spaceL),
-        Text(
-          l10n.paymentReceiptTitle,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        const SizedBox(height: KioskTokens.spaceS),
-        Text(
-          l10n.paymentReceiptBody,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: scheme.onSurfaceVariant,
+                        // Receipt paper sliding out
+                        Positioned(
+                          top: 60 - (40 * t),
+                          child: Container(
+                            width: 130,
+                            height: 70 + (60 * t),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(4),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.12),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.stretch,
+                                children: [
+                                  for (var i = 0; i < 5; i++) ...[
+                                    Container(
+                                      height: 4,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade400,
+                                        borderRadius:
+                                            BorderRadius.circular(2),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
-        ),
-        const SizedBox(height: KioskTokens.spaceL),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton.icon(
-            onPressed: widget.onFinish,
-            icon: const Icon(Icons.check_rounded),
-            label: Text(l10n.paymentFinish),
+              const SizedBox(height: KioskTokens.spaceL),
+              Text(
+                l10n.paymentReceiptTitle,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: KioskTokens.spaceS),
+              Text(
+                l10n.paymentReceiptBody,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
           ),
+        ),
+        FilledButton.icon(
+          onPressed: widget.onFinish,
+          icon: const Icon(Icons.check_rounded),
+          label: Text(l10n.paymentFinish),
         ),
       ],
+    ),
     );
   }
 }

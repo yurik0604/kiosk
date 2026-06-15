@@ -86,7 +86,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     _LogoMark(color: scheme.primary),
                     const SizedBox(height: KioskTokens.spaceL),
                     Text(
-                      AppLocalizations.of(context).appName,
+                      AppLocalizations.of(context).appName.toUpperCase(),
                       style: Theme.of(context).textTheme.displayMedium,
                     ),
                     const SizedBox(height: KioskTokens.spaceXS),
@@ -134,7 +134,7 @@ class _LogoMark extends StatelessWidget {
         ],
       ),
       child: const Icon(
-        Icons.checkroom_rounded,
+        Icons.point_of_sale_rounded,
         size: 88,
         color: Colors.white,
       ),

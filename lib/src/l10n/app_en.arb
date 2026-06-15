@@ -39,18 +39,39 @@
   "checkout": "Checkout",
   "cancelSessionTitle": "Cancel session?",
   "cancelSessionBody": "Your bag will be emptied and you will return to the welcome screen.",
-  "confirmQtyTitle": "Confirm item count",
+  "confirmQtyTitle": "Confirm your bag",
   "confirmQtyBody": "{count, plural, =1{Please verify 1 item is in the bin before paying.} other{Please verify {count} items are in the bin before paying.}}",
   "@confirmQtyBody": {
     "placeholders": {
       "count": {"type": "int"}
     }
   },
+  "confirmQtyItemsSection": "Items",
+  "confirmQtyItemsLabel": "{count, plural, =0{No items} =1{1 item to verify} other{{count} items to verify}}",
+  "@confirmQtyItemsLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyBagsSection": "Shopping bags",
+  "confirmQtyBagsLabel": "{count, plural, =1{1 bag added} other{{count} bags added}}",
+  "@confirmQtyBagsLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyNoBagsTitle": "No bag added",
+  "confirmQtyNoBagsBody": "You haven't added a bag to your order.",
+  "confirmQtyNoBagsYes": "Add",
+  "confirmQtyNoBagsNo": "No, continue",
   "confirmQtyConfirm": "Confirm and pay",
   "confirmQtyBack": "Back to review",
   "keepShopping": "Keep shopping",
   "cancelSession": "Cancel session",
   "removeFromBag": "Remove from bag",
+  "removeFromBagTitle": "Remove this item?",
+  "removeFromBagBody": "This piece will be taken out of your bag.",
+  "removeFromBagConfirm": "Remove item",
   "size": "Size {size}",
   "@size": {
     "placeholders": {
@@ -152,5 +173,97 @@
   "loginSigningIn": "Signing in…",
   "loginEmailRequired": "Please enter your email",
   "loginPasswordRequired": "Please enter your password",
-  "logout": "Sign out"
+  "logout": "Sign out",
+  "memberLookupTitle": "Are you a club member?",
+  "memberLookupSubtitle": "Enter your phone number or member ID to enjoy your benefits — or skip and continue as a guest.",
+  "memberInputPlaceholder": "Phone or member ID",
+  "memberSkip": "Skip",
+  "memberNext": "Next",
+  "memberLooking": "Checking your membership…",
+  "memberNotFoundTitle": "We couldn't find that member",
+  "memberNotFoundBody": "No club member matched “{query}”. Please double-check the number, or continue as a guest.",
+  "@memberNotFoundBody": {
+    "placeholders": {
+      "query": {"type": "String"}
+    }
+  },
+  "memberRetry": "Try again",
+  "memberAttachedTitle": "Welcome back, {name}!",
+  "@memberAttachedTitle": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberAttachedBody": "Your membership has been attached to this session.",
+  "memberContinue": "Continue",
+  "memberWelcome": "Welcome, {name}",
+  "@memberWelcome": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberTierLabel": "{tier} member",
+  "@memberTierLabel": {
+    "placeholders": {
+      "tier": {"type": "String"}
+    }
+  },
+  "memberTierGold": "Gold",
+  "memberTierSilver": "Silver",
+  "memberTierPlatinum": "Platinum",
+  "memberTierStandard": "Member",
+  "memberBenefitDiscountLabel": "{percent}% discount",
+  "@memberBenefitDiscountLabel": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "memberBenefitDiscountDescription": "Applied automatically to every item",
+  "memberDiscountLineLabel": "Member discount ({percent}%)",
+  "@memberDiscountLineLabel": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "memberDiscountShort": "Member discount",
+  "saleDiscountShort": "Sale discount",
+  "memberBenefitFreeAlterationsLabel": "Free alterations",
+  "memberBenefitFreeAlterationsDescription": "On every full-price piece",
+  "memberBenefitBirthdayGiftLabel": "Birthday gift",
+  "memberBenefitBirthdayGiftDescription": "A surprise during your birthday month",
+  "memberBenefitEarlyAccessLabel": "Early access",
+  "memberBenefitEarlyAccessDescription": "New collections 24h before public release",
+  "idleWarningTitle": "Are you still there?",
+  "idleWarningBody": "We haven't detected any activity for a while. Press the button below to continue shopping, otherwise the session will end automatically.",
+  "idleWarningCta": "Continue shopping",
+  "bagTileTitle": "Need a bag?",
+  "bagTileSubtitle": "Tap to add",
+  "bagTileFromPrice": "From {amount}",
+  "@bagTileFromPrice": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "bagTileInCartBadge": "{count, plural, =1{1 in cart} other{{count} in cart}}",
+  "@bagTileInCartBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "bagTileEach": "{amount} each",
+  "@bagTileEach": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "bagTileDecrease": "Remove one bag",
+  "bagTileIncrease": "Add one bag",
+  "bagPickerTitle": "Choose a bag",
+  "bagPickerSubtitle": "Add as many as you like — tap the + and − buttons.",
+  "bagPickerDone": "Done",
+  "bagPickerClose": "Close",
+  "bagSmallName": "Small Shopping Bag",
+  "bagSmallDescription": "Compact reusable bag — perfect for one or two pieces.",
+  "bagLargeName": "Large Shopping Bag",
+  "bagLargeDescription": "Roomy reusable bag with reinforced handles."
 }

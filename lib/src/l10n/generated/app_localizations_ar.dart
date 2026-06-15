@@ -111,7 +111,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancelSessionBody => 'ستُفرَّغ حقيبتك وستعود إلى شاشة الترحيب.';
 
   @override
-  String get confirmQtyTitle => 'تأكيد عدد القطع';
+  String get confirmQtyTitle => 'تأكيد طلبك';
 
   @override
   String confirmQtyBody(int count) {
@@ -129,6 +129,54 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get confirmQtyItemsSection => 'القطع';
+
+  @override
+  String confirmQtyItemsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count قطعة للتحقق',
+      many: '$count قطعة للتحقق',
+      few: '$count قطع للتحقق',
+      two: 'قطعتان للتحقق',
+      one: 'قطعة واحدة للتحقق',
+      zero: 'لا توجد قطع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyBagsSection => 'أكياس التسوق';
+
+  @override
+  String confirmQtyBagsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count كيس أُضيف',
+      many: '$count كيسًا أُضيف',
+      few: '$count أكياس أُضيفت',
+      two: 'كيسان أُضيفا',
+      one: 'كيس واحد أُضيف',
+      zero: 'لا توجد أكياس',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyNoBagsTitle => 'لم يُضَف كيس';
+
+  @override
+  String get confirmQtyNoBagsBody => 'لم تضف كيسًا إلى طلبك.';
+
+  @override
+  String get confirmQtyNoBagsYes => 'إضافة';
+
+  @override
+  String get confirmQtyNoBagsNo => 'لا، متابعة';
+
+  @override
   String get confirmQtyConfirm => 'تأكيد ومتابعة الدفع';
 
   @override
@@ -142,6 +190,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get removeFromBag => 'إزالة من الحقيبة';
+
+  @override
+  String get removeFromBagTitle => 'هل تريد إزالة هذا العنصر؟';
+
+  @override
+  String get removeFromBagBody => 'ستتم إزالة هذه القطعة من حقيبتك.';
+
+  @override
+  String get removeFromBagConfirm => 'إزالة العنصر';
 
   @override
   String size(String size) {
@@ -356,4 +413,174 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get logout => 'تسجيل الخروج';
+
+  @override
+  String get memberLookupTitle => 'هل أنت عضو في النادي؟';
+
+  @override
+  String get memberLookupSubtitle =>
+      'أدخل رقم هاتفك أو رقم العضوية للاستفادة من المزايا — أو تخطَّ وتابع كزائر.';
+
+  @override
+  String get memberInputPlaceholder => 'الهاتف أو رقم العضوية';
+
+  @override
+  String get memberSkip => 'تخطّي';
+
+  @override
+  String get memberNext => 'التالي';
+
+  @override
+  String get memberLooking => 'جارٍ التحقق من عضويتك…';
+
+  @override
+  String get memberNotFoundTitle => 'تعذّر العثور على هذا العضو';
+
+  @override
+  String memberNotFoundBody(String query) {
+    return 'لم نعثر على أي عضو مطابق لـ ”$query“. يرجى التحقق من الرقم، أو المتابعة كزائر.';
+  }
+
+  @override
+  String get memberRetry => 'حاول مرة أخرى';
+
+  @override
+  String memberAttachedTitle(String name) {
+    return 'مرحبًا بعودتك يا $name!';
+  }
+
+  @override
+  String get memberAttachedBody => 'تم ربط عضويتك بهذه الجلسة بنجاح.';
+
+  @override
+  String get memberContinue => 'متابعة';
+
+  @override
+  String memberWelcome(String name) {
+    return 'أهلاً، $name';
+  }
+
+  @override
+  String memberTierLabel(String tier) {
+    return 'عضو $tier';
+  }
+
+  @override
+  String get memberTierGold => 'ذهبي';
+
+  @override
+  String get memberTierSilver => 'فضي';
+
+  @override
+  String get memberTierPlatinum => 'بلاتيني';
+
+  @override
+  String get memberTierStandard => 'عضو';
+
+  @override
+  String memberBenefitDiscountLabel(String percent) {
+    return 'خصم $percent%';
+  }
+
+  @override
+  String get memberBenefitDiscountDescription => 'يُطبَّق تلقائيًا على كل قطعة';
+
+  @override
+  String memberDiscountLineLabel(String percent) {
+    return 'خصم العضوية ($percent%)';
+  }
+
+  @override
+  String get memberDiscountShort => 'خصم العضوية';
+
+  @override
+  String get saleDiscountShort => 'خصم العرض';
+
+  @override
+  String get memberBenefitFreeAlterationsLabel => 'تعديلات مجانية';
+
+  @override
+  String get memberBenefitFreeAlterationsDescription =>
+      'على كل قطعة بالسعر الكامل';
+
+  @override
+  String get memberBenefitBirthdayGiftLabel => 'هدية عيد الميلاد';
+
+  @override
+  String get memberBenefitBirthdayGiftDescription =>
+      'مفاجأة خلال شهر عيد ميلادك';
+
+  @override
+  String get memberBenefitEarlyAccessLabel => 'وصول مبكر';
+
+  @override
+  String get memberBenefitEarlyAccessDescription =>
+      'تشكيلات جديدة قبل 24 ساعة من الإصدار العام';
+
+  @override
+  String get idleWarningTitle => 'هل ما زلت هنا؟';
+
+  @override
+  String get idleWarningBody =>
+      'لم نلاحظ أي نشاط منذ فترة. اضغط على الزر أدناه لمتابعة التسوّق، وإلا ستنتهي الجلسة تلقائيًا.';
+
+  @override
+  String get idleWarningCta => 'متابعة التسوّق';
+
+  @override
+  String get bagTileTitle => 'هل تحتاج إلى كيس؟';
+
+  @override
+  String get bagTileSubtitle => 'اضغط للإضافة';
+
+  @override
+  String bagTileFromPrice(String amount) {
+    return 'ابتداءً من $amount';
+  }
+
+  @override
+  String bagTileInCartBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count في السلة',
+      one: '1 في السلة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bagTileEach(String amount) {
+    return '$amount للقطعة';
+  }
+
+  @override
+  String get bagTileDecrease => 'إزالة كيس';
+
+  @override
+  String get bagTileIncrease => 'إضافة كيس';
+
+  @override
+  String get bagPickerTitle => 'اختَر كيسًا';
+
+  @override
+  String get bagPickerSubtitle => 'أضف بقدر ما تشاء — اضغط على زرّي + و−.';
+
+  @override
+  String get bagPickerDone => 'تم';
+
+  @override
+  String get bagPickerClose => 'إغلاق';
+
+  @override
+  String get bagSmallName => 'كيس تسوّق صغير';
+
+  @override
+  String get bagSmallDescription => 'كيس مدمج — مثالي لقطعة أو قطعتين.';
+
+  @override
+  String get bagLargeName => 'كيس تسوّق كبير';
+
+  @override
+  String get bagLargeDescription => 'كيس واسع مع مقابض مقوّاة.';
 }

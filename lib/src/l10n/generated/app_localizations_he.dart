@@ -108,7 +108,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get cancelSessionBody => 'התיק יתרוקן ותחזרו למסך הפתיחה.';
 
   @override
-  String get confirmQtyTitle => 'אישור כמות פריטים';
+  String get confirmQtyTitle => 'אישור התיק שלכם';
 
   @override
   String confirmQtyBody(int count) {
@@ -121,6 +121,49 @@ class AppLocalizationsHe extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get confirmQtyItemsSection => 'פריטים';
+
+  @override
+  String confirmQtyItemsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count פריטים לאימות',
+      two: '$count פריטים לאימות',
+      one: 'פריט אחד לאימות',
+      zero: 'אין פריטים',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyBagsSection => 'שקיות קנייה';
+
+  @override
+  String confirmQtyBagsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count שקיות נוספו',
+      two: '$count שקיות נוספו',
+      one: 'שקית אחת נוספה',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyNoBagsTitle => 'לא נוספה שקית';
+
+  @override
+  String get confirmQtyNoBagsBody => 'לא הוספתם שקית להזמנה.';
+
+  @override
+  String get confirmQtyNoBagsYes => 'הוסף';
+
+  @override
+  String get confirmQtyNoBagsNo => 'לא, להמשיך';
 
   @override
   String get confirmQtyConfirm => 'אישור והמשך לתשלום';
@@ -136,6 +179,15 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get removeFromBag => 'הסירו מהתיק';
+
+  @override
+  String get removeFromBagTitle => 'להסיר את הפריט?';
+
+  @override
+  String get removeFromBagBody => 'הפריט הזה יוסר מהתיק שלכם.';
+
+  @override
+  String get removeFromBagConfirm => 'הסר פריט';
 
   @override
   String size(String size) {
@@ -344,4 +396,174 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get logout => 'התנתקות';
+
+  @override
+  String get memberLookupTitle => 'האם אתם חברי מועדון?';
+
+  @override
+  String get memberLookupSubtitle =>
+      'הזינו מספר טלפון או מספר חבר כדי ליהנות מההטבות — או דלגו והמשיכו כאורח.';
+
+  @override
+  String get memberInputPlaceholder => 'טלפון או מספר חבר';
+
+  @override
+  String get memberSkip => 'דלג';
+
+  @override
+  String get memberNext => 'הבא';
+
+  @override
+  String get memberLooking => 'בודק את חברותך…';
+
+  @override
+  String get memberNotFoundTitle => 'לא הצלחנו לאתר חבר מועדון';
+
+  @override
+  String memberNotFoundBody(String query) {
+    return 'לא נמצא חבר מועדון עבור „$query”. אנא בדקו את המספר שוב, או המשיכו כאורח.';
+  }
+
+  @override
+  String get memberRetry => 'נסה שוב';
+
+  @override
+  String memberAttachedTitle(String name) {
+    return 'ברוך שובך, $name!';
+  }
+
+  @override
+  String get memberAttachedBody => 'החברות שלך צורפה לעסקה זו בהצלחה.';
+
+  @override
+  String get memberContinue => 'המשך';
+
+  @override
+  String memberWelcome(String name) {
+    return 'שלום, $name';
+  }
+
+  @override
+  String memberTierLabel(String tier) {
+    return 'חבר $tier';
+  }
+
+  @override
+  String get memberTierGold => 'זהב';
+
+  @override
+  String get memberTierSilver => 'כסף';
+
+  @override
+  String get memberTierPlatinum => 'פלטינה';
+
+  @override
+  String get memberTierStandard => 'חבר';
+
+  @override
+  String memberBenefitDiscountLabel(String percent) {
+    return 'הנחה של $percent%';
+  }
+
+  @override
+  String get memberBenefitDiscountDescription => 'מוחל אוטומטית על כל פריט';
+
+  @override
+  String memberDiscountLineLabel(String percent) {
+    return 'הנחת חבר ($percent%)';
+  }
+
+  @override
+  String get memberDiscountShort => 'הנחת חבר';
+
+  @override
+  String get saleDiscountShort => 'הנחת מבצע';
+
+  @override
+  String get memberBenefitFreeAlterationsLabel => 'תיקוני חינם';
+
+  @override
+  String get memberBenefitFreeAlterationsDescription => 'על כל פריט במחיר מלא';
+
+  @override
+  String get memberBenefitBirthdayGiftLabel => 'מתנת יום הולדת';
+
+  @override
+  String get memberBenefitBirthdayGiftDescription =>
+      'הפתעה בחודש יום ההולדת שלך';
+
+  @override
+  String get memberBenefitEarlyAccessLabel => 'גישה מוקדמת';
+
+  @override
+  String get memberBenefitEarlyAccessDescription =>
+      'קולקציות חדשות 24 שעות לפני ההשקה לציבור';
+
+  @override
+  String get idleWarningTitle => 'עדיין כאן?';
+
+  @override
+  String get idleWarningBody =>
+      'לא זוהתה פעילות במשך זמן מה. הקישו על הכפתור למטה כדי להמשיך לקנות, אחרת הסשן יסתיים אוטומטית.';
+
+  @override
+  String get idleWarningCta => 'המשך קניות';
+
+  @override
+  String get bagTileTitle => 'צריך שקית?';
+
+  @override
+  String get bagTileSubtitle => 'הקישו להוספה';
+
+  @override
+  String bagTileFromPrice(String amount) {
+    return 'החל מ-$amount';
+  }
+
+  @override
+  String bagTileInCartBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count בעגלה',
+      one: '1 בעגלה',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bagTileEach(String amount) {
+    return '$amount ליחידה';
+  }
+
+  @override
+  String get bagTileDecrease => 'הסר שקית';
+
+  @override
+  String get bagTileIncrease => 'הוסף שקית';
+
+  @override
+  String get bagPickerTitle => 'בחרו שקית';
+
+  @override
+  String get bagPickerSubtitle =>
+      'ניתן להוסיף כמה שצריך — הקישו על הכפתורים + ו-−.';
+
+  @override
+  String get bagPickerDone => 'סיום';
+
+  @override
+  String get bagPickerClose => 'סגור';
+
+  @override
+  String get bagSmallName => 'שקית קניות קטנה';
+
+  @override
+  String get bagSmallDescription => 'שקית קומפקטית — מושלמת לפריט או שניים.';
+
+  @override
+  String get bagLargeName => 'שקית קניות גדולה';
+
+  @override
+  String get bagLargeDescription => 'שקית מרווחת עם ידיות מחוזקות.';
 }

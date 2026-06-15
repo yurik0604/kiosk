@@ -69,12 +69,12 @@ class _ThankYouDialogState extends State<_ThankYouDialog>
     super.dispose();
   }
 
-  static const Color _heartRed = Color(0xFFE53935);
-  static const Color _heartRedDark = Color(0xFFB71C1C);
-
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final heartColor = scheme.primary;
+    final heartColorDark =
+        Color.lerp(scheme.primary, Colors.black, 0.35) ?? scheme.primary;
     final l10n = AppLocalizations.of(context);
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -120,7 +120,7 @@ class _ThankYouDialogState extends State<_ThankYouDialog>
                         for (var i = 0; i < 3; i++)
                           _Ripple(
                             progress: ((_shimmer.value + i / 3) % 1),
-                            color: _heartRed,
+                            color: heartColor,
                           ),
                         Transform.scale(
                           scale: 0.85 + 0.15 * ring,
@@ -129,7 +129,7 @@ class _ThankYouDialogState extends State<_ThankYouDialog>
                             height: 180,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: _heartRed.withValues(alpha: 0.12),
+                              color: heartColor.withValues(alpha: 0.12),
                             ),
                           ),
                         ),
@@ -140,14 +140,14 @@ class _ThankYouDialogState extends State<_ThankYouDialog>
                             height: 140,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              gradient: const LinearGradient(
+                              gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [_heartRed, _heartRedDark],
+                                colors: [heartColor, heartColorDark],
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: _heartRed.withValues(alpha: 0.50),
+                                  color: heartColor.withValues(alpha: 0.50),
                                   blurRadius: 36,
                                   spreadRadius: 4,
                                 ),

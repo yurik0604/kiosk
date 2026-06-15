@@ -9,10 +9,21 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../auth/data/auth_controller.dart';
+import '../member/presentation/member_lookup_dialog.dart';
 import '../rfid/data/rfid_reader_controller.dart';
 import '../rfid/domain/reader_status.dart';
 import '../session/data/session_controller.dart';
 import 'widgets/ad_card.dart';
+
+Future<void> _startSession(BuildContext context, WidgetRef ref) async {
+  // Reset before showing the modal so the member controller is in a clean
+  // state for the new shopper.
+  ref.read(sessionControllerProvider.notifier).reset();
+  final outcome = await showMemberLookupDialog(context);
+  if (!context.mounted) return;
+  if (outcome == MemberLookupOutcome.cancelled) return;
+  context.go(AppRoutes.session);
+}
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -42,10 +53,7 @@ class HomeScreen extends ConsumerWidget {
                 const SizedBox(height: KioskTokens.spaceL),
                 _StartSessionButton(
                   label: l10n.clickToStart,
-                  onTap: () {
-                    ref.read(sessionControllerProvider.notifier).reset();
-                    context.go(AppRoutes.session);
-                  },
+                  onTap: () => _startSession(context, ref),
                   color: scheme.primary,
                 ),
                 const SizedBox(height: KioskTokens.spaceL),
@@ -83,7 +91,7 @@ class _TopBar extends ConsumerWidget {
             borderRadius: BorderRadius.circular(KioskTokens.radiusMedium),
           ),
           child: Icon(
-            Icons.checkroom_rounded,
+            Icons.point_of_sale_rounded,
             color: scheme.onPrimaryContainer,
             size: 32,
           ),
@@ -95,7 +103,7 @@ class _TopBar extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                l10n.appName,
+                l10n.appName.toUpperCase(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -198,100 +206,120 @@ class _Hero extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: AlignmentDirectional.topStart,
-          end: AlignmentDirectional.bottomEnd,
-          colors: [scheme.primary, scheme.secondary],
-        ),
-        borderRadius: BorderRadius.circular(KioskTokens.radiusLarge),
-      ),
-      child: Stack(
-        children: [
-          PositionedDirectional(
-            end: -40,
-            bottom: -40,
-            child: Container(
-              width: 240,
-              height: 240,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Scale the hero typography to the card so it never overflows on
+        // small (mobile) screens while keeping its impact on large kiosks.
+        final side = constraints.biggest.shortestSide;
+        final titleSize = (side * 0.16).clamp(32.0, 96.0);
+        final subtitleSize = (side * 0.06).clamp(16.0, 38.0);
+        return Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: AlignmentDirectional.topStart,
+              end: AlignmentDirectional.bottomEnd,
+              colors: [scheme.primary, scheme.secondary],
             ),
+            borderRadius: BorderRadius.circular(KioskTokens.radiusLarge),
           ),
-          PositionedDirectional(
-            end: 60,
-            top: -60,
-            child: Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.06),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(KioskTokens.spaceL),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: KioskTokens.spaceS,
-                    vertical: KioskTokens.spaceXS,
-                  ),
+          child: Stack(
+            children: [
+              PositionedDirectional(
+                end: -40,
+                bottom: -40,
+                child: Container(
+                  width: 240,
+                  height: 240,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius:
-                        BorderRadius.circular(KioskTokens.radiusSmall),
-                  ),
-                  child: Text(
-                    l10n.heroEyebrow,
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: Colors.white,
-                          fontSize: 13,
-                          letterSpacing: 2,
-                        ),
+                    color: Colors.white.withValues(alpha: 0.08),
+                    shape: BoxShape.circle,
                   ),
                 ),
-                Column(
+              ),
+              PositionedDirectional(
+                end: 60,
+                top: -60,
+                child: Container(
+                  width: 160,
+                  height: 160,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.06),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(KioskTokens.spaceL),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      l10n.heroTitle,
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayLarge
-                          ?.copyWith(
-                            color: Colors.white,
-                            fontSize: 54,
-                            height: 1.05,
-                          ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: KioskTokens.spaceS,
+                        vertical: KioskTokens.spaceXS,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius:
+                            BorderRadius.circular(KioskTokens.radiusSmall),
+                      ),
+                      child: Text(
+                        l10n.heroEyebrow,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              color: Colors.white,
+                              fontSize: 13,
+                              letterSpacing: 2,
+                            ),
+                      ),
                     ),
-                    const SizedBox(height: KioskTokens.spaceS),
-                    Text(
-                      l10n.heroSubtitle,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontWeight: FontWeight.w400,
-                            height: 1.35,
+                    Flexible(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Text(
+                                l10n.heroTitle,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displayLarge
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: titleSize,
+                                      fontWeight: FontWeight.w800,
+                                      height: 1.05,
+                                    ),
+                              ),
+                            ),
                           ),
+                          const SizedBox(height: KioskTokens.spaceS),
+                          Text(
+                            l10n.heroSubtitle,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: subtitleSize,
+                                  height: 1.35,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

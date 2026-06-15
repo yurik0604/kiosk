@@ -1,11 +1,15 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
+import '../../../core/format/currency.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../catalog/domain/barcode.dart';
-import '../../catalog/domain/product.dart';
+import '../data/session_controller.dart';
 import '../domain/cart_item.dart';
 import 'product_card.dart';
 
@@ -89,7 +93,7 @@ class _ProductDetailsSheet extends StatelessWidget {
                     ),
                     sliver: SliverToBoxAdapter(
                       child: _DetailsBody(
-                        product: p,
+                        item: item,
                         fmt: fmt,
                         l10n: l10n,
                       ),
@@ -99,8 +103,11 @@ class _ProductDetailsSheet extends StatelessWidget {
               ),
             ),
             _Actions(
-              onRemove: () {
+              onRemove: () async {
                 HapticFeedback.mediumImpact();
+                final confirmed = await _confirmRemove(context);
+                if (!confirmed) return;
+                if (!context.mounted) return;
                 Navigator.of(context).pop();
                 onRemove();
               },
@@ -180,18 +187,19 @@ class _HeroImage extends StatelessWidget {
 
 class _DetailsBody extends StatelessWidget {
   const _DetailsBody({
-    required this.product,
+    required this.item,
     required this.fmt,
     required this.l10n,
   });
 
-  final Product product;
+  final CartItem item;
   final NumberFormat fmt;
   final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final product = item.product;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,7 +254,7 @@ class _DetailsBody extends StatelessWidget {
           },
         ),
         const SizedBox(height: KioskTokens.spaceL),
-        _PriceBlock(product: product, fmt: fmt, l10n: l10n),
+        _PriceBlock(item: item, l10n: l10n),
         const SizedBox(height: KioskTokens.spaceL),
         Wrap(
           spacing: KioskTokens.spaceS,
@@ -330,20 +338,127 @@ class _DetailsBody extends StatelessWidget {
   }
 }
 
-class _PriceBlock extends StatelessWidget {
-  const _PriceBlock({
-    required this.product,
-    required this.fmt,
-    required this.l10n,
-  });
-  final Product product;
-  final NumberFormat fmt;
+class _PriceBlock extends ConsumerWidget {
+  const _PriceBlock({required this.item, required this.l10n});
+  final CartItem item;
   final AppLocalizations l10n;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
-    final savings = product.originalPrice - product.price;
+    final product = item.product;
+
+    final session = ref.watch(sessionControllerProvider);
+    final memberSaves = session.memberSavingsFor(item);
+    final effectivePrice = session.effectivePriceFor(item);
+    final hasMemberDiscount = memberSaves > 0.005;
+    final saleSavings = product.originalPrice - product.price;
+
+    // Compose amounts with the mark-free, symbol-left formatter so the ₪ and the
+    // minus sit consistently and RTL can't reorder them — same as the card and
+    // the totals panel.
+    final cf = CurrencyFormat.of(
+      Localizations.localeOf(context).toString(),
+      name: 'ILS',
+    );
+
+    final titleLarge = Theme.of(context).textTheme.titleLarge;
+    final labelStyle = titleLarge?.copyWith(
+      color: scheme.onSurfaceVariant,
+      fontWeight: FontWeight.w600,
+    );
+    final originalStyle = titleLarge?.copyWith(
+      color: scheme.onSurfaceVariant,
+      fontWeight: FontWeight.w700,
+      decoration: TextDecoration.lineThrough,
+    );
+    final discountLabelStyle = titleLarge?.copyWith(
+      color: scheme.error,
+      fontWeight: FontWeight.w600,
+    );
+    final discountAmountStyle = titleLarge?.copyWith(
+      color: scheme.error,
+      fontWeight: FontWeight.w700,
+    );
+    final totalLabelStyle = Theme.of(context).textTheme.headlineSmall?.copyWith(
+      color: scheme.onSurface,
+      fontWeight: FontWeight.w800,
+    );
+    final totalStyle = Theme.of(context).textTheme.displaySmall?.copyWith(
+      color: scheme.primary,
+      fontWeight: FontWeight.w800,
+      letterSpacing: -0.5,
+    );
+
+    // Discount context, if any (sale takes precedence over member pricing).
+    final ({
+      String label,
+      double original,
+      double savings,
+      TextStyle? labelStyle,
+    })? discount;
+    if (product.isOnSale) {
+      discount = (
+        label: l10n.saleDiscountShort,
+        original: product.originalPrice,
+        savings: saleSavings,
+        labelStyle: discountLabelStyle,
+      );
+    } else if (hasMemberDiscount) {
+      discount = (
+        label: l10n.memberDiscountLineLabel(
+          _formatPercent(session.memberDiscountPct),
+        ),
+        original: product.price,
+        savings: memberSaves,
+        labelStyle: discountLabelStyle,
+      );
+    } else {
+      discount = null;
+    }
+
+    // Dot-align the original and the discount: their whole parts share a fixed
+    // slot (the wider of the two, measured) so the decimal points stack — dot
+    // below dot — exactly like the product card. The emphasized total sits on
+    // its own row below.
+    final children = <Widget>[];
+    if (discount != null) {
+      final originalParts = cf.formatParts(discount.original);
+      final savingsParts = cf.formatParts(discount.savings, signed: true);
+      final wholeSlot = math.max(
+        Currency.measureWidth(originalParts.whole, originalStyle),
+        Currency.measureWidth(savingsParts.whole, discountAmountStyle),
+      );
+      children.add(
+        _priceLine(
+          label: Text(l10n.subtotal, style: labelStyle),
+          amount: Currency.decimalAligned(
+            originalParts,
+            style: originalStyle,
+            wholeSlot: wholeSlot,
+          ),
+        ),
+      );
+      children.add(const SizedBox(height: KioskTokens.spaceXS));
+      children.add(
+        _priceLine(
+          label: Text(discount.label, style: discount.labelStyle),
+          amount: Currency.decimalAligned(
+            savingsParts,
+            style: discountAmountStyle,
+            wholeSlot: wholeSlot,
+          ),
+        ),
+      );
+      children.add(const SizedBox(height: KioskTokens.spaceS));
+    }
+    children.add(
+      _priceLine(
+        label: Text(l10n.total, style: totalLabelStyle),
+        amount: Currency.amount(cf.format(effectivePrice), style: totalStyle),
+      ),
+    );
+
     return Container(
       padding: const EdgeInsets.all(KioskTokens.spaceM),
       decoration: BoxDecoration(
@@ -352,80 +467,22 @@ class _PriceBlock extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (product.isOnSale) ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  l10n.subtotal,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-                Text(
-                  fmt.format(product.originalPrice),
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w700,
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                ),
-              ],
-            ),
-            const SizedBox(height: KioskTokens.spaceXS),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  l10n.youSavedLabel,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: scheme.error,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-                Text(
-                  '-${fmt.format(savings)}',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: scheme.error,
-                        fontWeight: FontWeight.w700,
-                      ),
-                ),
-              ],
-            ),
-            const SizedBox(height: KioskTokens.spaceS),
-          ],
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                l10n.total,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: scheme.onSurface,
-                      fontWeight: FontWeight.w800,
-                    ),
-              ),
-              Text(
-                fmt.format(product.price),
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      color: scheme.primary,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.5,
-                    ),
-              ),
-            ],
-          ),
-        ],
+        children: children,
       ),
     );
   }
+
+  /// One label ↔ amount line: the label hugs the panel's start edge (right in
+  /// RTL) and the amount its end edge (left in RTL), the amounts sharing a
+  /// trailing edge so their decimal points align down the column.
+  Widget _priceLine({required Widget label, required Widget amount}) => Row(
+    crossAxisAlignment: CrossAxisAlignment.baseline,
+    textBaseline: TextBaseline.alphabetic,
+    children: [
+      Expanded(child: label),
+      amount,
+    ],
+  );
 }
 
 class _DetailChip extends StatelessWidget {
@@ -552,42 +609,41 @@ class _Actions extends StatelessWidget {
           SizedBox(
             width: KioskTokens.touchTargetLarge,
             height: KioskTokens.touchTargetLarge,
-            child: FilledButton(
+            // Destructive delete: outlined (not solid) red so it reads as the
+            // dangerous action without out-shouting the safe "keep shopping"
+            // primary beside it.
+            child: OutlinedButton(
               onPressed: onRemove,
-              style: FilledButton.styleFrom(
-                backgroundColor: scheme.error,
-                foregroundColor: Colors.white,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: scheme.error,
+                side: BorderSide(color: scheme.error, width: 2),
                 padding: EdgeInsets.zero,
               ),
               child: Tooltip(
                 message: l10n.removeFromBag,
-                child: const Icon(
+                child: Icon(
                   Icons.delete_outline_rounded,
                   size: 28,
-                  color: Colors.white,
+                  color: scheme.error,
                 ),
               ),
             ),
           ),
           const SizedBox(width: KioskTokens.spaceS),
           Expanded(
-            child: FilledButton.icon(
+            child: FilledButton(
               onPressed: onClose,
-              icon: const Icon(
-                Icons.check_rounded,
-                size: 28,
-                color: Colors.white,
+              style: FilledButton.styleFrom(
+                foregroundColor: Colors.white,
               ),
-              label: Text(
+              child: Text(
                 l10n.keepShopping.toUpperCase(),
                 style: theme.textTheme.titleLarge?.copyWith(
                       color: Colors.white,
+                      fontSize: 26,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.5,
                     ),
-              ),
-              style: FilledButton.styleFrom(
-                foregroundColor: Colors.white,
               ),
             ),
           ),
@@ -595,4 +651,116 @@ class _Actions extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<bool> _confirmRemove(BuildContext context) async {
+  final l10n = AppLocalizations.of(context);
+  final result = await showDialog<bool>(
+    context: context,
+    barrierColor: Colors.black54,
+    builder: (ctx) {
+      final theme = Theme.of(ctx);
+      final scheme = theme.colorScheme;
+      return Dialog(
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: KioskTokens.spaceXL,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(KioskTokens.radiusLarge),
+        ),
+        backgroundColor: scheme.surface,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 720),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              KioskTokens.spaceXL,
+              KioskTokens.spaceXL,
+              KioskTokens.spaceXL,
+              KioskTokens.spaceL,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  width: 96,
+                  height: 96,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: scheme.errorContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.delete_outline_rounded,
+                    size: 48,
+                    color: scheme.onErrorContainer,
+                  ),
+                ),
+                const SizedBox(height: KioskTokens.spaceL),
+                Text(
+                  l10n.removeFromBagTitle,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.displaySmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: scheme.onSurface,
+                      ),
+                ),
+                const SizedBox(height: KioskTokens.spaceM),
+                Text(
+                  l10n.removeFromBagBody,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                        height: 1.4,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+                const SizedBox(height: KioskTokens.spaceXL),
+                FilledButton.icon(
+                  onPressed: () => Navigator.of(ctx).pop(false),
+                  icon: const Icon(Icons.arrow_back_rounded,
+                      size: 28, color: Colors.white),
+                  label: Text(
+                    l10n.keepShopping.toUpperCase(),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                        ),
+                  ),
+                  style: FilledButton.styleFrom(
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: KioskTokens.spaceS),
+                FilledButton.icon(
+                  onPressed: () => Navigator.of(ctx).pop(true),
+                  icon: const Icon(Icons.delete_outline_rounded,
+                      size: 28, color: Colors.white),
+                  label: Text(
+                    l10n.removeFromBagConfirm.toUpperCase(),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                        ),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: scheme.error,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+  return result ?? false;
+}
+
+String _formatPercent(double pct) {
+  if (pct == pct.roundToDouble()) return pct.toStringAsFixed(0);
+  return pct.toStringAsFixed(1);
 }

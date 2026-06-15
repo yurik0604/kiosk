@@ -110,7 +110,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Корзина будет очищена, и вы вернётесь на главный экран.';
 
   @override
-  String get confirmQtyTitle => 'Подтвердите количество';
+  String get confirmQtyTitle => 'Подтвердите заказ';
 
   @override
   String confirmQtyBody(int count) {
@@ -126,6 +126,51 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get confirmQtyItemsSection => 'Товары';
+
+  @override
+  String confirmQtyItemsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count товара к проверке',
+      many: '$count товаров к проверке',
+      few: '$count товара к проверке',
+      one: '1 товар к проверке',
+      zero: 'Нет товаров',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyBagsSection => 'Пакеты';
+
+  @override
+  String confirmQtyBagsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Добавлено $count пакета',
+      many: 'Добавлено $count пакетов',
+      few: 'Добавлено $count пакета',
+      one: 'Добавлен 1 пакет',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyNoBagsTitle => 'Пакет не добавлен';
+
+  @override
+  String get confirmQtyNoBagsBody => 'В заказе нет пакета.';
+
+  @override
+  String get confirmQtyNoBagsYes => 'Добавить';
+
+  @override
+  String get confirmQtyNoBagsNo => 'Нет, продолжить';
+
+  @override
   String get confirmQtyConfirm => 'Подтвердить и оплатить';
 
   @override
@@ -139,6 +184,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get removeFromBag => 'Удалить из корзины';
+
+  @override
+  String get removeFromBagTitle => 'Удалить этот товар?';
+
+  @override
+  String get removeFromBagBody => 'Эта вещь будет убрана из корзины.';
+
+  @override
+  String get removeFromBagConfirm => 'Удалить товар';
 
   @override
   String size(String size) {
@@ -352,4 +406,178 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get logout => 'Выйти';
+
+  @override
+  String get memberLookupTitle => 'Вы участник клуба?';
+
+  @override
+  String get memberLookupSubtitle =>
+      'Введите номер телефона или номер участника, чтобы воспользоваться привилегиями — или пропустите и продолжите как гость.';
+
+  @override
+  String get memberInputPlaceholder => 'Телефон или номер участника';
+
+  @override
+  String get memberSkip => 'Пропустить';
+
+  @override
+  String get memberNext => 'Далее';
+
+  @override
+  String get memberLooking => 'Проверяем ваше членство…';
+
+  @override
+  String get memberNotFoundTitle => 'Участник не найден';
+
+  @override
+  String memberNotFoundBody(String query) {
+    return 'Не удалось найти участника по запросу «$query». Проверьте номер или продолжите как гость.';
+  }
+
+  @override
+  String get memberRetry => 'Попробовать снова';
+
+  @override
+  String memberAttachedTitle(String name) {
+    return 'С возвращением, $name!';
+  }
+
+  @override
+  String get memberAttachedBody =>
+      'Ваша карта участника привязана к этой сессии.';
+
+  @override
+  String get memberContinue => 'Продолжить';
+
+  @override
+  String memberWelcome(String name) {
+    return 'Здравствуйте, $name';
+  }
+
+  @override
+  String memberTierLabel(String tier) {
+    return 'Участник $tier';
+  }
+
+  @override
+  String get memberTierGold => 'Gold';
+
+  @override
+  String get memberTierSilver => 'Silver';
+
+  @override
+  String get memberTierPlatinum => 'Platinum';
+
+  @override
+  String get memberTierStandard => 'Участник';
+
+  @override
+  String memberBenefitDiscountLabel(String percent) {
+    return 'Скидка $percent%';
+  }
+
+  @override
+  String get memberBenefitDiscountDescription =>
+      'Применяется автоматически к каждому товару';
+
+  @override
+  String memberDiscountLineLabel(String percent) {
+    return 'Скидка участника ($percent%)';
+  }
+
+  @override
+  String get memberDiscountShort => 'Скидка участника';
+
+  @override
+  String get saleDiscountShort => 'Скидка акции';
+
+  @override
+  String get memberBenefitFreeAlterationsLabel => 'Бесплатная подгонка';
+
+  @override
+  String get memberBenefitFreeAlterationsDescription =>
+      'На каждую вещь по полной цене';
+
+  @override
+  String get memberBenefitBirthdayGiftLabel => 'Подарок ко дню рождения';
+
+  @override
+  String get memberBenefitBirthdayGiftDescription =>
+      'Сюрприз в месяц вашего дня рождения';
+
+  @override
+  String get memberBenefitEarlyAccessLabel => 'Ранний доступ';
+
+  @override
+  String get memberBenefitEarlyAccessDescription =>
+      'Новые коллекции на 24 часа раньше публичного релиза';
+
+  @override
+  String get idleWarningTitle => 'Вы ещё здесь?';
+
+  @override
+  String get idleWarningBody =>
+      'Мы не зафиксировали активности некоторое время. Нажмите кнопку ниже, чтобы продолжить покупки, иначе сессия завершится автоматически.';
+
+  @override
+  String get idleWarningCta => 'Продолжить покупки';
+
+  @override
+  String get bagTileTitle => 'Нужен пакет?';
+
+  @override
+  String get bagTileSubtitle => 'Нажмите, чтобы добавить';
+
+  @override
+  String bagTileFromPrice(String amount) {
+    return 'От $amount';
+  }
+
+  @override
+  String bagTileInCartBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count в корзине',
+      few: '$count в корзине',
+      one: '1 в корзине',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bagTileEach(String amount) {
+    return '$amount за штуку';
+  }
+
+  @override
+  String get bagTileDecrease => 'Убрать пакет';
+
+  @override
+  String get bagTileIncrease => 'Добавить пакет';
+
+  @override
+  String get bagPickerTitle => 'Выберите пакет';
+
+  @override
+  String get bagPickerSubtitle =>
+      'Добавьте сколько нужно — используйте кнопки + и −.';
+
+  @override
+  String get bagPickerDone => 'Готово';
+
+  @override
+  String get bagPickerClose => 'Закрыть';
+
+  @override
+  String get bagSmallName => 'Маленький пакет';
+
+  @override
+  String get bagSmallDescription => 'Компактный пакет — для одной-двух вещей.';
+
+  @override
+  String get bagLargeName => 'Большой пакет';
+
+  @override
+  String get bagLargeDescription => 'Просторный пакет с усиленными ручками.';
 }

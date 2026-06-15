@@ -39,18 +39,39 @@
   "checkout": "الدفع",
   "cancelSessionTitle": "إلغاء الجلسة؟",
   "cancelSessionBody": "ستُفرَّغ حقيبتك وستعود إلى شاشة الترحيب.",
-  "confirmQtyTitle": "تأكيد عدد القطع",
+  "confirmQtyTitle": "تأكيد طلبك",
   "confirmQtyBody": "{count, plural, zero{يرجى التحقق من عدم وجود قطع قبل الدفع.} one{يرجى التحقق من وجود قطعة واحدة في الصندوق قبل الدفع.} two{يرجى التحقق من وجود قطعتين في الصندوق قبل الدفع.} few{يرجى التحقق من وجود {count} قطع في الصندوق قبل الدفع.} many{يرجى التحقق من وجود {count} قطعة في الصندوق قبل الدفع.} other{يرجى التحقق من وجود {count} قطعة في الصندوق قبل الدفع.}}",
   "@confirmQtyBody": {
     "placeholders": {
       "count": {"type": "int"}
     }
   },
+  "confirmQtyItemsSection": "القطع",
+  "confirmQtyItemsLabel": "{count, plural, zero{لا توجد قطع} one{قطعة واحدة للتحقق} two{قطعتان للتحقق} few{{count} قطع للتحقق} many{{count} قطعة للتحقق} other{{count} قطعة للتحقق}}",
+  "@confirmQtyItemsLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyBagsSection": "أكياس التسوق",
+  "confirmQtyBagsLabel": "{count, plural, zero{لا توجد أكياس} one{كيس واحد أُضيف} two{كيسان أُضيفا} few{{count} أكياس أُضيفت} many{{count} كيسًا أُضيف} other{{count} كيس أُضيف}}",
+  "@confirmQtyBagsLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyNoBagsTitle": "لم يُضَف كيس",
+  "confirmQtyNoBagsBody": "لم تضف كيسًا إلى طلبك.",
+  "confirmQtyNoBagsYes": "إضافة",
+  "confirmQtyNoBagsNo": "لا، متابعة",
   "confirmQtyConfirm": "تأكيد ومتابعة الدفع",
   "confirmQtyBack": "العودة للمراجعة",
   "keepShopping": "متابعة التسوق",
   "cancelSession": "إلغاء الجلسة",
   "removeFromBag": "إزالة من الحقيبة",
+  "removeFromBagTitle": "هل تريد إزالة هذا العنصر؟",
+  "removeFromBagBody": "ستتم إزالة هذه القطعة من حقيبتك.",
+  "removeFromBagConfirm": "إزالة العنصر",
   "size": "المقاس {size}",
   "@size": {
     "placeholders": {
@@ -152,5 +173,97 @@
   "loginSigningIn": "جاري تسجيل الدخول…",
   "loginEmailRequired": "يرجى إدخال البريد الإلكتروني",
   "loginPasswordRequired": "يرجى إدخال كلمة المرور",
-  "logout": "تسجيل الخروج"
+  "logout": "تسجيل الخروج",
+  "memberLookupTitle": "هل أنت عضو في النادي؟",
+  "memberLookupSubtitle": "أدخل رقم هاتفك أو رقم العضوية للاستفادة من المزايا — أو تخطَّ وتابع كزائر.",
+  "memberInputPlaceholder": "الهاتف أو رقم العضوية",
+  "memberSkip": "تخطّي",
+  "memberNext": "التالي",
+  "memberLooking": "جارٍ التحقق من عضويتك…",
+  "memberNotFoundTitle": "تعذّر العثور على هذا العضو",
+  "memberNotFoundBody": "لم نعثر على أي عضو مطابق لـ ”{query}“. يرجى التحقق من الرقم، أو المتابعة كزائر.",
+  "@memberNotFoundBody": {
+    "placeholders": {
+      "query": {"type": "String"}
+    }
+  },
+  "memberRetry": "حاول مرة أخرى",
+  "memberAttachedTitle": "مرحبًا بعودتك يا {name}!",
+  "@memberAttachedTitle": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberAttachedBody": "تم ربط عضويتك بهذه الجلسة بنجاح.",
+  "memberContinue": "متابعة",
+  "memberWelcome": "أهلاً، {name}",
+  "@memberWelcome": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "memberTierLabel": "عضو {tier}",
+  "@memberTierLabel": {
+    "placeholders": {
+      "tier": {"type": "String"}
+    }
+  },
+  "memberTierGold": "ذهبي",
+  "memberTierSilver": "فضي",
+  "memberTierPlatinum": "بلاتيني",
+  "memberTierStandard": "عضو",
+  "memberBenefitDiscountLabel": "خصم {percent}%",
+  "@memberBenefitDiscountLabel": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "memberBenefitDiscountDescription": "يُطبَّق تلقائيًا على كل قطعة",
+  "memberDiscountLineLabel": "خصم العضوية ({percent}%)",
+  "@memberDiscountLineLabel": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "memberDiscountShort": "خصم العضوية",
+  "saleDiscountShort": "خصم العرض",
+  "memberBenefitFreeAlterationsLabel": "تعديلات مجانية",
+  "memberBenefitFreeAlterationsDescription": "على كل قطعة بالسعر الكامل",
+  "memberBenefitBirthdayGiftLabel": "هدية عيد الميلاد",
+  "memberBenefitBirthdayGiftDescription": "مفاجأة خلال شهر عيد ميلادك",
+  "memberBenefitEarlyAccessLabel": "وصول مبكر",
+  "memberBenefitEarlyAccessDescription": "تشكيلات جديدة قبل 24 ساعة من الإصدار العام",
+  "idleWarningTitle": "هل ما زلت هنا؟",
+  "idleWarningBody": "لم نلاحظ أي نشاط منذ فترة. اضغط على الزر أدناه لمتابعة التسوّق، وإلا ستنتهي الجلسة تلقائيًا.",
+  "idleWarningCta": "متابعة التسوّق",
+  "bagTileTitle": "هل تحتاج إلى كيس؟",
+  "bagTileSubtitle": "اضغط للإضافة",
+  "bagTileFromPrice": "ابتداءً من {amount}",
+  "@bagTileFromPrice": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "bagTileInCartBadge": "{count, plural, =1{1 في السلة} other{{count} في السلة}}",
+  "@bagTileInCartBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "bagTileEach": "{amount} للقطعة",
+  "@bagTileEach": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "bagTileDecrease": "إزالة كيس",
+  "bagTileIncrease": "إضافة كيس",
+  "bagPickerTitle": "اختَر كيسًا",
+  "bagPickerSubtitle": "أضف بقدر ما تشاء — اضغط على زرّي + و−.",
+  "bagPickerDone": "تم",
+  "bagPickerClose": "إغلاق",
+  "bagSmallName": "كيس تسوّق صغير",
+  "bagSmallDescription": "كيس مدمج — مثالي لقطعة أو قطعتين.",
+  "bagLargeName": "كيس تسوّق كبير",
+  "bagLargeDescription": "كيس واسع مع مقابض مقوّاة."
 }

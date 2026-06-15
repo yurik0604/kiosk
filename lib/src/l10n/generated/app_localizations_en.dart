@@ -108,7 +108,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your bag will be emptied and you will return to the welcome screen.';
 
   @override
-  String get confirmQtyTitle => 'Confirm item count';
+  String get confirmQtyTitle => 'Confirm your bag';
 
   @override
   String confirmQtyBody(int count) {
@@ -120,6 +120,47 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get confirmQtyItemsSection => 'Items';
+
+  @override
+  String confirmQtyItemsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items to verify',
+      one: '1 item to verify',
+      zero: 'No items',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyBagsSection => 'Shopping bags';
+
+  @override
+  String confirmQtyBagsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bags added',
+      one: '1 bag added',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyNoBagsTitle => 'No bag added';
+
+  @override
+  String get confirmQtyNoBagsBody => 'You haven\'t added a bag to your order.';
+
+  @override
+  String get confirmQtyNoBagsYes => 'Add';
+
+  @override
+  String get confirmQtyNoBagsNo => 'No, continue';
 
   @override
   String get confirmQtyConfirm => 'Confirm and pay';
@@ -135,6 +176,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get removeFromBag => 'Remove from bag';
+
+  @override
+  String get removeFromBagTitle => 'Remove this item?';
+
+  @override
+  String get removeFromBagBody => 'This piece will be taken out of your bag.';
+
+  @override
+  String get removeFromBagConfirm => 'Remove item';
 
   @override
   String size(String size) {
@@ -342,4 +392,179 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logout => 'Sign out';
+
+  @override
+  String get memberLookupTitle => 'Are you a club member?';
+
+  @override
+  String get memberLookupSubtitle =>
+      'Enter your phone number or member ID to enjoy your benefits — or skip and continue as a guest.';
+
+  @override
+  String get memberInputPlaceholder => 'Phone or member ID';
+
+  @override
+  String get memberSkip => 'Skip';
+
+  @override
+  String get memberNext => 'Next';
+
+  @override
+  String get memberLooking => 'Checking your membership…';
+
+  @override
+  String get memberNotFoundTitle => 'We couldn\'t find that member';
+
+  @override
+  String memberNotFoundBody(String query) {
+    return 'No club member matched “$query”. Please double-check the number, or continue as a guest.';
+  }
+
+  @override
+  String get memberRetry => 'Try again';
+
+  @override
+  String memberAttachedTitle(String name) {
+    return 'Welcome back, $name!';
+  }
+
+  @override
+  String get memberAttachedBody =>
+      'Your membership has been attached to this session.';
+
+  @override
+  String get memberContinue => 'Continue';
+
+  @override
+  String memberWelcome(String name) {
+    return 'Welcome, $name';
+  }
+
+  @override
+  String memberTierLabel(String tier) {
+    return '$tier member';
+  }
+
+  @override
+  String get memberTierGold => 'Gold';
+
+  @override
+  String get memberTierSilver => 'Silver';
+
+  @override
+  String get memberTierPlatinum => 'Platinum';
+
+  @override
+  String get memberTierStandard => 'Member';
+
+  @override
+  String memberBenefitDiscountLabel(String percent) {
+    return '$percent% discount';
+  }
+
+  @override
+  String get memberBenefitDiscountDescription =>
+      'Applied automatically to every item';
+
+  @override
+  String memberDiscountLineLabel(String percent) {
+    return 'Member discount ($percent%)';
+  }
+
+  @override
+  String get memberDiscountShort => 'Member discount';
+
+  @override
+  String get saleDiscountShort => 'Sale discount';
+
+  @override
+  String get memberBenefitFreeAlterationsLabel => 'Free alterations';
+
+  @override
+  String get memberBenefitFreeAlterationsDescription =>
+      'On every full-price piece';
+
+  @override
+  String get memberBenefitBirthdayGiftLabel => 'Birthday gift';
+
+  @override
+  String get memberBenefitBirthdayGiftDescription =>
+      'A surprise during your birthday month';
+
+  @override
+  String get memberBenefitEarlyAccessLabel => 'Early access';
+
+  @override
+  String get memberBenefitEarlyAccessDescription =>
+      'New collections 24h before public release';
+
+  @override
+  String get idleWarningTitle => 'Are you still there?';
+
+  @override
+  String get idleWarningBody =>
+      'We haven\'t detected any activity for a while. Press the button below to continue shopping, otherwise the session will end automatically.';
+
+  @override
+  String get idleWarningCta => 'Continue shopping';
+
+  @override
+  String get bagTileTitle => 'Need a bag?';
+
+  @override
+  String get bagTileSubtitle => 'Tap to add';
+
+  @override
+  String bagTileFromPrice(String amount) {
+    return 'From $amount';
+  }
+
+  @override
+  String bagTileInCartBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count in cart',
+      one: '1 in cart',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bagTileEach(String amount) {
+    return '$amount each';
+  }
+
+  @override
+  String get bagTileDecrease => 'Remove one bag';
+
+  @override
+  String get bagTileIncrease => 'Add one bag';
+
+  @override
+  String get bagPickerTitle => 'Choose a bag';
+
+  @override
+  String get bagPickerSubtitle =>
+      'Add as many as you like — tap the + and − buttons.';
+
+  @override
+  String get bagPickerDone => 'Done';
+
+  @override
+  String get bagPickerClose => 'Close';
+
+  @override
+  String get bagSmallName => 'Small Shopping Bag';
+
+  @override
+  String get bagSmallDescription =>
+      'Compact reusable bag — perfect for one or two pieces.';
+
+  @override
+  String get bagLargeName => 'Large Shopping Bag';
+
+  @override
+  String get bagLargeDescription =>
+      'Roomy reusable bag with reinforced handles.';
 }

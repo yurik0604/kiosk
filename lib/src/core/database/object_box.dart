@@ -8,7 +8,7 @@ import '../../features/catalog/domain/product.dart';
 class ObjectBox {
   ObjectBox._(this.store);
 
-  static const _seedVersion = 3;
+  static const _seedVersion = 7;
 
   final Store store;
   late final Box<Product> products = store.box<Product>();
@@ -173,6 +173,57 @@ class ObjectBox {
       imageUrl:
           'https://images.unsplash.com/photo-1601244005535-a48d21d951ac?w=800&q=80',
       stockQty: 9,
+    ),
+    Product(
+      // Small shopping bag — looked up by SKU 'BAG-STD-S-001' from the
+      // session footer's bag picker. Carries a real barcode so it can also
+      // be scanned at the kiosk reader if the customer grabbed one off the
+      // shelf.
+      rfidTag: 'BAG-RFID-PLACEHOLDER-S-001',
+      sku: 'BAG-STD-S-001',
+      name: 'Small Shopping Bag',
+      brand: 'Kiosk',
+      description:
+          'Compact reusable bag — perfect for one or two pieces.',
+      category: 'Bags',
+      subCategory: 'Shopping Bag',
+      gender: 'Unisex',
+      size: 'Small',
+      color: 'Natural',
+      colorHex: '#C9B89E',
+      material: 'Recycled cotton',
+      careInstructions: 'Machine wash cold.',
+      origin: '',
+      season: '',
+      priceCents: 150,
+      originalPriceCents: 0,
+      imageUrl:
+          'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&q=80',
+      stockQty: 9999,
+    ),
+    Product(
+      // Large shopping bag.
+      rfidTag: 'BAG-RFID-PLACEHOLDER-L-001',
+      sku: 'BAG-STD-L-001',
+      name: 'Large Shopping Bag',
+      brand: 'Kiosk',
+      description:
+          'Roomy reusable bag with reinforced handles — fits a full kiosk order comfortably.',
+      category: 'Bags',
+      subCategory: 'Shopping Bag',
+      gender: 'Unisex',
+      size: 'Large',
+      color: 'Natural',
+      colorHex: '#C9B89E',
+      material: 'Recycled cotton',
+      careInstructions: 'Machine wash cold.',
+      origin: '',
+      season: '',
+      priceCents: 300,
+      originalPriceCents: 0,
+      imageUrl:
+          'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&q=80',
+      stockQty: 9999,
     ),
   ];
 }

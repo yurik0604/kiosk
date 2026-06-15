@@ -279,7 +279,7 @@ abstract class AppLocalizations {
   /// No description provided for @confirmQtyTitle.
   ///
   /// In en, this message translates to:
-  /// **'Confirm item count'**
+  /// **'Confirm your bag'**
   String get confirmQtyTitle;
 
   /// No description provided for @confirmQtyBody.
@@ -287,6 +287,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{Please verify 1 item is in the bin before paying.} other{Please verify {count} items are in the bin before paying.}}'**
   String confirmQtyBody(int count);
+
+  /// No description provided for @confirmQtyItemsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get confirmQtyItemsSection;
+
+  /// No description provided for @confirmQtyItemsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No items} =1{1 item to verify} other{{count} items to verify}}'**
+  String confirmQtyItemsLabel(int count);
+
+  /// No description provided for @confirmQtyBagsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping bags'**
+  String get confirmQtyBagsSection;
+
+  /// No description provided for @confirmQtyBagsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 bag added} other{{count} bags added}}'**
+  String confirmQtyBagsLabel(int count);
+
+  /// No description provided for @confirmQtyNoBagsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No bag added'**
+  String get confirmQtyNoBagsTitle;
+
+  /// No description provided for @confirmQtyNoBagsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t added a bag to your order.'**
+  String get confirmQtyNoBagsBody;
+
+  /// No description provided for @confirmQtyNoBagsYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get confirmQtyNoBagsYes;
+
+  /// No description provided for @confirmQtyNoBagsNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No, continue'**
+  String get confirmQtyNoBagsNo;
 
   /// No description provided for @confirmQtyConfirm.
   ///
@@ -317,6 +365,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove from bag'**
   String get removeFromBag;
+
+  /// No description provided for @removeFromBagTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this item?'**
+  String get removeFromBagTitle;
+
+  /// No description provided for @removeFromBagBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This piece will be taken out of your bag.'**
+  String get removeFromBagBody;
+
+  /// No description provided for @removeFromBagConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove item'**
+  String get removeFromBagConfirm;
 
   /// No description provided for @size.
   ///
@@ -659,6 +725,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign out'**
   String get logout;
+
+  /// No description provided for @memberLookupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you a club member?'**
+  String get memberLookupTitle;
+
+  /// No description provided for @memberLookupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number or member ID to enjoy your benefits — or skip and continue as a guest.'**
+  String get memberLookupSubtitle;
+
+  /// No description provided for @memberInputPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone or member ID'**
+  String get memberInputPlaceholder;
+
+  /// No description provided for @memberSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get memberSkip;
+
+  /// No description provided for @memberNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get memberNext;
+
+  /// No description provided for @memberLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your membership…'**
+  String get memberLooking;
+
+  /// No description provided for @memberNotFoundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find that member'**
+  String get memberNotFoundTitle;
+
+  /// No description provided for @memberNotFoundBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No club member matched “{query}”. Please double-check the number, or continue as a guest.'**
+  String memberNotFoundBody(String query);
+
+  /// No description provided for @memberRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get memberRetry;
+
+  /// No description provided for @memberAttachedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back, {name}!'**
+  String memberAttachedTitle(String name);
+
+  /// No description provided for @memberAttachedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your membership has been attached to this session.'**
+  String get memberAttachedBody;
+
+  /// No description provided for @memberContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get memberContinue;
+
+  /// No description provided for @memberWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, {name}'**
+  String memberWelcome(String name);
+
+  /// No description provided for @memberTierLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{tier} member'**
+  String memberTierLabel(String tier);
+
+  /// No description provided for @memberTierGold.
+  ///
+  /// In en, this message translates to:
+  /// **'Gold'**
+  String get memberTierGold;
+
+  /// No description provided for @memberTierSilver.
+  ///
+  /// In en, this message translates to:
+  /// **'Silver'**
+  String get memberTierSilver;
+
+  /// No description provided for @memberTierPlatinum.
+  ///
+  /// In en, this message translates to:
+  /// **'Platinum'**
+  String get memberTierPlatinum;
+
+  /// No description provided for @memberTierStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get memberTierStandard;
+
+  /// No description provided for @memberBenefitDiscountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% discount'**
+  String memberBenefitDiscountLabel(String percent);
+
+  /// No description provided for @memberBenefitDiscountDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied automatically to every item'**
+  String get memberBenefitDiscountDescription;
+
+  /// No description provided for @memberDiscountLineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Member discount ({percent}%)'**
+  String memberDiscountLineLabel(String percent);
+
+  /// No description provided for @memberDiscountShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Member discount'**
+  String get memberDiscountShort;
+
+  /// No description provided for @saleDiscountShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale discount'**
+  String get saleDiscountShort;
+
+  /// No description provided for @memberBenefitFreeAlterationsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Free alterations'**
+  String get memberBenefitFreeAlterationsLabel;
+
+  /// No description provided for @memberBenefitFreeAlterationsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'On every full-price piece'**
+  String get memberBenefitFreeAlterationsDescription;
+
+  /// No description provided for @memberBenefitBirthdayGiftLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Birthday gift'**
+  String get memberBenefitBirthdayGiftLabel;
+
+  /// No description provided for @memberBenefitBirthdayGiftDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A surprise during your birthday month'**
+  String get memberBenefitBirthdayGiftDescription;
+
+  /// No description provided for @memberBenefitEarlyAccessLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Early access'**
+  String get memberBenefitEarlyAccessLabel;
+
+  /// No description provided for @memberBenefitEarlyAccessDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'New collections 24h before public release'**
+  String get memberBenefitEarlyAccessDescription;
+
+  /// No description provided for @idleWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you still there?'**
+  String get idleWarningTitle;
+
+  /// No description provided for @idleWarningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We haven\'t detected any activity for a while. Press the button below to continue shopping, otherwise the session will end automatically.'**
+  String get idleWarningBody;
+
+  /// No description provided for @idleWarningCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue shopping'**
+  String get idleWarningCta;
+
+  /// No description provided for @bagTileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Need a bag?'**
+  String get bagTileTitle;
+
+  /// No description provided for @bagTileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to add'**
+  String get bagTileSubtitle;
+
+  /// No description provided for @bagTileFromPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'From {amount}'**
+  String bagTileFromPrice(String amount);
+
+  /// No description provided for @bagTileInCartBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 in cart} other{{count} in cart}}'**
+  String bagTileInCartBadge(int count);
+
+  /// No description provided for @bagTileEach.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} each'**
+  String bagTileEach(String amount);
+
+  /// No description provided for @bagTileDecrease.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove one bag'**
+  String get bagTileDecrease;
+
+  /// No description provided for @bagTileIncrease.
+  ///
+  /// In en, this message translates to:
+  /// **'Add one bag'**
+  String get bagTileIncrease;
+
+  /// No description provided for @bagPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a bag'**
+  String get bagPickerTitle;
+
+  /// No description provided for @bagPickerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add as many as you like — tap the + and − buttons.'**
+  String get bagPickerSubtitle;
+
+  /// No description provided for @bagPickerDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get bagPickerDone;
+
+  /// No description provided for @bagPickerClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get bagPickerClose;
+
+  /// No description provided for @bagSmallName.
+  ///
+  /// In en, this message translates to:
+  /// **'Small Shopping Bag'**
+  String get bagSmallName;
+
+  /// No description provided for @bagSmallDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact reusable bag — perfect for one or two pieces.'**
+  String get bagSmallDescription;
+
+  /// No description provided for @bagLargeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Large Shopping Bag'**
+  String get bagLargeName;
+
+  /// No description provided for @bagLargeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Roomy reusable bag with reinforced handles.'**
+  String get bagLargeDescription;
 }
 
 class _AppLocalizationsDelegate
