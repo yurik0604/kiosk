@@ -34,10 +34,20 @@
       "amount": {"type": "String"}
     }
   },
+  "youSavedLabel": "وفّرت",
   "cancel": "إلغاء",
   "checkout": "الدفع",
   "cancelSessionTitle": "إلغاء الجلسة؟",
   "cancelSessionBody": "ستُفرَّغ حقيبتك وستعود إلى شاشة الترحيب.",
+  "confirmQtyTitle": "تأكيد عدد القطع",
+  "confirmQtyBody": "{count, plural, zero{يرجى التحقق من عدم وجود قطع قبل الدفع.} one{يرجى التحقق من وجود قطعة واحدة في الصندوق قبل الدفع.} two{يرجى التحقق من وجود قطعتين في الصندوق قبل الدفع.} few{يرجى التحقق من وجود {count} قطع في الصندوق قبل الدفع.} many{يرجى التحقق من وجود {count} قطعة في الصندوق قبل الدفع.} other{يرجى التحقق من وجود {count} قطعة في الصندوق قبل الدفع.}}",
+  "@confirmQtyBody": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyConfirm": "تأكيد ومتابعة الدفع",
+  "confirmQtyBack": "العودة للمراجعة",
   "keepShopping": "متابعة التسوق",
   "cancelSession": "إلغاء الجلسة",
   "removeFromBag": "إزالة من الحقيبة",

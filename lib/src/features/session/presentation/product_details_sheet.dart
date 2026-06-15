@@ -40,7 +40,7 @@ class _ProductDetailsSheet extends StatelessWidget {
     final p = item.product;
 
     return FractionallySizedBox(
-      heightFactor: 0.9,
+      heightFactor: 0.92,
       child: Container(
         decoration: BoxDecoration(
           color: scheme.surface,
@@ -63,16 +63,16 @@ class _ProductDetailsSheet extends StatelessWidget {
                           subCategory: p.subCategory,
                         ),
                         PositionedDirectional(
-                          top: 12,
+                          top: 16,
                           start: 0,
                           end: 0,
                           child: Center(
                             child: Container(
-                              width: 48,
-                              height: 5,
+                              width: 64,
+                              height: 6,
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.7),
-                                borderRadius: BorderRadius.circular(3),
+                                color: Colors.white.withValues(alpha: 0.85),
+                                borderRadius: BorderRadius.circular(999),
                               ),
                             ),
                           ),
@@ -200,14 +200,18 @@ class _DetailsBody extends StatelessWidget {
           product.brand.toUpperCase(),
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: scheme.secondary,
-                fontSize: 12,
-                letterSpacing: 1.8,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 2.2,
               ),
         ),
         const SizedBox(height: 6),
         Text(
           product.name,
-          style: Theme.of(context).textTheme.headlineLarge,
+          style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                height: 1.1,
+              ),
         ),
         const SizedBox(height: KioskTokens.spaceS),
         Builder(
@@ -219,17 +223,18 @@ class _DetailsBody extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.qr_code_2_rounded,
-                    size: 18,
+                    size: 22,
                     color: scheme.onSurfaceVariant,
                   ),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
                       ean.formatted,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: scheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
                             fontFeatures: const [FontFeature.tabularFigures()],
-                            letterSpacing: 0.5,
+                            letterSpacing: 0.6,
                           ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -240,12 +245,12 @@ class _DetailsBody extends StatelessWidget {
             );
           },
         ),
-        const SizedBox(height: KioskTokens.spaceM),
-        _PriceBlock(product: product, fmt: fmt),
-        const SizedBox(height: KioskTokens.spaceM),
+        const SizedBox(height: KioskTokens.spaceL),
+        _PriceBlock(product: product, fmt: fmt, l10n: l10n),
+        const SizedBox(height: KioskTokens.spaceL),
         Wrap(
-          spacing: KioskTokens.spaceXS,
-          runSpacing: KioskTokens.spaceXS,
+          spacing: KioskTokens.spaceS,
+          runSpacing: KioskTokens.spaceS,
           children: [
             _DetailChip(icon: Icons.straighten_rounded, label: product.size),
             _DetailChip(
@@ -275,13 +280,17 @@ class _DetailsBody extends StatelessWidget {
           ],
         ),
         const SizedBox(height: KioskTokens.spaceL),
-        Divider(color: scheme.outlineVariant, height: 1),
+        Container(
+          height: 1,
+          color: scheme.outlineVariant.withValues(alpha: 0.6),
+        ),
         const SizedBox(height: KioskTokens.spaceL),
         Text(
           product.description,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: scheme.onSurface,
                 height: 1.55,
+                fontWeight: FontWeight.w500,
               ),
         ),
         const SizedBox(height: KioskTokens.spaceL),
@@ -322,55 +331,99 @@ class _DetailsBody extends StatelessWidget {
 }
 
 class _PriceBlock extends StatelessWidget {
-  const _PriceBlock({required this.product, required this.fmt});
+  const _PriceBlock({
+    required this.product,
+    required this.fmt,
+    required this.l10n,
+  });
   final Product product;
   final NumberFormat fmt;
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      textBaseline: TextBaseline.alphabetic,
-      children: [
-        Text(
-          fmt.format(product.price),
-          style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                color: scheme.primary,
-                fontSize: 40,
-                fontWeight: FontWeight.w700,
-                height: 1.0,
-                letterSpacing: -0.8,
-              ),
-        ),
-        if (product.isOnSale) ...[
-          const SizedBox(width: KioskTokens.spaceS),
-          Text(
-            fmt.format(product.originalPrice),
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                  decoration: TextDecoration.lineThrough,
+    final savings = product.originalPrice - product.price;
+    return Container(
+      padding: const EdgeInsets.all(KioskTokens.spaceM),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(KioskTokens.radiusMedium),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (product.isOnSale) ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  l10n.subtotal,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
-          ),
-          const SizedBox(width: KioskTokens.spaceXS),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: scheme.errorContainer,
-              borderRadius: BorderRadius.circular(6),
+                Text(
+                  fmt.format(product.originalPrice),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                ),
+              ],
             ),
-            child: Text(
-              '-${product.discountPct.toStringAsFixed(0)}%',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    fontSize: 12,
-                    color: scheme.onErrorContainer,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.4,
-                  ),
+            const SizedBox(height: KioskTokens.spaceXS),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  l10n.youSavedLabel,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: scheme.error,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                Text(
+                  '-${fmt.format(savings)}',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: scheme.error,
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+              ],
             ),
+            const SizedBox(height: KioskTokens.spaceS),
+          ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                l10n.total,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: scheme.onSurface,
+                      fontWeight: FontWeight.w800,
+                    ),
+              ),
+              Text(
+                fmt.format(product.price),
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                      color: scheme.primary,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                    ),
+              ),
+            ],
           ),
         ],
-      ],
+      ),
     );
   }
 }
@@ -390,35 +443,35 @@ class _DetailChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: scheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(KioskTokens.radiusSmall),
-        border: Border.all(color: scheme.outlineVariant),
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: scheme.outlineVariant, width: 1.5),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (swatchColor != null) ...[
             Container(
-              width: 14,
-              height: 14,
+              width: 18,
+              height: 18,
               decoration: BoxDecoration(
                 color: swatchColor,
                 shape: BoxShape.circle,
                 border: Border.all(color: scheme.outlineVariant, width: 1),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
           ] else ...[
-            Icon(icon, size: 16, color: scheme.onSurfaceVariant),
-            const SizedBox(width: 8),
+            Icon(icon, size: 20, color: scheme.onSurfaceVariant),
+            const SizedBox(width: 10),
           ],
           Text(
             label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: scheme.onSurface,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                 ),
           ),
         ],
@@ -442,15 +495,17 @@ class _DetailSection extends StatelessWidget {
           title.toUpperCase(),
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: scheme.secondary,
-                fontSize: 11,
-                letterSpacing: 1.6,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 2.0,
               ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         Text(
           body,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: scheme.onSurface,
+                fontWeight: FontWeight.w500,
                 height: 1.5,
               ),
         ),
@@ -468,6 +523,7 @@ class _Actions extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -478,25 +534,38 @@ class _Actions extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: scheme.surfaceContainerHigh,
-        border: Border(
-          top: BorderSide(color: scheme.outlineVariant, width: 1),
-        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.10),
+            blurRadius: 24,
+            offset: const Offset(0, -8),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
       ),
       child: Row(
         children: [
           SizedBox(
             width: KioskTokens.touchTargetLarge,
             height: KioskTokens.touchTargetLarge,
-            child: OutlinedButton(
+            child: FilledButton(
               onPressed: onRemove,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: scheme.error,
-                side: BorderSide(color: scheme.error, width: 1.5),
+              style: FilledButton.styleFrom(
+                backgroundColor: scheme.error,
+                foregroundColor: Colors.white,
                 padding: EdgeInsets.zero,
               ),
               child: Tooltip(
                 message: l10n.removeFromBag,
-                child: const Icon(Icons.delete_outline_rounded),
+                child: const Icon(
+                  Icons.delete_outline_rounded,
+                  size: 28,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -504,8 +573,22 @@ class _Actions extends StatelessWidget {
           Expanded(
             child: FilledButton.icon(
               onPressed: onClose,
-              icon: const Icon(Icons.check_rounded),
-              label: Text(l10n.keepShopping),
+              icon: const Icon(
+                Icons.check_rounded,
+                size: 28,
+                color: Colors.white,
+              ),
+              label: Text(
+                l10n.keepShopping.toUpperCase(),
+                style: theme.textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
+                    ),
+              ),
+              style: FilledButton.styleFrom(
+                foregroundColor: Colors.white,
+              ),
             ),
           ),
         ],

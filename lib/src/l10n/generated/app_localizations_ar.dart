@@ -96,6 +96,9 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get youSavedLabel => 'وفّرت';
+
+  @override
   String get cancel => 'إلغاء';
 
   @override
@@ -106,6 +109,30 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancelSessionBody => 'ستُفرَّغ حقيبتك وستعود إلى شاشة الترحيب.';
+
+  @override
+  String get confirmQtyTitle => 'تأكيد عدد القطع';
+
+  @override
+  String confirmQtyBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'يرجى التحقق من وجود $count قطعة في الصندوق قبل الدفع.',
+      many: 'يرجى التحقق من وجود $count قطعة في الصندوق قبل الدفع.',
+      few: 'يرجى التحقق من وجود $count قطع في الصندوق قبل الدفع.',
+      two: 'يرجى التحقق من وجود قطعتين في الصندوق قبل الدفع.',
+      one: 'يرجى التحقق من وجود قطعة واحدة في الصندوق قبل الدفع.',
+      zero: 'يرجى التحقق من عدم وجود قطع قبل الدفع.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyConfirm => 'تأكيد ومتابعة الدفع';
+
+  @override
+  String get confirmQtyBack => 'العودة للمراجعة';
 
   @override
   String get keepShopping => 'متابعة التسوق';

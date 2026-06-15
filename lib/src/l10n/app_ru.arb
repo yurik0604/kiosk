@@ -34,10 +34,20 @@
       "amount": {"type": "String"}
     }
   },
+  "youSavedLabel": "Вы экономите",
   "cancel": "Отмена",
   "checkout": "К оплате",
   "cancelSessionTitle": "Отменить сессию?",
   "cancelSessionBody": "Корзина будет очищена, и вы вернётесь на главный экран.",
+  "confirmQtyTitle": "Подтвердите количество",
+  "confirmQtyBody": "{count, plural, =1{Убедитесь, что в лотке 1 товар, прежде чем оплатить.} few{Убедитесь, что в лотке {count} товара, прежде чем оплатить.} many{Убедитесь, что в лотке {count} товаров, прежде чем оплатить.} other{Убедитесь, что в лотке {count} товара, прежде чем оплатить.}}",
+  "@confirmQtyBody": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyConfirm": "Подтвердить и оплатить",
+  "confirmQtyBack": "Назад к проверке",
   "keepShopping": "Продолжить",
   "cancelSession": "Отменить сессию",
   "removeFromBag": "Удалить из корзины",

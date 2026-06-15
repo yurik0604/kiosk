@@ -94,6 +94,9 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get youSavedLabel => 'Вы экономите';
+
+  @override
   String get cancel => 'Отмена';
 
   @override
@@ -105,6 +108,28 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get cancelSessionBody =>
       'Корзина будет очищена, и вы вернётесь на главный экран.';
+
+  @override
+  String get confirmQtyTitle => 'Подтвердите количество';
+
+  @override
+  String confirmQtyBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Убедитесь, что в лотке $count товара, прежде чем оплатить.',
+      many: 'Убедитесь, что в лотке $count товаров, прежде чем оплатить.',
+      few: 'Убедитесь, что в лотке $count товара, прежде чем оплатить.',
+      one: 'Убедитесь, что в лотке 1 товар, прежде чем оплатить.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyConfirm => 'Подтвердить и оплатить';
+
+  @override
+  String get confirmQtyBack => 'Назад к проверке';
 
   @override
   String get keepShopping => 'Продолжить';

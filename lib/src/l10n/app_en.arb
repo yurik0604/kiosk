@@ -34,10 +34,20 @@
       "amount": {"type": "String"}
     }
   },
+  "youSavedLabel": "You saved",
   "cancel": "Cancel",
   "checkout": "Checkout",
   "cancelSessionTitle": "Cancel session?",
   "cancelSessionBody": "Your bag will be emptied and you will return to the welcome screen.",
+  "confirmQtyTitle": "Confirm item count",
+  "confirmQtyBody": "{count, plural, =1{Please verify 1 item is in the bin before paying.} other{Please verify {count} items are in the bin before paying.}}",
+  "@confirmQtyBody": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyConfirm": "Confirm and pay",
+  "confirmQtyBack": "Back to review",
   "keepShopping": "Keep shopping",
   "cancelSession": "Cancel session",
   "removeFromBag": "Remove from bag",

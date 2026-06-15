@@ -9,8 +9,8 @@ import '../../catalog/domain/product.dart';
 import '../domain/cart_item.dart';
 import 'product_details_sheet.dart';
 
-const double _kCardHeight = 180;
-const double _kImageWidth = 150;
+const double _kCardHeight = 200;
+const double _kImageWidth = 160;
 
 class ProductCard extends StatelessWidget {
   const ProductCard({super.key, required this.item, required this.onRemove});
@@ -27,14 +27,28 @@ class ProductCard extends StatelessWidget {
     );
     final p = item.product;
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
-        color: scheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(KioskTokens.radiusMedium),
+        borderRadius: BorderRadius.circular(KioskTokens.radiusLarge),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 18,
+            spreadRadius: 0,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 4,
+            spreadRadius: 0,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
-      clipBehavior: Clip.antiAlias,
       child: Material(
-        color: Colors.transparent,
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(KioskTokens.radiusLarge),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: () {
             HapticFeedback.selectionClick();
@@ -80,7 +94,7 @@ class _ProductBody extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
           child: Column(
@@ -94,21 +108,22 @@ class _ProductBody extends StatelessWidget {
                     product.brand.toUpperCase(),
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           color: scheme.secondary,
-                          fontSize: 12,
-                          letterSpacing: 1.8,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 2.2,
                         ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     product.name,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
                           height: 1.15,
                         ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: KioskTokens.spaceXS),
                   Builder(
                     builder: (context) {
                       final ean = Ean13.fromSku(product.sku);
@@ -118,7 +133,7 @@ class _ProductBody extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.qr_code_2_rounded,
-                              size: 16,
+                              size: 20,
                               color: scheme.onSurfaceVariant,
                             ),
                             const SizedBox(width: 6),
@@ -127,13 +142,13 @@ class _ProductBody extends StatelessWidget {
                                 ean.formatted,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyMedium
+                                    .titleMedium
                                     ?.copyWith(
                                       color: scheme.onSurfaceVariant,
                                       fontFeatures: const [
                                         FontFeature.tabularFigures(),
                                       ],
-                                      letterSpacing: 0.5,
+                                      letterSpacing: 0.6,
                                     ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -146,10 +161,10 @@ class _ProductBody extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: KioskTokens.spaceXS),
+              const SizedBox(height: KioskTokens.spaceS),
               Wrap(
-                spacing: 6,
-                runSpacing: 6,
+                spacing: KioskTokens.spaceXS,
+                runSpacing: KioskTokens.spaceXS,
                 children: [
                   _InfoChip(
                     icon: Icons.straighten_rounded,
@@ -208,48 +223,39 @@ class _PriceColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final savings = product.originalPrice - product.price;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         if (product.isOnSale) ...[
           Text(
             fmt.format(product.originalPrice),
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: scheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w700,
                   decoration: TextDecoration.lineThrough,
                 ),
           ),
           const SizedBox(height: 2),
+          Text(
+            '-${fmt.format(savings)}',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: scheme.error,
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          const SizedBox(height: 4),
         ],
         Text(
           fmt.format(product.price),
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 color: scheme.primary,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
                 height: 1.0,
                 letterSpacing: -0.5,
               ),
         ),
-        if (product.isOnSale) ...[
-          const SizedBox(height: 6),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: scheme.errorContainer,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              '-${product.discountPct.toStringAsFixed(0)}%',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    fontSize: 12,
-                    color: scheme.onErrorContainer,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.4,
-                  ),
-            ),
-          ),
-        ],
       ],
     );
   }
@@ -326,11 +332,17 @@ class _InfoChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 4,
+      ),
       decoration: BoxDecoration(
         color: scheme.surface,
-        borderRadius: BorderRadius.circular(KioskTokens.radiusSmall),
-        border: Border.all(color: scheme.outlineVariant),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: scheme.outlineVariant,
+          width: 1,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -354,7 +366,7 @@ class _InfoChip extends StatelessWidget {
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: scheme.onSurface,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),
           ),

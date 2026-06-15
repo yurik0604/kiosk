@@ -246,6 +246,12 @@ abstract class AppLocalizations {
   /// **'You saved {amount}'**
   String youSaved(String amount);
 
+  /// No description provided for @youSavedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'You saved'**
+  String get youSavedLabel;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -269,6 +275,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your bag will be emptied and you will return to the welcome screen.'**
   String get cancelSessionBody;
+
+  /// No description provided for @confirmQtyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm item count'**
+  String get confirmQtyTitle;
+
+  /// No description provided for @confirmQtyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Please verify 1 item is in the bin before paying.} other{Please verify {count} items are in the bin before paying.}}'**
+  String confirmQtyBody(int count);
+
+  /// No description provided for @confirmQtyConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm and pay'**
+  String get confirmQtyConfirm;
+
+  /// No description provided for @confirmQtyBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to review'**
+  String get confirmQtyBack;
 
   /// No description provided for @keepShopping.
   ///

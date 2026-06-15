@@ -92,6 +92,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get youSavedLabel => 'You saved';
+
+  @override
   String get cancel => 'Cancel';
 
   @override
@@ -103,6 +106,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cancelSessionBody =>
       'Your bag will be emptied and you will return to the welcome screen.';
+
+  @override
+  String get confirmQtyTitle => 'Confirm item count';
+
+  @override
+  String confirmQtyBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Please verify $count items are in the bin before paying.',
+      one: 'Please verify 1 item is in the bin before paying.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get confirmQtyConfirm => 'Confirm and pay';
+
+  @override
+  String get confirmQtyBack => 'Back to review';
 
   @override
   String get keepShopping => 'Keep shopping';

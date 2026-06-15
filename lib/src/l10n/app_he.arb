@@ -34,10 +34,20 @@
       "amount": {"type": "String"}
     }
   },
+  "youSavedLabel": "חסכת",
   "cancel": "ביטול",
   "checkout": "תשלום",
   "cancelSessionTitle": "לבטל את הקנייה?",
   "cancelSessionBody": "התיק יתרוקן ותחזרו למסך הפתיחה.",
+  "confirmQtyTitle": "אישור כמות פריטים",
+  "confirmQtyBody": "{count, plural, =1{ודאו שיש פריט אחד בסל לפני התשלום.} two{ודאו שיש {count} פריטים בסל לפני התשלום.} other{ודאו שיש {count} פריטים בסל לפני התשלום.}}",
+  "@confirmQtyBody": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "confirmQtyConfirm": "אישור והמשך לתשלום",
+  "confirmQtyBack": "חזרה לבדיקה",
   "keepShopping": "להמשיך בקנייה",
   "cancelSession": "בטלו את הקנייה",
   "removeFromBag": "הסירו מהתיק",
