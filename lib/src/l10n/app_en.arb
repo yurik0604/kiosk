@@ -148,6 +148,33 @@
   "paymentReceiptTitle": "Please take your receipt",
   "paymentReceiptBody": "Your receipt is printing. Take it from the printer and tap Finish.",
   "paymentFinish": "Finish",
+  "receiptChoiceTitle": "Your receipt",
+  "receiptChoiceBody": "Choose what to include and how to receive it.",
+  "exchangeSlipTitle": "Add an exchange slip?",
+  "exchangeSlipBody": "An exchange slip lets someone return or exchange items without seeing the price.",
+  "exchangeSlipSectionLabel": "Include",
+  "exchangeSlipYes": "Yes, add it",
+  "exchangeSlipNo": "No, thanks",
+  "receiptDeliverySectionLabel": "Send by",
+  "receiptDeliveryTitle": "How would you like your receipt?",
+  "receiptDeliveryBody": "Choose how to receive your receipt and any exchange slip.",
+  "receiptDeliveryPrint": "Print",
+  "receiptDeliverySms": "Text me",
+  "phoneEntryTitle": "Enter your phone number",
+  "phoneEntrySubtitle": "We'll text your receipt to this number.",
+  "phoneEntryPlaceholder": "Phone number",
+  "phoneEntrySend": "Send",
+  "paymentPrintingTitle": "Printing your documents",
+  "paymentPrintingBody": "Please take your receipt from the printer.",
+  "paymentSendingSmsTitle": "Sending your receipt",
+  "paymentSendingSmsBody": "We're texting your receipt to {phone}.",
+  "@paymentSendingSmsBody": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "paymentDeclinedTitle": "Payment declined",
   "paymentDeclinedBody": "The terminal could not complete the transaction. Please try again.",
   "paymentRetry": "Try again",

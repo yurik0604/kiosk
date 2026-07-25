@@ -148,6 +148,33 @@
   "paymentReceiptTitle": "אנא קחו את הקבלה",
   "paymentReceiptBody": "הקבלה מודפסת. קחו אותה מהמדפסת והקישו על סיום.",
   "paymentFinish": "סיום",
+  "receiptChoiceTitle": "הקבלה שלכם",
+  "receiptChoiceBody": "בחרו מה לכלול וכיצד לקבל אותה.",
+  "exchangeSlipTitle": "להוסיף פתק החלפה?",
+  "exchangeSlipBody": "פתק החלפה מאפשר להחזיר או להחליף פריטים בלי לראות את המחיר.",
+  "exchangeSlipSectionLabel": "כלולים",
+  "exchangeSlipYes": "הוסיפו פתק החלפה",
+  "exchangeSlipNo": "לא, תודה",
+  "receiptDeliverySectionLabel": "שליחה באמצעות",
+  "receiptDeliveryTitle": "איך תרצו לקבל את הקבלה?",
+  "receiptDeliveryBody": "בחרו כיצד לקבל את הקבלה ואת פתק ההחלפה.",
+  "receiptDeliveryPrint": "הדפסה",
+  "receiptDeliverySms": "שלחו לי SMS",
+  "phoneEntryTitle": "הזינו את מספר הטלפון",
+  "phoneEntrySubtitle": "נשלח את הקבלה במסרון למספר הזה.",
+  "phoneEntryPlaceholder": "מספר טלפון",
+  "phoneEntrySend": "שליחה",
+  "paymentPrintingTitle": "מדפיסים את המסמכים",
+  "paymentPrintingBody": "אנא קחו את הקבלה מהמדפסת.",
+  "paymentSendingSmsTitle": "שולחים את הקבלה",
+  "paymentSendingSmsBody": "שולחים את הקבלה במסרון אל {phone}.",
+  "@paymentSendingSmsBody": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "paymentDeclinedTitle": "התשלום נדחה",
   "paymentDeclinedBody": "המסוף לא הצליח להשלים את העסקה. נסו שוב.",
   "paymentRetry": "ניסיון נוסף",

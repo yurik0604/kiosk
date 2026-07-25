@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../catalog/data/catalog_repository.dart';
 import '../../catalog/domain/product.dart';
+import '../../member/data/current_shopper_controller.dart';
 import '../../member/data/member_controller.dart';
 import '../domain/cart_item.dart';
 
@@ -108,6 +109,13 @@ class SessionController extends Notifier<SessionState> {
       if (pct != state.memberDiscountPct) {
         state = state.copyWith(memberDiscountPct: pct);
       }
+      // Mirror the attached member into the session-scoped current shopper so
+      // downstream flows (e.g. receipt delivery) can read member + phone
+      // globally without depending on the member lookup UI.
+      final member = next.member;
+      if (member != null) {
+        ref.read(currentShopperProvider.notifier).setMember(member);
+      }
     });
     final initialPct = ref.read(memberControllerProvider).member?.discountPct ?? 0;
     return SessionState(memberDiscountPct: initialPct);
@@ -132,6 +140,7 @@ class SessionController extends Notifier<SessionState> {
     _seq = 0;
     state = const SessionState();
     ref.read(memberControllerProvider.notifier).clear();
+    ref.read(currentShopperProvider.notifier).clear();
   }
 
   void simulateScan() {

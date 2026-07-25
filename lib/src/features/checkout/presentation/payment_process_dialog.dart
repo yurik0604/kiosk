@@ -6,8 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/phone_entry_dialog.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../member/data/current_shopper_controller.dart';
 import '../data/payment_process_controller.dart';
+import '../data/receipt_delivery_service.dart';
 import '../domain/payment_transaction.dart';
 
 Future<bool> showPaymentProcessDialog({
@@ -76,6 +79,12 @@ class _PaymentProcessDialogState extends ConsumerState<_PaymentProcessDialog> {
           next.status == PaymentTransactionStatus.approved) {
         HapticFeedback.mediumImpact();
       }
+      // Once the receipt has been delivered, the flow is done — close the dialog.
+      if (prev?.status != PaymentTransactionStatus.completed &&
+          next.status == PaymentTransactionStatus.completed) {
+        HapticFeedback.mediumImpact();
+        if (mounted) Navigator.of(context).pop(true);
+      }
     });
 
     return Dialog(
@@ -136,17 +145,31 @@ class _PaymentProcessDialogState extends ConsumerState<_PaymentProcessDialog> {
           amount: widget.amount,
           fmt: fmt,
           l10n: l10n,
+          onContinue: () =>
+              ref.read(paymentProcessControllerProvider.notifier).chooseReceipt(),
+        );
+      case PaymentTransactionStatus.choosingReceipt:
+        return _ReceiptChoiceStage(
+          key: const ValueKey('receipt-choice'),
+          l10n: l10n,
+          onConfirm: (includeExchangeSlip, delivery) =>
+              _startDelivery(txn, includeExchangeSlip, delivery),
         );
       case PaymentTransactionStatus.printingReceipt:
-        return _ReceiptStage(
-          key: const ValueKey('receipt'),
-          l10n: l10n,
-          onFinish: () {
-            ref
-                .read(paymentProcessControllerProvider.notifier)
-                .acknowledgeReceipt();
-            if (mounted) Navigator.of(context).pop(true);
-          },
+        return _DeliveryStage(
+          key: const ValueKey('printing'),
+          title: l10n.paymentPrintingTitle,
+          body: l10n.paymentPrintingBody,
+          kind: _DeliveryKind.print,
+        );
+      case PaymentTransactionStatus.sendingSms:
+        return _DeliveryStage(
+          key: const ValueKey('sending-sms'),
+          title: l10n.paymentSendingSmsTitle,
+          body: l10n.paymentSendingSmsBody(
+            ref.read(currentShopperProvider).effectivePhone ?? '',
+          ),
+          kind: _DeliveryKind.sms,
         );
       case PaymentTransactionStatus.declined:
       case PaymentTransactionStatus.error:
@@ -168,6 +191,41 @@ class _PaymentProcessDialogState extends ConsumerState<_PaymentProcessDialog> {
       case PaymentTransactionStatus.completed:
         return const SizedBox.shrink(key: ValueKey('completed'));
     }
+  }
+
+  /// Tail of the post-payment handler chain: resolves the delivery target
+  /// (prompting for a phone if SMS is chosen and none is on file), assembles the
+  /// [ReceiptJob], then hands off to the controller to run the print / SMS
+  /// delivery. Reads member + phone from the session-scoped current shopper.
+  Future<void> _startDelivery(
+    PaymentTransaction txn,
+    bool includeExchangeSlip,
+    ReceiptDelivery delivery,
+  ) async {
+    final shopper = ref.read(currentShopperProvider);
+    String? phone = shopper.effectivePhone;
+
+    if (delivery == ReceiptDelivery.sms && phone == null) {
+      // SMS chosen but no phone captured earlier — ask for it now.
+      final entered = await showPhoneEntryDialog(context);
+      if (entered == null || entered.isEmpty) {
+        // Cancelled phone entry — stay on the receipt-choice step.
+        return;
+      }
+      ref.read(currentShopperProvider.notifier).setPhone(entered);
+      phone = entered;
+    }
+
+    final job = ReceiptJob(
+      transactionId: txn.transactionId,
+      amount: txn.amount,
+      includeExchangeSlip: includeExchangeSlip,
+      phone: delivery == ReceiptDelivery.sms ? phone : null,
+    );
+
+    await ref
+        .read(paymentProcessControllerProvider.notifier)
+        .deliverReceipt(job, delivery: delivery);
   }
 }
 
@@ -715,11 +773,13 @@ class _SuccessStage extends StatefulWidget {
     required this.amount,
     required this.fmt,
     required this.l10n,
+    required this.onContinue,
   });
 
   final double amount;
   final NumberFormat fmt;
   final AppLocalizations l10n;
+  final VoidCallback onContinue;
 
   @override
   State<_SuccessStage> createState() => _SuccessStageState();
@@ -844,6 +904,23 @@ class _SuccessStageState extends State<_SuccessStage>
                 color: scheme.onSurfaceVariant,
               ),
         ),
+        const SizedBox(height: KioskTokens.spaceL),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            onPressed: widget.onContinue,
+            style: FilledButton.styleFrom(foregroundColor: Colors.white),
+            child: Text(
+              l10n.paymentFinish.toUpperCase(),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
+                  ),
+            ),
+          ),
+        ),
       ],
     ),
     );
@@ -926,28 +1003,241 @@ class _CheckmarkPainter extends CustomPainter {
       oldDelegate.progress != progress || oldDelegate.color != color;
 }
 
-class _ReceiptStage extends StatefulWidget {
-  const _ReceiptStage({
+/// The receipt-choice step shown after a successful payment: pick whether to
+/// include an exchange slip, then how to receive the documents (print / SMS).
+/// Confirms with `(includeExchangeSlip, delivery)`.
+class _ReceiptChoiceStage extends StatefulWidget {
+  const _ReceiptChoiceStage({
     super.key,
     required this.l10n,
-    required this.onFinish,
+    required this.onConfirm,
   });
 
   final AppLocalizations l10n;
-  final VoidCallback onFinish;
+  final void Function(bool includeExchangeSlip, ReceiptDelivery delivery)
+      onConfirm;
 
   @override
-  State<_ReceiptStage> createState() => _ReceiptStageState();
+  State<_ReceiptChoiceStage> createState() => _ReceiptChoiceStageState();
 }
 
-class _ReceiptStageState extends State<_ReceiptStage>
+class _ReceiptChoiceStageState extends State<_ReceiptChoiceStage> {
+  bool _includeExchangeSlip = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final l10n = widget.l10n;
+
+    return SizedBox(
+      height: 540,
+      // Scrollable so the sections never overflow the fixed stage height at
+      // larger locale font scales; centered while the content fits.
+      child: SingleChildScrollView(
+        child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Center(
+            child: Container(
+              width: 96,
+              height: 96,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: scheme.primaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.receipt_long_rounded,
+                size: 48,
+                color: scheme.onPrimaryContainer,
+              ),
+            ),
+          ),
+          const SizedBox(height: KioskTokens.spaceL),
+          // Modal title: the general receipt process.
+          Text(
+            l10n.receiptChoiceTitle,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: scheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: KioskTokens.spaceS),
+          Text(
+            l10n.receiptChoiceBody,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: scheme.onSurfaceVariant,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: KioskTokens.spaceXXL),
+          // Section 1 — what to include: the exchange-slip opt-in checkbox.
+          _ExchangeSlipCheckbox(
+            label: l10n.exchangeSlipYes,
+            value: _includeExchangeSlip,
+            onChanged: (v) => setState(() => _includeExchangeSlip = v),
+          ),
+          // Divider separating the "include" and "send by" sections.
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: KioskTokens.spaceL),
+            child: Divider(height: 1, color: scheme.outlineVariant),
+          ),
+          // Section 2 — how to receive it: print or SMS.
+          Row(
+            children: [
+              Expanded(
+                child: _DeliveryButton(
+                  icon: Icons.print_rounded,
+                  label: l10n.receiptDeliveryPrint,
+                  onTap: () => widget.onConfirm(
+                    _includeExchangeSlip,
+                    ReceiptDelivery.print,
+                  ),
+                ),
+              ),
+              const SizedBox(width: KioskTokens.spaceS),
+              Expanded(
+                child: _DeliveryButton(
+                  icon: Icons.sms_rounded,
+                  label: l10n.receiptDeliverySms,
+                  onTap: () => widget.onConfirm(
+                    _includeExchangeSlip,
+                    ReceiptDelivery.sms,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A single, tappable checkbox row for opting into the exchange slip.
+class _ExchangeSlipCheckbox extends StatelessWidget {
+  const _ExchangeSlipCheckbox({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String label;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return SizedBox(
+      height: KioskTokens.touchTargetLarge,
+      child: Material(
+        color: value ? scheme.primaryContainer : scheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(KioskTokens.radiusLarge),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          // Tapping anywhere on the row toggles the checkbox.
+          onTap: () => onChanged(!value),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: KioskTokens.spaceL,
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: Checkbox(
+                    value: value,
+                    onChanged: (v) => onChanged(v ?? false),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(KioskTokens.radiusSmall),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: KioskTokens.spaceM),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: scheme.onSurface,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DeliveryButton extends StatelessWidget {
+  const _DeliveryButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon, size: 28),
+      label: Text(
+        label,
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.3,
+            ),
+      ),
+      style: FilledButton.styleFrom(foregroundColor: Colors.white),
+    );
+  }
+}
+
+enum _DeliveryKind { print, sms }
+
+/// In-flight delivery animation: a printer emitting a receipt (print) or an
+/// envelope flying to a phone (SMS). Pure animation — it auto-completes when the
+/// controller's delivery future resolves.
+class _DeliveryStage extends StatefulWidget {
+  const _DeliveryStage({
+    super.key,
+    required this.title,
+    required this.body,
+    required this.kind,
+  });
+
+  final String title;
+  final String body;
+  final _DeliveryKind kind;
+
+  @override
+  State<_DeliveryStage> createState() => _DeliveryStageState();
+}
+
+class _DeliveryStageState extends State<_DeliveryStage>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _slide;
+  late final AnimationController _loop;
 
   @override
   void initState() {
     super.initState();
-    _slide = AnimationController(
+    _loop = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1800),
     )..repeat();
@@ -955,131 +1245,185 @@ class _ReceiptStageState extends State<_ReceiptStage>
 
   @override
   void dispose() {
-    _slide.dispose();
+    _loop.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final l10n = widget.l10n;
     return SizedBox(
       height: 540,
       child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 200,
+            child: AnimatedBuilder(
+              animation: _loop,
+              builder: (context, _) {
+                final t = Curves.easeInOut.transform(_loop.value);
+                return widget.kind == _DeliveryKind.print
+                    ? _PrinterAnimation(t: t, scheme: scheme)
+                    : _SmsAnimation(t: t, scheme: scheme);
+              },
+            ),
+          ),
+          const SizedBox(height: KioskTokens.spaceL),
+          Text(
+            widget.title,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: KioskTokens.spaceS),
+          Text(
+            widget.body,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+          ),
+          const SizedBox(height: KioskTokens.spaceL),
+          _DashedProgress(
+            progress: _loop,
+            color: scheme.primary,
+            active: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The printer-emitting-a-receipt loop (extracted from the former receipt
+/// stage).
+class _PrinterAnimation extends StatelessWidget {
+  const _PrinterAnimation({required this.t, required this.scheme});
+
+  final double t;
+  final ColorScheme scheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
       children: [
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 200,
-                child: AnimatedBuilder(
-                  animation: _slide,
-                  builder: (context, _) {
-                    final t = Curves.easeInOut.transform(_slide.value);
-                    return Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        // Printer body
-                        Positioned(
-                          top: 60,
-                          child: Container(
-                            width: 180,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: scheme.surfaceContainerHighest,
-                              borderRadius: BorderRadius.circular(
-                                KioskTokens.radiusMedium,
-                              ),
-                              border: Border.all(
-                                color: scheme.outlineVariant,
-                                width: 2,
-                              ),
-                            ),
-                            child: Center(
-                              child: Container(
-                                width: 140,
-                                height: 6,
-                                decoration: BoxDecoration(
-                                  color: scheme.outline,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        // Receipt paper sliding out
-                        Positioned(
-                          top: 60 - (40 * t),
-                          child: Container(
-                            width: 130,
-                            height: 70 + (60 * t),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(4),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.12),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.stretch,
-                                children: [
-                                  for (var i = 0; i < 5; i++) ...[
-                                    Container(
-                                      height: 4,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade400,
-                                        borderRadius:
-                                            BorderRadius.circular(2),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                  ],
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+        Positioned(
+          top: 60,
+          child: Container(
+            width: 180,
+            height: 80,
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(KioskTokens.radiusMedium),
+              border: Border.all(color: scheme.outlineVariant, width: 2),
+            ),
+            child: Center(
+              child: Container(
+                width: 140,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: scheme.outline,
+                  borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              const SizedBox(height: KioskTokens.spaceL),
-              Text(
-                l10n.paymentReceiptTitle,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: KioskTokens.spaceS),
-              Text(
-                l10n.paymentReceiptBody,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
-              ),
-            ],
+            ),
           ),
         ),
-        FilledButton.icon(
-          onPressed: widget.onFinish,
-          icon: const Icon(Icons.check_rounded),
-          label: Text(l10n.paymentFinish),
+        Positioned(
+          top: 60 - (40 * t),
+          child: Container(
+            width: 130,
+            height: 70 + (60 * t),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(4),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.12),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var i = 0; i < 5; i++) ...[
+                    Container(
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade400,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                  ],
+                ],
+              ),
+            ),
+          ),
         ),
       ],
-    ),
+    );
+  }
+}
+
+/// An envelope rising toward a phone, with SMS bubbles — the SMS-sending loop.
+class _SmsAnimation extends StatelessWidget {
+  const _SmsAnimation({required this.t, required this.scheme});
+
+  final double t;
+  final ColorScheme scheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Phone outline.
+        Container(
+          width: 96,
+          height: 168,
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(KioskTokens.radiusMedium),
+            border: Border.all(color: scheme.outlineVariant, width: 3),
+          ),
+        ),
+        // Envelope floating up and fading as it "sends".
+        Transform.translate(
+          offset: Offset(0, 30 - 70 * t),
+          child: Opacity(
+            opacity: (1 - t).clamp(0.0, 1.0),
+            child: Container(
+              width: 64,
+              height: 44,
+              decoration: BoxDecoration(
+                color: scheme.primary,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: scheme.primary.withValues(alpha: 0.4),
+                    blurRadius: 16,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.mail_rounded,
+                color: scheme.onPrimary,
+                size: 28,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

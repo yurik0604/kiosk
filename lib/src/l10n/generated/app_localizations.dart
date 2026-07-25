@@ -630,6 +630,126 @@ abstract class AppLocalizations {
   /// **'Finish'**
   String get paymentFinish;
 
+  /// No description provided for @receiptChoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your receipt'**
+  String get receiptChoiceTitle;
+
+  /// No description provided for @receiptChoiceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what to include and how to receive it.'**
+  String get receiptChoiceBody;
+
+  /// No description provided for @exchangeSlipTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an exchange slip?'**
+  String get exchangeSlipTitle;
+
+  /// No description provided for @exchangeSlipBody.
+  ///
+  /// In en, this message translates to:
+  /// **'An exchange slip lets someone return or exchange items without seeing the price.'**
+  String get exchangeSlipBody;
+
+  /// No description provided for @exchangeSlipSectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Include'**
+  String get exchangeSlipSectionLabel;
+
+  /// No description provided for @exchangeSlipYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, add it'**
+  String get exchangeSlipYes;
+
+  /// No description provided for @exchangeSlipNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No, thanks'**
+  String get exchangeSlipNo;
+
+  /// No description provided for @receiptDeliverySectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Send by'**
+  String get receiptDeliverySectionLabel;
+
+  /// No description provided for @receiptDeliveryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like your receipt?'**
+  String get receiptDeliveryTitle;
+
+  /// No description provided for @receiptDeliveryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how to receive your receipt and any exchange slip.'**
+  String get receiptDeliveryBody;
+
+  /// No description provided for @receiptDeliveryPrint.
+  ///
+  /// In en, this message translates to:
+  /// **'Print'**
+  String get receiptDeliveryPrint;
+
+  /// No description provided for @receiptDeliverySms.
+  ///
+  /// In en, this message translates to:
+  /// **'Text me'**
+  String get receiptDeliverySms;
+
+  /// No description provided for @phoneEntryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number'**
+  String get phoneEntryTitle;
+
+  /// No description provided for @phoneEntrySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll text your receipt to this number.'**
+  String get phoneEntrySubtitle;
+
+  /// No description provided for @phoneEntryPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get phoneEntryPlaceholder;
+
+  /// No description provided for @phoneEntrySend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get phoneEntrySend;
+
+  /// No description provided for @paymentPrintingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Printing your documents'**
+  String get paymentPrintingTitle;
+
+  /// No description provided for @paymentPrintingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please take your receipt from the printer.'**
+  String get paymentPrintingBody;
+
+  /// No description provided for @paymentSendingSmsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending your receipt'**
+  String get paymentSendingSmsTitle;
+
+  /// No description provided for @paymentSendingSmsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re texting your receipt to {phone}.'**
+  String paymentSendingSmsBody(String phone);
+
   /// No description provided for @paymentDeclinedTitle.
   ///
   /// In en, this message translates to:

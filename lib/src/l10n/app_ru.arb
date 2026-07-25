@@ -148,6 +148,33 @@
   "paymentReceiptTitle": "Заберите чек",
   "paymentReceiptBody": "Чек печатается. Возьмите его из принтера и нажмите «Готово».",
   "paymentFinish": "Готово",
+  "receiptChoiceTitle": "Ваш чек",
+  "receiptChoiceBody": "Выберите, что включить и как его получить.",
+  "exchangeSlipTitle": "Добавить чек обмена?",
+  "exchangeSlipBody": "Чек обмена позволяет вернуть или обменять товары без указания цены.",
+  "exchangeSlipSectionLabel": "Включить",
+  "exchangeSlipYes": "Добавить чек обмена",
+  "exchangeSlipNo": "Нет, спасибо",
+  "receiptDeliverySectionLabel": "Отправить через",
+  "receiptDeliveryTitle": "Как вы хотите получить чек?",
+  "receiptDeliveryBody": "Выберите способ получения чека и чека обмена.",
+  "receiptDeliveryPrint": "Печать",
+  "receiptDeliverySms": "Отправить SMS",
+  "phoneEntryTitle": "Введите номер телефона",
+  "phoneEntrySubtitle": "Мы отправим чек в SMS на этот номер.",
+  "phoneEntryPlaceholder": "Номер телефона",
+  "phoneEntrySend": "Отправить",
+  "paymentPrintingTitle": "Печать документов",
+  "paymentPrintingBody": "Пожалуйста, заберите чек из принтера.",
+  "paymentSendingSmsTitle": "Отправка чека",
+  "paymentSendingSmsBody": "Отправляем чек в SMS на {phone}.",
+  "@paymentSendingSmsBody": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "paymentDeclinedTitle": "Платёж отклонён",
   "paymentDeclinedBody": "Терминал не смог завершить операцию. Попробуйте ещё раз.",
   "paymentRetry": "Повторить",

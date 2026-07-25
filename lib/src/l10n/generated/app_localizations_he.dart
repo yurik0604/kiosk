@@ -331,6 +331,69 @@ class AppLocalizationsHe extends AppLocalizations {
   String get paymentFinish => 'סיום';
 
   @override
+  String get receiptChoiceTitle => 'הקבלה שלכם';
+
+  @override
+  String get receiptChoiceBody => 'בחרו מה לכלול וכיצד לקבל אותה.';
+
+  @override
+  String get exchangeSlipTitle => 'להוסיף פתק החלפה?';
+
+  @override
+  String get exchangeSlipBody =>
+      'פתק החלפה מאפשר להחזיר או להחליף פריטים בלי לראות את המחיר.';
+
+  @override
+  String get exchangeSlipSectionLabel => 'כלולים';
+
+  @override
+  String get exchangeSlipYes => 'הוסיפו פתק החלפה';
+
+  @override
+  String get exchangeSlipNo => 'לא, תודה';
+
+  @override
+  String get receiptDeliverySectionLabel => 'שליחה באמצעות';
+
+  @override
+  String get receiptDeliveryTitle => 'איך תרצו לקבל את הקבלה?';
+
+  @override
+  String get receiptDeliveryBody => 'בחרו כיצד לקבל את הקבלה ואת פתק ההחלפה.';
+
+  @override
+  String get receiptDeliveryPrint => 'הדפסה';
+
+  @override
+  String get receiptDeliverySms => 'שלחו לי SMS';
+
+  @override
+  String get phoneEntryTitle => 'הזינו את מספר הטלפון';
+
+  @override
+  String get phoneEntrySubtitle => 'נשלח את הקבלה במסרון למספר הזה.';
+
+  @override
+  String get phoneEntryPlaceholder => 'מספר טלפון';
+
+  @override
+  String get phoneEntrySend => 'שליחה';
+
+  @override
+  String get paymentPrintingTitle => 'מדפיסים את המסמכים';
+
+  @override
+  String get paymentPrintingBody => 'אנא קחו את הקבלה מהמדפסת.';
+
+  @override
+  String get paymentSendingSmsTitle => 'שולחים את הקבלה';
+
+  @override
+  String paymentSendingSmsBody(String phone) {
+    return 'שולחים את הקבלה במסרון אל $phone.';
+  }
+
+  @override
   String get paymentDeclinedTitle => 'התשלום נדחה';
 
   @override

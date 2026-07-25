@@ -342,6 +342,70 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paymentFinish => 'إنهاء';
 
   @override
+  String get receiptChoiceTitle => 'إيصالك';
+
+  @override
+  String get receiptChoiceBody => 'اختر ما تريد تضمينه وكيفية استلامه.';
+
+  @override
+  String get exchangeSlipTitle => 'إضافة إيصال استبدال؟';
+
+  @override
+  String get exchangeSlipBody =>
+      'يتيح إيصال الاستبدال إرجاع المنتجات أو استبدالها دون إظهار السعر.';
+
+  @override
+  String get exchangeSlipSectionLabel => 'يشمل';
+
+  @override
+  String get exchangeSlipYes => 'أضِف إيصال استبدال';
+
+  @override
+  String get exchangeSlipNo => 'لا، شكرًا';
+
+  @override
+  String get receiptDeliverySectionLabel => 'الإرسال عبر';
+
+  @override
+  String get receiptDeliveryTitle => 'كيف تريد استلام إيصالك؟';
+
+  @override
+  String get receiptDeliveryBody =>
+      'اختر طريقة استلام الإيصال وإيصال الاستبدال.';
+
+  @override
+  String get receiptDeliveryPrint => 'طباعة';
+
+  @override
+  String get receiptDeliverySms => 'أرسِله كرسالة';
+
+  @override
+  String get phoneEntryTitle => 'أدخل رقم هاتفك';
+
+  @override
+  String get phoneEntrySubtitle => 'سنرسل إيصالك برسالة نصية إلى هذا الرقم.';
+
+  @override
+  String get phoneEntryPlaceholder => 'رقم الهاتف';
+
+  @override
+  String get phoneEntrySend => 'إرسال';
+
+  @override
+  String get paymentPrintingTitle => 'جارٍ طباعة مستنداتك';
+
+  @override
+  String get paymentPrintingBody => 'يرجى أخذ إيصالك من الطابعة.';
+
+  @override
+  String get paymentSendingSmsTitle => 'جارٍ إرسال إيصالك';
+
+  @override
+  String paymentSendingSmsBody(String phone) {
+    return 'نرسل إيصالك برسالة نصية إلى $phone.';
+  }
+
+  @override
   String get paymentDeclinedTitle => 'تم رفض الدفع';
 
   @override

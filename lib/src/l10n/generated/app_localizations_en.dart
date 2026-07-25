@@ -328,6 +328,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentFinish => 'Finish';
 
   @override
+  String get receiptChoiceTitle => 'Your receipt';
+
+  @override
+  String get receiptChoiceBody =>
+      'Choose what to include and how to receive it.';
+
+  @override
+  String get exchangeSlipTitle => 'Add an exchange slip?';
+
+  @override
+  String get exchangeSlipBody =>
+      'An exchange slip lets someone return or exchange items without seeing the price.';
+
+  @override
+  String get exchangeSlipSectionLabel => 'Include';
+
+  @override
+  String get exchangeSlipYes => 'Yes, add it';
+
+  @override
+  String get exchangeSlipNo => 'No, thanks';
+
+  @override
+  String get receiptDeliverySectionLabel => 'Send by';
+
+  @override
+  String get receiptDeliveryTitle => 'How would you like your receipt?';
+
+  @override
+  String get receiptDeliveryBody =>
+      'Choose how to receive your receipt and any exchange slip.';
+
+  @override
+  String get receiptDeliveryPrint => 'Print';
+
+  @override
+  String get receiptDeliverySms => 'Text me';
+
+  @override
+  String get phoneEntryTitle => 'Enter your phone number';
+
+  @override
+  String get phoneEntrySubtitle => 'We\'ll text your receipt to this number.';
+
+  @override
+  String get phoneEntryPlaceholder => 'Phone number';
+
+  @override
+  String get phoneEntrySend => 'Send';
+
+  @override
+  String get paymentPrintingTitle => 'Printing your documents';
+
+  @override
+  String get paymentPrintingBody =>
+      'Please take your receipt from the printer.';
+
+  @override
+  String get paymentSendingSmsTitle => 'Sending your receipt';
+
+  @override
+  String paymentSendingSmsBody(String phone) {
+    return 'We\'re texting your receipt to $phone.';
+  }
+
+  @override
   String get paymentDeclinedTitle => 'Payment declined';
 
   @override

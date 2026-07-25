@@ -3,8 +3,17 @@ enum PaymentTransactionStatus {
   waitingForCard,
   processing,
   approved,
+
+  /// Payment succeeded; the shopper is choosing their receipt options
+  /// (exchange slip? print or SMS?).
+  choosingReceipt,
   declined,
+
+  /// A print job is running (the receipt, and optionally an exchange slip).
   printingReceipt,
+
+  /// An SMS with the receipt (and optional exchange slip) is being sent.
+  sendingSms,
   completed,
   error,
 }
@@ -28,8 +37,14 @@ class PaymentTransaction {
 
   bool get isApproved => status == PaymentTransactionStatus.approved;
 
-  bool get isAwaitingReceipt =>
-      status == PaymentTransactionStatus.printingReceipt;
+  /// The shopper is picking receipt options after a successful payment.
+  bool get isChoosingReceipt =>
+      status == PaymentTransactionStatus.choosingReceipt;
+
+  /// A delivery (print or SMS) is in progress.
+  bool get isDelivering =>
+      status == PaymentTransactionStatus.printingReceipt ||
+      status == PaymentTransactionStatus.sendingSms;
 
   bool get isCompleted => status == PaymentTransactionStatus.completed;
 

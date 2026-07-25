@@ -148,6 +148,33 @@
   "paymentReceiptTitle": "يرجى أخذ الإيصال",
   "paymentReceiptBody": "تتم طباعة الإيصال. خذه من الطابعة ثم اضغط إنهاء.",
   "paymentFinish": "إنهاء",
+  "receiptChoiceTitle": "إيصالك",
+  "receiptChoiceBody": "اختر ما تريد تضمينه وكيفية استلامه.",
+  "exchangeSlipTitle": "إضافة إيصال استبدال؟",
+  "exchangeSlipBody": "يتيح إيصال الاستبدال إرجاع المنتجات أو استبدالها دون إظهار السعر.",
+  "exchangeSlipSectionLabel": "يشمل",
+  "exchangeSlipYes": "أضِف إيصال استبدال",
+  "exchangeSlipNo": "لا، شكرًا",
+  "receiptDeliverySectionLabel": "الإرسال عبر",
+  "receiptDeliveryTitle": "كيف تريد استلام إيصالك؟",
+  "receiptDeliveryBody": "اختر طريقة استلام الإيصال وإيصال الاستبدال.",
+  "receiptDeliveryPrint": "طباعة",
+  "receiptDeliverySms": "أرسِله كرسالة",
+  "phoneEntryTitle": "أدخل رقم هاتفك",
+  "phoneEntrySubtitle": "سنرسل إيصالك برسالة نصية إلى هذا الرقم.",
+  "phoneEntryPlaceholder": "رقم الهاتف",
+  "phoneEntrySend": "إرسال",
+  "paymentPrintingTitle": "جارٍ طباعة مستنداتك",
+  "paymentPrintingBody": "يرجى أخذ إيصالك من الطابعة.",
+  "paymentSendingSmsTitle": "جارٍ إرسال إيصالك",
+  "paymentSendingSmsBody": "نرسل إيصالك برسالة نصية إلى {phone}.",
+  "@paymentSendingSmsBody": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "paymentDeclinedTitle": "تم رفض الدفع",
   "paymentDeclinedBody": "تعذّر على الجهاز إتمام المعاملة. يرجى المحاولة مرة أخرى.",
   "paymentRetry": "حاول مجدداً",

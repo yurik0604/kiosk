@@ -338,6 +338,70 @@ class AppLocalizationsRu extends AppLocalizations {
   String get paymentFinish => 'Готово';
 
   @override
+  String get receiptChoiceTitle => 'Ваш чек';
+
+  @override
+  String get receiptChoiceBody => 'Выберите, что включить и как его получить.';
+
+  @override
+  String get exchangeSlipTitle => 'Добавить чек обмена?';
+
+  @override
+  String get exchangeSlipBody =>
+      'Чек обмена позволяет вернуть или обменять товары без указания цены.';
+
+  @override
+  String get exchangeSlipSectionLabel => 'Включить';
+
+  @override
+  String get exchangeSlipYes => 'Добавить чек обмена';
+
+  @override
+  String get exchangeSlipNo => 'Нет, спасибо';
+
+  @override
+  String get receiptDeliverySectionLabel => 'Отправить через';
+
+  @override
+  String get receiptDeliveryTitle => 'Как вы хотите получить чек?';
+
+  @override
+  String get receiptDeliveryBody =>
+      'Выберите способ получения чека и чека обмена.';
+
+  @override
+  String get receiptDeliveryPrint => 'Печать';
+
+  @override
+  String get receiptDeliverySms => 'Отправить SMS';
+
+  @override
+  String get phoneEntryTitle => 'Введите номер телефона';
+
+  @override
+  String get phoneEntrySubtitle => 'Мы отправим чек в SMS на этот номер.';
+
+  @override
+  String get phoneEntryPlaceholder => 'Номер телефона';
+
+  @override
+  String get phoneEntrySend => 'Отправить';
+
+  @override
+  String get paymentPrintingTitle => 'Печать документов';
+
+  @override
+  String get paymentPrintingBody => 'Пожалуйста, заберите чек из принтера.';
+
+  @override
+  String get paymentSendingSmsTitle => 'Отправка чека';
+
+  @override
+  String paymentSendingSmsBody(String phone) {
+    return 'Отправляем чек в SMS на $phone.';
+  }
+
+  @override
   String get paymentDeclinedTitle => 'Платёж отклонён';
 
   @override

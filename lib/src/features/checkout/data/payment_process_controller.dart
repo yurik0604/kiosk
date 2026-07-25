@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
 import '../domain/payment_transaction.dart';
+import 'receipt_delivery_service.dart';
 
 final Logger _log = Logger(
   printer: SimplePrinter(printTime: true, colors: false),
@@ -54,20 +55,15 @@ class SimulatedPaymentTerminal implements PaymentTerminal {
       ));
 
       schedule(const Duration(seconds: 2), () {
+        // Stop at "approved": the post-payment receipt chain (exchange slip →
+        // print/SMS delivery) is user-driven from here, orchestrated by the
+        // controller, not auto-advanced by the terminal.
         emit(PaymentTransaction(
           status: PaymentTransactionStatus.approved,
           transactionId: txnId,
           amount: amount,
         ));
-
-        schedule(const Duration(milliseconds: 1800), () {
-          emit(PaymentTransaction(
-            status: PaymentTransactionStatus.printingReceipt,
-            transactionId: txnId,
-            amount: amount,
-          ));
-          controller.close();
-        });
+        controller.close();
       });
     });
 
@@ -142,8 +138,39 @@ class PaymentProcessController extends Notifier<PaymentTransaction> {
     );
   }
 
-  void acknowledgeReceipt() {
-    if (state.isAwaitingReceipt) {
+  /// Moves from an approved payment into the receipt-choice step, where the
+  /// shopper picks whether to include an exchange slip and how to receive the
+  /// documents (print or SMS).
+  void chooseReceipt() {
+    if (state.isApproved) {
+      state = state.copyWith(status: PaymentTransactionStatus.choosingReceipt);
+    }
+  }
+
+  /// Runs the chosen delivery: shows the matching in-flight status
+  /// (printingReceipt / sendingSms), awaits the delivery service, then
+  /// completes. This is the tail of the post-payment handler chain — the point
+  /// where the receipt (and optional exchange slip) is actually produced.
+  Future<void> deliverReceipt(
+    ReceiptJob job, {
+    required ReceiptDelivery delivery,
+  }) async {
+    // Guard: only valid once payment is approved / while choosing.
+    if (!state.isChoosingReceipt && !state.isApproved) return;
+
+    final service = ref.read(receiptDeliveryServiceProvider);
+    switch (delivery) {
+      case ReceiptDelivery.print:
+        state = state.copyWith(
+          status: PaymentTransactionStatus.printingReceipt,
+        );
+        await service.printDocuments(job);
+      case ReceiptDelivery.sms:
+        state = state.copyWith(status: PaymentTransactionStatus.sendingSms);
+        await service.sendSms(job);
+    }
+    // The delivery may have been cancelled/reset while awaiting.
+    if (state.isDelivering) {
       state = state.copyWith(status: PaymentTransactionStatus.completed);
     }
   }
