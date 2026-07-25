@@ -321,6 +321,12 @@ class AppLocalizationsHe extends AppLocalizations {
   String get paymentApprovedBody => 'הכרטיס אושר.';
 
   @override
+  String get paymentSuccessReceiptPrompt => 'התשלום אושר.';
+
+  @override
+  String get receiptSectionTitle => 'איך תרצו לקבל את הקבלה?';
+
+  @override
   String get paymentReceiptTitle => 'אנא קחו את הקבלה';
 
   @override
@@ -347,7 +353,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get exchangeSlipSectionLabel => 'כלולים';
 
   @override
-  String get exchangeSlipYes => 'הוסיפו פתק החלפה';
+  String get exchangeSlipYes => 'כללו פתק החלפה';
 
   @override
   String get exchangeSlipNo => 'לא, תודה';

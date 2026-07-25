@@ -318,6 +318,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentApprovedBody => 'Your card was approved.';
 
   @override
+  String get paymentSuccessReceiptPrompt => 'Your payment has been approved.';
+
+  @override
+  String get receiptSectionTitle => 'How would you like your receipt?';
+
+  @override
   String get paymentReceiptTitle => 'Please take your receipt';
 
   @override
@@ -345,7 +351,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exchangeSlipSectionLabel => 'Include';
 
   @override
-  String get exchangeSlipYes => 'Yes, add it';
+  String get exchangeSlipYes => 'Include an exchange slip';
 
   @override
   String get exchangeSlipNo => 'No, thanks';

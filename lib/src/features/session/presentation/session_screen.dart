@@ -867,6 +867,7 @@ class _Footer extends ConsumerWidget {
                       l10n.confirmQtyConfirm.toUpperCase(),
                       style: theme.textTheme.titleLarge?.copyWith(
                         color: Colors.white,
+                        fontSize: 26,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.5,
                       ),
@@ -884,6 +885,7 @@ class _Footer extends ConsumerWidget {
                       l10n.confirmQtyBack.toUpperCase(),
                       style: theme.textTheme.titleLarge?.copyWith(
                         color: scheme.onSurface,
+                        fontSize: 26,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.5,
                       ),

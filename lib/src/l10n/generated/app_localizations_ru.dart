@@ -328,6 +328,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get paymentApprovedBody => 'Карта подтверждена.';
 
   @override
+  String get paymentSuccessReceiptPrompt => 'Платёж подтверждён.';
+
+  @override
+  String get receiptSectionTitle => 'Как вы хотите получить чек?';
+
+  @override
   String get paymentReceiptTitle => 'Заберите чек';
 
   @override
@@ -354,7 +360,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get exchangeSlipSectionLabel => 'Включить';
 
   @override
-  String get exchangeSlipYes => 'Добавить чек обмена';
+  String get exchangeSlipYes => 'Включить чек обмена';
 
   @override
   String get exchangeSlipNo => 'Нет, спасибо';

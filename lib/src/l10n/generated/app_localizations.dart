@@ -612,6 +612,18 @@ abstract class AppLocalizations {
   /// **'Your card was approved.'**
   String get paymentApprovedBody;
 
+  /// No description provided for @paymentSuccessReceiptPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment has been approved.'**
+  String get paymentSuccessReceiptPrompt;
+
+  /// No description provided for @receiptSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like your receipt?'**
+  String get receiptSectionTitle;
+
   /// No description provided for @paymentReceiptTitle.
   ///
   /// In en, this message translates to:
@@ -663,7 +675,7 @@ abstract class AppLocalizations {
   /// No description provided for @exchangeSlipYes.
   ///
   /// In en, this message translates to:
-  /// **'Yes, add it'**
+  /// **'Include an exchange slip'**
   String get exchangeSlipYes;
 
   /// No description provided for @exchangeSlipNo.

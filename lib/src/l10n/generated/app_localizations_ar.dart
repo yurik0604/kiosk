@@ -332,6 +332,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paymentApprovedBody => 'تمت الموافقة على البطاقة.';
 
   @override
+  String get paymentSuccessReceiptPrompt => 'تمت الموافقة على الدفع.';
+
+  @override
+  String get receiptSectionTitle => 'كيف تريد استلام إيصالك؟';
+
+  @override
   String get paymentReceiptTitle => 'يرجى أخذ الإيصال';
 
   @override
@@ -358,7 +364,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exchangeSlipSectionLabel => 'يشمل';
 
   @override
-  String get exchangeSlipYes => 'أضِف إيصال استبدال';
+  String get exchangeSlipYes => 'تضمين إيصال استبدال';
 
   @override
   String get exchangeSlipNo => 'لا، شكرًا';

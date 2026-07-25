@@ -87,13 +87,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _Header(l10n: l10n),
+                  _Header(l10n: l10n, itemCount: session.itemCount),
                   const SizedBox(height: KioskTokens.spaceL),
                   _TotalsCard(
                     total: session.total,
                     allocated: payment.allocated,
                     remaining: remaining,
-                    itemCount: session.itemCount,
                     items: session.items,
                     fmt: fmt,
                   ),
@@ -120,7 +119,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                             crossAxisCount: 2,
                             mainAxisSpacing: KioskTokens.spaceM,
                             crossAxisSpacing: KioskTokens.spaceM,
-                            childAspectRatio: 1.15,
+                            childAspectRatio: 1.05,
                           ),
                       itemCount: PaymentMethod.values.length,
                       itemBuilder: (_, index) {
@@ -148,11 +147,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.l10n});
+  const _Header({required this.l10n, required this.itemCount});
   final AppLocalizations l10n;
+  final int itemCount;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Row(
       children: [
         IconButton(
@@ -164,8 +165,38 @@ class _Header extends StatelessWidget {
           l10n.checkoutTitle,
           style: Theme.of(context).textTheme.displayMedium?.copyWith(
             fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.onSurface,
+            color: scheme.onSurface,
             height: 1.0,
+          ),
+        ),
+        const Spacer(),
+        // Items-count badge, moved up from the totals card.
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: KioskTokens.spaceM,
+            vertical: KioskTokens.spaceS,
+          ),
+          decoration: BoxDecoration(
+            color: scheme.primary.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.shopping_bag_rounded,
+                color: scheme.primary,
+                size: 28,
+              ),
+              const SizedBox(width: KioskTokens.spaceS),
+              Text(
+                l10n.itemsCount(itemCount),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: scheme.primary,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -178,7 +209,6 @@ class _TotalsCard extends StatelessWidget {
     required this.total,
     required this.allocated,
     required this.remaining,
-    required this.itemCount,
     required this.items,
     required this.fmt,
   });
@@ -186,7 +216,6 @@ class _TotalsCard extends StatelessWidget {
   final double total;
   final double allocated;
   final double remaining;
-  final int itemCount;
   final List<CartItem> items;
   final NumberFormat fmt;
 
@@ -235,51 +264,14 @@ class _TotalsCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: KioskTokens.spaceS),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Text(
-                  fmt.format(total),
-                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    color: scheme.primary,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -1.8,
-                    height: 1.0,
-                  ),
-                ),
-              ),
-              const SizedBox(width: KioskTokens.spaceM),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: KioskTokens.spaceL,
-                  vertical: KioskTokens.spaceM,
-                ),
-                decoration: BoxDecoration(
-                  color: scheme.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.shopping_bag_rounded,
-                      color: scheme.primary,
-                      size: 36,
-                    ),
-                    const SizedBox(width: KioskTokens.spaceS),
-                    Text(
-                      l10n.itemsCount(itemCount),
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(
-                            color: scheme.primary,
-                            fontWeight: FontWeight.w800,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          Text(
+            fmt.format(total),
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+              color: scheme.primary,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -1.8,
+              height: 1.0,
+            ),
           ),
           if (items.isNotEmpty) ...[
             const SizedBox(height: KioskTokens.spaceL),
@@ -508,6 +500,13 @@ class _PaymentMethodTile extends ConsumerWidget {
   final NumberFormat fmt;
   final AppLocalizations l10n;
 
+  /// Fixed icon-circle diameter, identical across every payment card.
+  static const double _iconSize = 112;
+
+  /// Height reserved for a two-line subtitle (fontSize 18 × height 1.3),
+  /// so single-line subtitles occupy the same space and cards stay aligned.
+  static const double _subtitleHeight = 48;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
@@ -571,49 +570,47 @@ class _PaymentMethodTile extends ConsumerWidget {
                 )
               : null,
           child: Padding(
-            padding: const EdgeInsets.all(KioskTokens.spaceM),
+            padding: const EdgeInsets.all(KioskTokens.spaceS),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // The icon block flexes to whatever height is left after the
-                // title + subtitle, so the card never overflows regardless of how
-                // many lines the subtitle wraps to.
-                Flexible(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: LayoutBuilder(
-                      builder: (context, c) {
-                        final d = c.biggest.shortestSide;
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: d,
-                              height: d,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: iconBg,
-                              ),
-                            ),
-                            Container(
-                              width: d * 0.72,
-                              height: d * 0.72,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: isActive
-                                    ? Colors.white.withValues(alpha: 0.10)
-                                    : scheme.primary.withValues(alpha: 0.06),
-                              ),
-                            ),
-                            Icon(method.icon, size: d * 0.52, color: iconColor),
-                          ],
-                        );
-                      },
-                    ),
+                // Fixed-size icon so every card's icon is identical, regardless
+                // of how many lines the subtitle wraps to.
+                SizedBox(
+                  width: _iconSize,
+                  height: _iconSize,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        width: _iconSize,
+                        height: _iconSize,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: iconBg,
+                        ),
+                      ),
+                      Container(
+                        width: _iconSize * 0.72,
+                        height: _iconSize * 0.72,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isActive
+                              ? Colors.white.withValues(alpha: 0.10)
+                              : scheme.primary.withValues(alpha: 0.06),
+                        ),
+                      ),
+                      Icon(
+                        method.icon,
+                        size: _iconSize * 0.52,
+                        color: iconColor,
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: KioskTokens.spaceS),
+                const SizedBox(height: KioskTokens.spaceM),
                 Text(
                   method.label(l10n),
                   maxLines: 1,
@@ -627,16 +624,21 @@ class _PaymentMethodTile extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  isActive ? fmt.format(amount) : method.subtitle(l10n),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: subtitleColor,
-                    fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
-                    fontSize: 18,
-                    height: 1.3,
+                // Reserve a fixed 2-line height so single-line subtitles occupy
+                // the same space and titles/icons stay aligned across cards.
+                SizedBox(
+                  height: _subtitleHeight,
+                  child: Text(
+                    isActive ? fmt.format(amount) : method.subtitle(l10n),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: subtitleColor,
+                      fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+                      fontSize: 18,
+                      height: 1.3,
+                    ),
                   ),
                 ),
               ],

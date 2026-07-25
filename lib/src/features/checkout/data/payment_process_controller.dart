@@ -138,15 +138,6 @@ class PaymentProcessController extends Notifier<PaymentTransaction> {
     );
   }
 
-  /// Moves from an approved payment into the receipt-choice step, where the
-  /// shopper picks whether to include an exchange slip and how to receive the
-  /// documents (print or SMS).
-  void chooseReceipt() {
-    if (state.isApproved) {
-      state = state.copyWith(status: PaymentTransactionStatus.choosingReceipt);
-    }
-  }
-
   /// Runs the chosen delivery: shows the matching in-flight status
   /// (printingReceipt / sendingSms), awaits the delivery service, then
   /// completes. This is the tail of the post-payment handler chain — the point

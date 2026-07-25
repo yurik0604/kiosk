@@ -13,6 +13,11 @@ import '../data/payment_process_controller.dart';
 import '../data/receipt_delivery_service.dart';
 import '../domain/payment_transaction.dart';
 
+/// Shared height for the post-payment success and receipt-choice stages so the
+/// modal doesn't visually jump between them. Sized to fit the taller
+/// (receipt-choice) content, with the shorter success content centered within.
+const double _resultStageHeight = 625;
+
 Future<bool> showPaymentProcessDialog({
   required BuildContext context,
   required double amount,
@@ -140,17 +145,14 @@ class _PaymentProcessDialogState extends ConsumerState<_PaymentProcessDialog> {
           processing: txn.status == PaymentTransactionStatus.processing,
         );
       case PaymentTransactionStatus.approved:
+      case PaymentTransactionStatus.choosingReceipt:
+        // The success + receipt-choice steps are merged into one stage: on a
+        // successful payment the shopper picks the exchange slip and delivery
+        // right here.
         return _SuccessStage(
           key: const ValueKey('success'),
           amount: widget.amount,
           fmt: fmt,
-          l10n: l10n,
-          onContinue: () =>
-              ref.read(paymentProcessControllerProvider.notifier).chooseReceipt(),
-        );
-      case PaymentTransactionStatus.choosingReceipt:
-        return _ReceiptChoiceStage(
-          key: const ValueKey('receipt-choice'),
           l10n: l10n,
           onConfirm: (includeExchangeSlip, delivery) =>
               _startDelivery(txn, includeExchangeSlip, delivery),
@@ -411,12 +413,12 @@ class _TerminalStageState extends State<_TerminalStage>
                       fontWeight: FontWeight.w700,
                     ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 4),
               Text(
                 widget.fmt.format(widget.amount),
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       color: scheme.primary,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w900,
                       letterSpacing: -0.6,
                       height: 1.0,
                     ),
@@ -773,13 +775,17 @@ class _SuccessStage extends StatefulWidget {
     required this.amount,
     required this.fmt,
     required this.l10n,
-    required this.onContinue,
+    required this.onConfirm,
   });
 
   final double amount;
   final NumberFormat fmt;
   final AppLocalizations l10n;
-  final VoidCallback onContinue;
+
+  /// Called when the shopper picks a delivery, with whether to include an
+  /// exchange slip. This is the merged success + receipt-choice action.
+  final void Function(bool includeExchangeSlip, ReceiptDelivery delivery)
+      onConfirm;
 
   @override
   State<_SuccessStage> createState() => _SuccessStageState();
@@ -788,6 +794,7 @@ class _SuccessStage extends StatefulWidget {
 class _SuccessStageState extends State<_SuccessStage>
     with TickerProviderStateMixin {
   late final AnimationController _entry;
+  bool _includeExchangeSlip = false;
 
   @override
   void initState() {
@@ -812,13 +819,13 @@ class _SuccessStageState extends State<_SuccessStage>
     final scheme = Theme.of(context).colorScheme;
     final l10n = widget.l10n;
     return SizedBox(
-      height: 540,
+      height: _resultStageHeight,
       child: Column(
       mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        const SizedBox(height: KioskTokens.spaceS),
         SizedBox(
-          height: 200,
+          height: 150,
           child: AnimatedBuilder(
             animation: _entry,
             builder: (context, _) {
@@ -879,7 +886,7 @@ class _SuccessStageState extends State<_SuccessStage>
             },
           ),
         ),
-        const SizedBox(height: KioskTokens.spaceL),
+        const SizedBox(height: KioskTokens.spaceM),
         Text(
           l10n.paymentSuccessTitle,
           textAlign: TextAlign.center,
@@ -888,38 +895,70 @@ class _SuccessStageState extends State<_SuccessStage>
                 fontWeight: FontWeight.w700,
               ),
         ),
-        const SizedBox(height: KioskTokens.spaceXS),
+        const SizedBox(height: KioskTokens.spaceS),
         Text(
           widget.fmt.format(widget.amount),
-          style: Theme.of(context).textTheme.displaySmall?.copyWith(
+          style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                color: scheme.primary,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.5,
+              ),
+        ),
+        const SizedBox(height: KioskTokens.spaceM),
+        // Framing text: confirm approval and prompt for a receipt choice.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: KioskTokens.spaceS),
+          child: Text(
+            l10n.paymentSuccessReceiptPrompt,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  height: 1.4,
+                ),
+          ),
+        ),
+        // Receipt options, merged in from the former "Your receipt" step.
+        const Spacer(),
+        Text(
+          l10n.receiptSectionTitle,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 color: scheme.onSurface,
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
               ),
         ),
-        const SizedBox(height: KioskTokens.spaceS),
-        Text(
-          l10n.paymentApprovedBody,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
+        const SizedBox(height: KioskTokens.spaceM),
+        _ExchangeSlipCheckbox(
+          label: l10n.exchangeSlipYes,
+          value: _includeExchangeSlip,
+          onChanged: (v) => setState(() => _includeExchangeSlip = v),
         ),
-        const SizedBox(height: KioskTokens.spaceL),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton(
-            onPressed: widget.onContinue,
-            style: FilledButton.styleFrom(foregroundColor: Colors.white),
-            child: Text(
-              l10n.paymentFinish.toUpperCase(),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                  ),
+        const SizedBox(height: KioskTokens.spaceM),
+        Row(
+          children: [
+            Expanded(
+              child: _DeliveryButton(
+                icon: Icons.print_rounded,
+                label: l10n.receiptDeliveryPrint,
+                onTap: () => widget.onConfirm(
+                  _includeExchangeSlip,
+                  ReceiptDelivery.print,
+                ),
+              ),
             ),
-          ),
+            const SizedBox(width: KioskTokens.spaceS),
+            Expanded(
+              child: _DeliveryButton(
+                icon: Icons.sms_rounded,
+                label: l10n.receiptDeliverySms,
+                onTap: () => widget.onConfirm(
+                  _includeExchangeSlip,
+                  ReceiptDelivery.sms,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     ),
@@ -1003,122 +1042,6 @@ class _CheckmarkPainter extends CustomPainter {
       oldDelegate.progress != progress || oldDelegate.color != color;
 }
 
-/// The receipt-choice step shown after a successful payment: pick whether to
-/// include an exchange slip, then how to receive the documents (print / SMS).
-/// Confirms with `(includeExchangeSlip, delivery)`.
-class _ReceiptChoiceStage extends StatefulWidget {
-  const _ReceiptChoiceStage({
-    super.key,
-    required this.l10n,
-    required this.onConfirm,
-  });
-
-  final AppLocalizations l10n;
-  final void Function(bool includeExchangeSlip, ReceiptDelivery delivery)
-      onConfirm;
-
-  @override
-  State<_ReceiptChoiceStage> createState() => _ReceiptChoiceStageState();
-}
-
-class _ReceiptChoiceStageState extends State<_ReceiptChoiceStage> {
-  bool _includeExchangeSlip = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final l10n = widget.l10n;
-
-    return SizedBox(
-      height: 540,
-      // Scrollable so the sections never overflow the fixed stage height at
-      // larger locale font scales; centered while the content fits.
-      child: SingleChildScrollView(
-        child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Center(
-            child: Container(
-              width: 96,
-              height: 96,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: scheme.primaryContainer,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.receipt_long_rounded,
-                size: 48,
-                color: scheme.onPrimaryContainer,
-              ),
-            ),
-          ),
-          const SizedBox(height: KioskTokens.spaceL),
-          // Modal title: the general receipt process.
-          Text(
-            l10n.receiptChoiceTitle,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: scheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: KioskTokens.spaceS),
-          Text(
-            l10n.receiptChoiceBody,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: scheme.onSurfaceVariant,
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: KioskTokens.spaceXXL),
-          // Section 1 — what to include: the exchange-slip opt-in checkbox.
-          _ExchangeSlipCheckbox(
-            label: l10n.exchangeSlipYes,
-            value: _includeExchangeSlip,
-            onChanged: (v) => setState(() => _includeExchangeSlip = v),
-          ),
-          // Divider separating the "include" and "send by" sections.
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: KioskTokens.spaceL),
-            child: Divider(height: 1, color: scheme.outlineVariant),
-          ),
-          // Section 2 — how to receive it: print or SMS.
-          Row(
-            children: [
-              Expanded(
-                child: _DeliveryButton(
-                  icon: Icons.print_rounded,
-                  label: l10n.receiptDeliveryPrint,
-                  onTap: () => widget.onConfirm(
-                    _includeExchangeSlip,
-                    ReceiptDelivery.print,
-                  ),
-                ),
-              ),
-              const SizedBox(width: KioskTokens.spaceS),
-              Expanded(
-                child: _DeliveryButton(
-                  icon: Icons.sms_rounded,
-                  label: l10n.receiptDeliverySms,
-                  onTap: () => widget.onConfirm(
-                    _includeExchangeSlip,
-                    ReceiptDelivery.sms,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-        ),
-      ),
-    );
-  }
-}
-
 /// A single, tappable checkbox row for opting into the exchange slip.
 class _ExchangeSlipCheckbox extends StatelessWidget {
   const _ExchangeSlipCheckbox({
@@ -1136,7 +1059,7 @@ class _ExchangeSlipCheckbox extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     return SizedBox(
-      height: KioskTokens.touchTargetLarge,
+      height: KioskTokens.touchTargetLarge + KioskTokens.spaceS,
       child: Material(
         color: value ? scheme.primaryContainer : scheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(KioskTokens.radiusLarge),
@@ -1151,13 +1074,19 @@ class _ExchangeSlipCheckbox extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(
-                  width: 32,
-                  height: 32,
-                  child: Checkbox(
-                    value: value,
-                    onChanged: (v) => onChanged(v ?? false),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(KioskTokens.radiusSmall),
+                  width: 40,
+                  height: 40,
+                  // Checkbox has no size property; scale it up.
+                  child: Transform.scale(
+                    scale: 1.5,
+                    child: Checkbox(
+                      value: value,
+                      onChanged: (v) => onChanged(v ?? false),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          KioskTokens.radiusSmall,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -1167,6 +1096,7 @@ class _ExchangeSlipCheckbox extends StatelessWidget {
                     label,
                     style: theme.textTheme.titleLarge?.copyWith(
                       color: scheme.onSurface,
+                      fontSize: 24,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -1195,13 +1125,14 @@ class _DeliveryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilledButton.icon(
       onPressed: onTap,
-      icon: Icon(icon, size: 28),
+      icon: Icon(icon, size: 32),
       label: Text(
-        label,
+        label.toUpperCase(),
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: Colors.white,
+              fontSize: 24,
               fontWeight: FontWeight.w700,
-              letterSpacing: 0.3,
+              letterSpacing: 0.5,
             ),
       ),
       style: FilledButton.styleFrom(foregroundColor: Colors.white),
