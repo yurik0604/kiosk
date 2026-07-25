@@ -858,6 +858,24 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get logout;
 
+  /// No description provided for @menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get menu;
+
+  /// No description provided for @menuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiosk Menu'**
+  String get menuTitle;
+
+  /// No description provided for @menuReaderSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Reader Settings'**
+  String get menuReaderSettings;
+
   /// No description provided for @memberLookupTitle.
   ///
   /// In en, this message translates to:

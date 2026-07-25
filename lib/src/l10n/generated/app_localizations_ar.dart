@@ -485,6 +485,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get logout => 'تسجيل الخروج';
 
   @override
+  String get menu => 'القائمة';
+
+  @override
+  String get menuTitle => 'قائمة الجهاز';
+
+  @override
+  String get menuReaderSettings => 'إعدادات القارئ';
+
+  @override
   String get memberLookupTitle => 'هل أنت عضو في النادي؟';
 
   @override

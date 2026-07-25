@@ -478,6 +478,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get logout => 'Выйти';
 
   @override
+  String get menu => 'Меню';
+
+  @override
+  String get menuTitle => 'Меню киоска';
+
+  @override
+  String get menuReaderSettings => 'Настройки считывателя';
+
+  @override
   String get memberLookupTitle => 'Вы участник клуба?';
 
   @override

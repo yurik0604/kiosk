@@ -467,6 +467,15 @@ class AppLocalizationsHe extends AppLocalizations {
   String get logout => 'התנתקות';
 
   @override
+  String get menu => 'תפריט';
+
+  @override
+  String get menuTitle => 'תפריט העמדה';
+
+  @override
+  String get menuReaderSettings => 'הגדרות קורא';
+
+  @override
   String get memberLookupTitle => 'האם אתם חברי מועדון?';
 
   @override

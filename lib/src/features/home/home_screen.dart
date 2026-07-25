@@ -25,6 +25,75 @@ Future<void> _startSession(BuildContext context, WidgetRef ref) async {
   context.go(AppRoutes.session);
 }
 
+Future<void> _openKioskMenu(BuildContext context, WidgetRef ref) async {
+  final scheme = Theme.of(context).colorScheme;
+  final l10n = AppLocalizations.of(context);
+  final action = await showModalBottomSheet<_MenuAction>(
+    context: context,
+    showDragHandle: true,
+    backgroundColor: scheme.surfaceContainerHigh,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(KioskTokens.radiusLarge),
+      ),
+    ),
+    builder: (context) => SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          KioskTokens.spaceL,
+          0,
+          KioskTokens.spaceL,
+          KioskTokens.spaceL,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: KioskTokens.spaceS,
+              ),
+              child: Text(
+                l10n.menuTitle,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            const SizedBox(height: KioskTokens.spaceS),
+            ListTile(
+              leading: Icon(Icons.settings_rounded, color: scheme.primary),
+              title: Text(l10n.menuReaderSettings),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(KioskTokens.radiusMedium),
+              ),
+              onTap: () =>
+                  Navigator.of(context).pop(_MenuAction.readerSettings),
+            ),
+            const SizedBox(height: KioskTokens.spaceXS),
+            ListTile(
+              leading: Icon(Icons.logout_rounded, color: scheme.error),
+              title: Text(l10n.logout),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(KioskTokens.radiusMedium),
+              ),
+              onTap: () => Navigator.of(context).pop(_MenuAction.logout),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  if (action == null || !context.mounted) return;
+  switch (action) {
+    case _MenuAction.readerSettings:
+      context.push(AppRoutes.readerSettings);
+    case _MenuAction.logout:
+      ref.read(authControllerProvider.notifier).logout();
+  }
+}
+
+enum _MenuAction { readerSettings, logout }
+
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -42,9 +111,7 @@ class HomeScreen extends ConsumerWidget {
             child: Column(
               children: [
                 _TopBar(
-                  onLogout: () =>
-                      ref.read(authControllerProvider.notifier).logout(),
-                  onAdmin: () => context.push(AppRoutes.readerSettings),
+                  onOpenMenu: () => _openKioskMenu(context, ref),
                 ),
                 const SizedBox(height: KioskTokens.spaceL),
                 const Expanded(flex: 2, child: _Hero()),
@@ -68,10 +135,9 @@ class HomeScreen extends ConsumerWidget {
 }
 
 class _TopBar extends ConsumerWidget {
-  const _TopBar({required this.onLogout, required this.onAdmin});
+  const _TopBar({required this.onOpenMenu});
 
-  final VoidCallback onLogout;
-  final VoidCallback onAdmin;
+  final VoidCallback onOpenMenu;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -130,48 +196,45 @@ class _TopBar extends ConsumerWidget {
           children: [
             Icon(Icons.wifi_rounded, color: scheme.onSurfaceVariant),
             const SizedBox(width: KioskTokens.spaceS),
-            // Long-press the status pill to open admin reader settings.
-            GestureDetector(
-              onLongPress: onAdmin,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: KioskTokens.spaceS,
-                  vertical: KioskTokens.spaceXS,
-                ),
-                decoration: BoxDecoration(
-                  color: scheme.surfaceContainer,
-                  borderRadius: BorderRadius.circular(KioskTokens.radiusSmall),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: _statusColor(readerStatus, scheme),
-                        shape: BoxShape.circle,
-                      ),
+            // The status pill is display-only: it shows the reader status.
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: KioskTokens.spaceS,
+                vertical: KioskTokens.spaceXS,
+              ),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(KioskTokens.radiusSmall),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: _statusColor(readerStatus, scheme),
+                      shape: BoxShape.circle,
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      readerStatus.isConnected ? l10n.online : 'OFFLINE',
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            fontSize: 14,
-                            color: scheme.onSurfaceVariant,
-                          ),
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    readerStatus.isConnected ? l10n.online : 'OFFLINE',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          fontSize: 14,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(width: KioskTokens.spaceS),
             Tooltip(
-              message: l10n.logout,
+              message: l10n.menu,
               child: IconButton(
-                onPressed: onLogout,
+                onPressed: onOpenMenu,
                 icon: Icon(
-                  Icons.logout_rounded,
+                  Icons.menu_rounded,
                   color: scheme.onSurfaceVariant,
                 ),
               ),

@@ -466,6 +466,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Sign out';
 
   @override
+  String get menu => 'Menu';
+
+  @override
+  String get menuTitle => 'Kiosk Menu';
+
+  @override
+  String get menuReaderSettings => 'Reader Settings';
+
+  @override
   String get memberLookupTitle => 'Are you a club member?';
 
   @override
