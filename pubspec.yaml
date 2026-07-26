@@ -46,6 +46,9 @@ dependencies:
   intl: ^0.20.2
   connectivity_plus: ^7.3.1
 
+  # RFID EPC decoding (AES-256 ECB for XCode 128-bit tags)
+  pointycastle: ^4.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

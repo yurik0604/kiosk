@@ -11,6 +11,8 @@ import '../../core/theme/app_theme.dart';
 import '../../core/widgets/logout_confirm_dialog.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../auth/data/auth_controller.dart';
+import '../catalog/data/catalog_sync_controller.dart';
+import '../catalog/domain/catalog_state.dart';
 import '../member/presentation/member_lookup_dialog.dart';
 import '../rfid/data/rfid_reader_controller.dart';
 import '../rfid/domain/reader_status.dart';
@@ -164,6 +166,7 @@ class _TopBar extends ConsumerWidget {
     final internetStatus = ref.watch(
       connectivityControllerProvider.select((s) => s.status),
     );
+    final catalog = ref.watch(catalogSyncControllerProvider);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -222,6 +225,19 @@ class _TopBar extends ConsumerWidget {
                 color: _internetColor(internetStatus, scheme),
               ),
             ),
+            // Catalog sync status: only shown once a catalog is being tracked
+            // for the selected group (hidden while uninitialized so it doesn't
+            // clutter an unconfigured kiosk).
+            if (_catalogVisible(catalog)) ...[
+              const SizedBox(width: KioskTokens.spaceS),
+              Tooltip(
+                message: _catalogTooltip(catalog, l10n),
+                child: Icon(
+                  _catalogIcon(catalog),
+                  color: _catalogColor(catalog, scheme),
+                ),
+              ),
+            ],
             const SizedBox(width: KioskTokens.spaceS),
             // Reader status: the icon is color-coded to the RFID reader state.
             Tooltip(
@@ -273,6 +289,40 @@ class _TopBar extends ConsumerWidget {
       case ConnectivityStatus.unknown:
         return scheme.outline;
     }
+  }
+
+  /// True when a group is selected but the catalog has never synced locally —
+  /// no local sync date and nothing imported, and no sync/check in flight.
+  /// This is the "catalog doesn't exist yet" state, flagged red.
+  bool _catalogNeverSynced(CatalogState c) =>
+      c.currentGroupId != null &&
+      !c.isSyncing &&
+      !c.isCheckingForUpdates &&
+      c.localSyncDate == null &&
+      c.totalItems == 0;
+
+  /// Whether the catalog-sync icon should be shown. Shown once a group is
+  /// selected (so a never-synced catalog surfaces in red); hidden only when no
+  /// group is set yet, so a truly unconfigured kiosk stays clean.
+  bool _catalogVisible(CatalogState c) => c.currentGroupId != null;
+
+  // Always the product-catalog glyph (matches the menu's "Catalog" entry); the
+  // sync state is conveyed by color + tooltip, not by swapping the icon.
+  IconData _catalogIcon(CatalogState c) => Icons.category_rounded;
+
+  Color _catalogColor(CatalogState c, ColorScheme scheme) {
+    if (c.isSyncing || c.isCheckingForUpdates) return scheme.secondary;
+    if (c.hasError || _catalogNeverSynced(c)) return scheme.error; // red
+    if (c.needsSync) return scheme.tertiary; // update available
+    return KioskTokens.statusOnline; // ready
+  }
+
+  String _catalogTooltip(CatalogState c, AppLocalizations l10n) {
+    if (c.isSyncing || c.isCheckingForUpdates) return l10n.catalogStatusSyncing;
+    if (c.hasError) return l10n.catalogStatusFailed;
+    if (_catalogNeverSynced(c)) return l10n.catalogPressSyncToStart;
+    if (c.needsSync) return l10n.catalogStatusUpdateAvailable;
+    return l10n.catalogStatusUpToDate;
   }
 }
 

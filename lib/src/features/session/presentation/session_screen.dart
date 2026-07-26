@@ -15,6 +15,7 @@ import '../../catalog/data/catalog_repository.dart';
 import '../../catalog/domain/catalog_item.dart';
 import '../../catalog/domain/catalog_item_display.dart';
 import '../../member/data/member_controller.dart';
+import '../../rfid/data/inventory_lifecycle_controller.dart';
 import '../../rfid/data/rfid_reader_controller.dart';
 import '../../rfid/domain/reader_event.dart';
 import '../../rfid/domain/reader_status.dart';
@@ -36,6 +37,48 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
   /// Guard against re-entrant timeouts firing while the warning is already
   /// on screen.
   bool _warningOpen = false;
+
+  /// Cached in [initState] so [dispose] can stop inventory without touching
+  /// `ref` — using `ref` once the widget is deactivated is unsafe (the notifier
+  /// object itself is stable for the widget's lifetime, so holding it is fine).
+  late final InventoryLifecycleController _inventory;
+
+  /// Session generation returned by [InventoryLifecycleController.enter], passed
+  /// back to [exit] so a deferred exit that lost the leave→re-enter race no-ops.
+  int? _inventoryGeneration;
+
+  @override
+  void initState() {
+    super.initState();
+    _inventory = ref.read(inventoryLifecycleProvider.notifier);
+    // The cart is on screen: start (or arm) RFID inventory and bridge decoded
+    // tags into the cart. The controller owns all reader I/O; this is just the
+    // trigger. Deferred a frame so we don't mutate provider state during the
+    // first build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _inventoryGeneration = _inventory.enter();
+    });
+  }
+
+  @override
+  void dispose() {
+    // Left the cart (to payment, home, idle-timeout, …): stop inventory and the
+    // tag→cart bridge. Safe to call even if never fully started (idempotent).
+    //
+    // Deferred with a microtask: exit() mutates provider state (bridge/lifecycle
+    // notifiers), which Riverpod forbids during the widget-tree finalize phase
+    // that dispose() runs in. Running it just after teardown avoids the "Tried
+    // to modify a provider while the widget tree was building" assertion. Uses
+    // the cached notifier, so it's safe once the widget is gone. The generation
+    // guard makes a fast leave→re-enter race a no-op.
+    final inventory = _inventory;
+    final gen = _inventoryGeneration;
+    if (gen != null) {
+      Future(() => inventory.exit(gen));
+    }
+    super.dispose();
+  }
 
   Future<void> _onIdleTimeout() async {
     if (_warningOpen) return;
@@ -198,8 +241,10 @@ class _Header extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _SimulateScanButton(onPressed: onSimulateScan),
-                const SizedBox(width: KioskTokens.spaceS),
+                // Manual "simulate scan" insert button — hidden for now; will be
+                // re-enabled behind a config flag.
+                // _SimulateScanButton(onPressed: onSimulateScan),
+                // const SizedBox(width: KioskTokens.spaceS),
                 _ScanIndicator(),
               ],
             ),
@@ -210,6 +255,8 @@ class _Header extends ConsumerWidget {
   }
 }
 
+// Kept for re-enabling behind a config flag (currently hidden in the header).
+// ignore: unused_element
 class _SimulateScanButton extends StatelessWidget {
   const _SimulateScanButton({required this.onPressed});
 

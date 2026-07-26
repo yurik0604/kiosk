@@ -77,6 +77,12 @@ class SessionState {
 class SessionController extends Notifier<SessionState> {
   int _seq = 0;
 
+  /// Maps a physical tag's EPC to the cart line it created, so repeat reads of
+  /// the same tag (which the reader emits many times per second while the tag
+  /// is in the field) don't create duplicate lines. Cleared on [reset] and
+  /// pruned when the corresponding line is removed.
+  final Map<String, String> _epcToLineId = {};
+
   @override
   SessionState build() {
     // Mirror the attached member's flat discount into the session totals.
@@ -108,7 +114,28 @@ class SessionController extends Notifier<SessionState> {
     );
   }
 
+  /// Adds a catalog [item] scanned from an RFID tag identified by [epc].
+  ///
+  /// Idempotent per EPC: while a given physical tag stays in the reader's
+  /// field it is reported repeatedly, but only the first read creates a line.
+  /// If the customer later removes that line, [removeItem] drops the EPC
+  /// mapping, so a subsequent read of the still-present tag re-adds it.
+  void addByEpc(String epc, CatalogItem item) {
+    if (_epcToLineId.containsKey(epc)) return; // already in cart — dedup.
+
+    _seq += 1;
+    final lineId =
+        '${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}-$_seq';
+    _epcToLineId[epc] = lineId;
+    state = state.copyWith(
+      items: [...state.items, CartItem(lineId: lineId, item: item, epc: epc)],
+    );
+  }
+
   void removeItem(String lineId) {
+    // Keep the EPC→line map in sync: if this line came from a tag, drop its
+    // mapping so the tag can re-add on the next read.
+    _epcToLineId.removeWhere((_, id) => id == lineId);
     state = state.copyWith(
       items: state.items.where((i) => i.lineId != lineId).toList(),
     );
@@ -116,6 +143,7 @@ class SessionController extends Notifier<SessionState> {
 
   void reset() {
     _seq = 0;
+    _epcToLineId.clear();
     state = const SessionState();
     ref.read(memberControllerProvider.notifier).clear();
     ref.read(currentShopperProvider.notifier).clear();
