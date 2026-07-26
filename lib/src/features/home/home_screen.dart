@@ -60,6 +60,15 @@ Future<void> _openKioskMenu(BuildContext context, WidgetRef ref) async {
             ),
             const SizedBox(height: KioskTokens.spaceS),
             ListTile(
+              leading: Icon(Icons.category_rounded, color: scheme.primary),
+              title: Text(l10n.menuCatalog),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(KioskTokens.radiusMedium),
+              ),
+              onTap: () => Navigator.of(context).pop(_MenuAction.catalog),
+            ),
+            const SizedBox(height: KioskTokens.spaceXS),
+            ListTile(
               leading: Icon(Icons.settings_rounded, color: scheme.primary),
               title: Text(l10n.menuReaderSettings),
               shape: RoundedRectangleBorder(
@@ -85,6 +94,8 @@ Future<void> _openKioskMenu(BuildContext context, WidgetRef ref) async {
 
   if (action == null || !context.mounted) return;
   switch (action) {
+    case _MenuAction.catalog:
+      context.push(AppRoutes.catalog);
     case _MenuAction.readerSettings:
       context.push(AppRoutes.readerSettings);
     case _MenuAction.logout:
@@ -92,7 +103,7 @@ Future<void> _openKioskMenu(BuildContext context, WidgetRef ref) async {
   }
 }
 
-enum _MenuAction { readerSettings, logout }
+enum _MenuAction { catalog, readerSettings, logout }
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});

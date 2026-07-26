@@ -8,7 +8,7 @@ import 'package:intl/intl.dart' hide TextDirection;
 import '../../../core/format/currency.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../catalog/domain/barcode.dart';
+import '../../catalog/domain/catalog_item_display.dart';
 import '../data/session_controller.dart';
 import '../domain/cart_item.dart';
 import 'product_card.dart';
@@ -41,7 +41,7 @@ class _ProductDetailsSheet extends StatelessWidget {
       locale: Localizations.localeOf(context).toString(),
       name: 'ILS',
     );
-    final p = item.product;
+    final p = item.item;
 
     return FractionallySizedBox(
       heightFactor: 0.92,
@@ -62,7 +62,7 @@ class _ProductDetailsSheet extends StatelessWidget {
                     child: Stack(
                       children: [
                         _HeroImage(
-                          imageUrl: p.imageUrl,
+                          imageUrl: p.imgUrl,
                           category: p.category,
                           subCategory: p.subCategory,
                         ),
@@ -199,7 +199,7 @@ class _DetailsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final product = item.product;
+    final product = item.item;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,9 +224,9 @@ class _DetailsBody extends StatelessWidget {
         const SizedBox(height: KioskTokens.spaceS),
         Builder(
           builder: (context) {
-            final ean = Ean13.fromSku(product.sku);
+            final barcodeText = product.barcode;
             return Semantics(
-              label: l10n.barcodeLabel(ean.digits),
+              label: l10n.barcodeLabel(barcodeText),
               child: Row(
                 children: [
                   Icon(
@@ -237,7 +237,7 @@ class _DetailsBody extends StatelessWidget {
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
-                      ean.formatted,
+                      barcodeText,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: scheme.onSurfaceVariant,
                             fontWeight: FontWeight.w600,
@@ -278,12 +278,8 @@ class _DetailsBody extends StatelessWidget {
             if (product.season.isNotEmpty)
               _DetailChip(icon: Icons.event_outlined, label: product.season),
             _DetailChip(
-              icon: Icons.inventory_2_outlined,
-              label: l10n.stockCount(product.stockQty),
-            ),
-            _DetailChip(
               icon: Icons.confirmation_number_outlined,
-              label: l10n.skuLabel(product.sku),
+              label: l10n.skuLabel(product.barcode),
             ),
           ],
         ),
@@ -346,13 +342,11 @@ class _PriceBlock extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
-    final product = item.product;
 
     final session = ref.watch(sessionControllerProvider);
     final memberSaves = session.memberSavingsFor(item);
     final effectivePrice = session.effectivePriceFor(item);
     final hasMemberDiscount = memberSaves > 0.005;
-    final saleSavings = product.originalPrice - product.price;
 
     // Compose amounts with the mark-free, symbol-left formatter so the ₪ and the
     // minus sit consistently and RTL can't reorder them — same as the card and
@@ -390,26 +384,20 @@ class _PriceBlock extends ConsumerWidget {
       letterSpacing: -0.5,
     );
 
-    // Discount context, if any (sale takes precedence over member pricing).
+    // Discount context, if any. The catalog carries a single price with no
+    // sale concept, so the only discount shown is the club-member discount.
     final ({
       String label,
       double original,
       double savings,
       TextStyle? labelStyle,
     })? discount;
-    if (product.isOnSale) {
-      discount = (
-        label: l10n.saleDiscountShort,
-        original: product.originalPrice,
-        savings: saleSavings,
-        labelStyle: discountLabelStyle,
-      );
-    } else if (hasMemberDiscount) {
+    if (hasMemberDiscount) {
       discount = (
         label: l10n.memberDiscountLineLabel(
           _formatPercent(session.memberDiscountPct),
         ),
-        original: product.price,
+        original: item.item.price,
         savings: memberSaves,
         labelStyle: discountLabelStyle,
       );

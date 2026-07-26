@@ -145,6 +145,10 @@ class KioskTokens {
   static const double touchTargetLarge = 80;
   static const double touchTargetHero = 120;
 
+  /// Max width for form/settings content so input rows stay a comfortable
+  /// size on large tablets instead of stretching edge-to-edge.
+  static const double maxContentWidth = 720;
+
   static const double radiusSmall = 12;
   static const double radiusMedium = 24;
   static const double radiusLarge = 32;

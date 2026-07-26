@@ -14,137 +14,105 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
-import 'src/features/catalog/domain/product.dart';
+import 'src/features/catalog/domain/catalog_item.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
 final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
-    id: const obx_int.IdUid(1, 4540404020969726288),
-    name: 'Product',
-    lastPropertyId: const obx_int.IdUid(23, 4065309040729867541),
+    id: const obx_int.IdUid(2, 4369627523554535285),
+    name: 'CatalogItem',
+    lastPropertyId: const obx_int.IdUid(14, 8728380390683010612),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(1, 4318051796355501538),
+        id: const obx_int.IdUid(1, 127955469886150822),
         name: 'id',
         type: 6,
         flags: 1,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(2, 5217587239940126087),
-        name: 'rfidTag',
-        type: 9,
-        flags: 2080,
-        indexId: const obx_int.IdUid(1, 9024342127771394645),
+        id: const obx_int.IdUid(2, 4079525055290429787),
+        name: 'catalogId',
+        type: 6,
+        flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(3, 4337140269689558051),
+        id: const obx_int.IdUid(3, 5569330837426287415),
+        name: 'barcode',
+        type: 9,
+        flags: 2048,
+        indexId: const obx_int.IdUid(3, 1532148252419120835),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 5946168015902266775),
+        name: 'barcode1',
+        type: 9,
+        flags: 2048,
+        indexId: const obx_int.IdUid(4, 664195034691134809),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 8678697041974557550),
+        name: 'barcode2',
+        type: 9,
+        flags: 2048,
+        indexId: const obx_int.IdUid(5, 7928194586525603480),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 5277142466087419055),
+        name: 'barcode3',
+        type: 9,
+        flags: 2048,
+        indexId: const obx_int.IdUid(6, 4932604223879088670),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 2348551400806260457),
         name: 'name',
         type: 9,
-        flags: 0,
+        flags: 2048,
+        indexId: const obx_int.IdUid(7, 8485913699936421891),
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(4, 6790937530051066910),
-        name: 'brand',
+        id: const obx_int.IdUid(8, 7844281102196793267),
+        name: 'model',
+        type: 9,
+        flags: 2048,
+        indexId: const obx_int.IdUid(8, 3165703147547576792),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 6529399723290812052),
+        name: 'modelName',
         type: 9,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(5, 1734938009085500417),
+        id: const obx_int.IdUid(10, 61520798731180101),
         name: 'description',
         type: 9,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(6, 2743578270744146881),
-        name: 'category',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(7, 1066522559189186156),
-        name: 'priceCents',
+        id: const obx_int.IdUid(11, 5892797788039576590),
+        name: 'price',
         type: 8,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(8, 5417369160916133270),
-        name: 'imageUrl',
+        id: const obx_int.IdUid(12, 5597965565775054181),
+        name: 'lastUpdateDate',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 4531736963978775079),
+        name: 'imgUrl',
         type: 9,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(10, 2014029228108435066),
-        name: 'origin',
+        id: const obx_int.IdUid(14, 8728380390683010612),
+        name: 'attrsJson',
         type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(13, 4973093135799185841),
-        name: 'stockQty',
-        type: 6,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(14, 6355832286635096535),
-        name: 'sku',
-        type: 9,
-        flags: 2048,
-        indexId: const obx_int.IdUid(2, 5331415458403998681),
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(15, 8629758526488630214),
-        name: 'subCategory',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(16, 5891696281918474198),
-        name: 'gender',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(17, 8230906776629014151),
-        name: 'size',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(18, 6273840302294597253),
-        name: 'color',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(19, 5037790091883113870),
-        name: 'colorHex',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(20, 1607701590784636450),
-        name: 'material',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(21, 1883370538253063395),
-        name: 'careInstructions',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(22, 129232267074258458),
-        name: 'season',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(23, 4065309040729867541),
-        name: 'originalPriceCents',
-        type: 8,
         flags: 0,
       ),
     ],
@@ -191,16 +159,36 @@ Future<obx.Store> openStore({
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
     entities: _entities,
-    lastEntityId: const obx_int.IdUid(1, 4540404020969726288),
-    lastIndexId: const obx_int.IdUid(2, 5331415458403998681),
+    lastEntityId: const obx_int.IdUid(2, 4369627523554535285),
+    lastIndexId: const obx_int.IdUid(8, 3165703147547576792),
     lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
-    retiredEntityUids: const [],
+    retiredEntityUids: const [4540404020969726288],
     retiredIndexUids: const [],
     retiredPropertyUids: const [
       2101835290539610267,
       1295538421748961593,
       2681148820280449275,
+      4318051796355501538,
+      5217587239940126087,
+      4337140269689558051,
+      6790937530051066910,
+      1734938009085500417,
+      2743578270744146881,
+      1066522559189186156,
+      5417369160916133270,
+      2014029228108435066,
+      4973093135799185841,
+      6355832286635096535,
+      8629758526488630214,
+      5891696281918474198,
+      8230906776629014151,
+      6273840302294597253,
+      5037790091883113870,
+      1607701590784636450,
+      1883370538253063395,
+      129232267074258458,
+      4065309040729867541,
     ],
     retiredRelationUids: const [],
     modelVersion: 5,
@@ -209,52 +197,40 @@ obx_int.ModelDefinition getObjectBoxModel() {
   );
 
   final bindings = <Type, obx_int.EntityDefinition>{
-    Product: obx_int.EntityDefinition<Product>(
+    CatalogItem: obx_int.EntityDefinition<CatalogItem>(
       model: _entities[0],
-      toOneRelations: (Product object) => [],
-      toManyRelations: (Product object) => {},
-      getId: (Product object) => object.id,
-      setId: (Product object, int id) {
+      toOneRelations: (CatalogItem object) => [],
+      toManyRelations: (CatalogItem object) => {},
+      getId: (CatalogItem object) => object.id,
+      setId: (CatalogItem object, int id) {
         object.id = id;
       },
-      objectToFB: (Product object, fb.Builder fbb) {
-        final rfidTagOffset = fbb.writeString(object.rfidTag);
+      objectToFB: (CatalogItem object, fb.Builder fbb) {
+        final barcodeOffset = fbb.writeString(object.barcode);
+        final barcode1Offset = fbb.writeString(object.barcode1);
+        final barcode2Offset = fbb.writeString(object.barcode2);
+        final barcode3Offset = fbb.writeString(object.barcode3);
         final nameOffset = fbb.writeString(object.name);
-        final brandOffset = fbb.writeString(object.brand);
+        final modelOffset = fbb.writeString(object.model);
+        final modelNameOffset = fbb.writeString(object.modelName);
         final descriptionOffset = fbb.writeString(object.description);
-        final categoryOffset = fbb.writeString(object.category);
-        final imageUrlOffset = fbb.writeString(object.imageUrl);
-        final originOffset = fbb.writeString(object.origin);
-        final skuOffset = fbb.writeString(object.sku);
-        final subCategoryOffset = fbb.writeString(object.subCategory);
-        final genderOffset = fbb.writeString(object.gender);
-        final sizeOffset = fbb.writeString(object.size);
-        final colorOffset = fbb.writeString(object.color);
-        final colorHexOffset = fbb.writeString(object.colorHex);
-        final materialOffset = fbb.writeString(object.material);
-        final careInstructionsOffset = fbb.writeString(object.careInstructions);
-        final seasonOffset = fbb.writeString(object.season);
-        fbb.startTable(24);
+        final imgUrlOffset = fbb.writeString(object.imgUrl);
+        final attrsJsonOffset = fbb.writeString(object.attrsJson);
+        fbb.startTable(15);
         fbb.addInt64(0, object.id);
-        fbb.addOffset(1, rfidTagOffset);
-        fbb.addOffset(2, nameOffset);
-        fbb.addOffset(3, brandOffset);
-        fbb.addOffset(4, descriptionOffset);
-        fbb.addOffset(5, categoryOffset);
-        fbb.addFloat64(6, object.priceCents);
-        fbb.addOffset(7, imageUrlOffset);
-        fbb.addOffset(9, originOffset);
-        fbb.addInt64(12, object.stockQty);
-        fbb.addOffset(13, skuOffset);
-        fbb.addOffset(14, subCategoryOffset);
-        fbb.addOffset(15, genderOffset);
-        fbb.addOffset(16, sizeOffset);
-        fbb.addOffset(17, colorOffset);
-        fbb.addOffset(18, colorHexOffset);
-        fbb.addOffset(19, materialOffset);
-        fbb.addOffset(20, careInstructionsOffset);
-        fbb.addOffset(21, seasonOffset);
-        fbb.addFloat64(22, object.originalPriceCents);
+        fbb.addInt64(1, object.catalogId);
+        fbb.addOffset(2, barcodeOffset);
+        fbb.addOffset(3, barcode1Offset);
+        fbb.addOffset(4, barcode2Offset);
+        fbb.addOffset(5, barcode3Offset);
+        fbb.addOffset(6, nameOffset);
+        fbb.addOffset(7, modelOffset);
+        fbb.addOffset(8, modelNameOffset);
+        fbb.addOffset(9, descriptionOffset);
+        fbb.addFloat64(10, object.price);
+        fbb.addInt64(11, object.lastUpdateDate.millisecondsSinceEpoch);
+        fbb.addOffset(12, imgUrlOffset);
+        fbb.addOffset(13, attrsJsonOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -267,93 +243,66 @@ obx_int.ModelDefinition getObjectBoxModel() {
           4,
           0,
         );
-        final rfidTagParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 6, '');
-        final skuParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 30, '');
-        final nameParam = const fb.StringReader(
+        final catalogIdParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          6,
+          0,
+        );
+        final barcodeParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 8, '');
-        final brandParam = const fb.StringReader(
+        final barcode1Param = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 10, '');
-        final descriptionParam = const fb.StringReader(
+        final barcode2Param = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 12, '');
-        final categoryParam = const fb.StringReader(
+        final barcode3Param = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 14, '');
-        final subCategoryParam = const fb.StringReader(
+        final nameParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 32, '');
-        final genderParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 34, '');
-        final sizeParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 36, '');
-        final colorParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 38, '');
-        final colorHexParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 40, '');
-        final materialParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 42, '');
-        final careInstructionsParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 44, '');
-        final originParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 22, '');
-        final seasonParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 46, '');
-        final priceCentsParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          16,
-          0,
-        );
-        final originalPriceCentsParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          48,
-          0,
-        );
-        final imageUrlParam = const fb.StringReader(
+        ).vTableGet(buffer, rootOffset, 16, '');
+        final modelParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 18, '');
-        final stockQtyParam = const fb.Int64Reader().vTableGet(
+        final modelNameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 20, '');
+        final descriptionParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 22, '');
+        final priceParam = const fb.Float64Reader().vTableGet(
           buffer,
           rootOffset,
-          28,
+          24,
           0,
         );
-        final object = Product(
+        final imgUrlParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 28, '');
+        final lastUpdateDateParam = DateTime.fromMillisecondsSinceEpoch(
+          const fb.Int64Reader().vTableGet(buffer, rootOffset, 26, 0),
+        );
+        final attrsJsonParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 30, '');
+        final object = CatalogItem(
           id: idParam,
-          rfidTag: rfidTagParam,
-          sku: skuParam,
+          catalogId: catalogIdParam,
+          barcode: barcodeParam,
+          barcode1: barcode1Param,
+          barcode2: barcode2Param,
+          barcode3: barcode3Param,
           name: nameParam,
-          brand: brandParam,
+          model: modelParam,
+          modelName: modelNameParam,
           description: descriptionParam,
-          category: categoryParam,
-          subCategory: subCategoryParam,
-          gender: genderParam,
-          size: sizeParam,
-          color: colorParam,
-          colorHex: colorHexParam,
-          material: materialParam,
-          careInstructions: careInstructionsParam,
-          origin: originParam,
-          season: seasonParam,
-          priceCents: priceCentsParam,
-          originalPriceCents: originalPriceCentsParam,
-          imageUrl: imageUrlParam,
-          stockQty: stockQtyParam,
+          price: priceParam,
+          imgUrl: imgUrlParam,
+          lastUpdateDate: lastUpdateDateParam,
+          attrsJson: attrsJsonParam,
         );
 
         return object;
@@ -364,105 +313,75 @@ obx_int.ModelDefinition getObjectBoxModel() {
   return obx_int.ModelDefinition(model, bindings);
 }
 
-/// [Product] entity fields to define ObjectBox queries.
-class Product_ {
-  /// See [Product.id].
-  static final id = obx.QueryIntegerProperty<Product>(
+/// [CatalogItem] entity fields to define ObjectBox queries.
+class CatalogItem_ {
+  /// See [CatalogItem.id].
+  static final id = obx.QueryIntegerProperty<CatalogItem>(
     _entities[0].properties[0],
   );
 
-  /// See [Product.rfidTag].
-  static final rfidTag = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.catalogId].
+  static final catalogId = obx.QueryIntegerProperty<CatalogItem>(
     _entities[0].properties[1],
   );
 
-  /// See [Product.name].
-  static final name = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.barcode].
+  static final barcode = obx.QueryStringProperty<CatalogItem>(
     _entities[0].properties[2],
   );
 
-  /// See [Product.brand].
-  static final brand = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.barcode1].
+  static final barcode1 = obx.QueryStringProperty<CatalogItem>(
     _entities[0].properties[3],
   );
 
-  /// See [Product.description].
-  static final description = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.barcode2].
+  static final barcode2 = obx.QueryStringProperty<CatalogItem>(
     _entities[0].properties[4],
   );
 
-  /// See [Product.category].
-  static final category = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.barcode3].
+  static final barcode3 = obx.QueryStringProperty<CatalogItem>(
     _entities[0].properties[5],
   );
 
-  /// See [Product.priceCents].
-  static final priceCents = obx.QueryDoubleProperty<Product>(
+  /// See [CatalogItem.name].
+  static final name = obx.QueryStringProperty<CatalogItem>(
     _entities[0].properties[6],
   );
 
-  /// See [Product.imageUrl].
-  static final imageUrl = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.model].
+  static final model = obx.QueryStringProperty<CatalogItem>(
     _entities[0].properties[7],
   );
 
-  /// See [Product.origin].
-  static final origin = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.modelName].
+  static final modelName = obx.QueryStringProperty<CatalogItem>(
     _entities[0].properties[8],
   );
 
-  /// See [Product.stockQty].
-  static final stockQty = obx.QueryIntegerProperty<Product>(
+  /// See [CatalogItem.description].
+  static final description = obx.QueryStringProperty<CatalogItem>(
     _entities[0].properties[9],
   );
 
-  /// See [Product.sku].
-  static final sku = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.price].
+  static final price = obx.QueryDoubleProperty<CatalogItem>(
     _entities[0].properties[10],
   );
 
-  /// See [Product.subCategory].
-  static final subCategory = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.lastUpdateDate].
+  static final lastUpdateDate = obx.QueryDateProperty<CatalogItem>(
     _entities[0].properties[11],
   );
 
-  /// See [Product.gender].
-  static final gender = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.imgUrl].
+  static final imgUrl = obx.QueryStringProperty<CatalogItem>(
     _entities[0].properties[12],
   );
 
-  /// See [Product.size].
-  static final size = obx.QueryStringProperty<Product>(
+  /// See [CatalogItem.attrsJson].
+  static final attrsJson = obx.QueryStringProperty<CatalogItem>(
     _entities[0].properties[13],
-  );
-
-  /// See [Product.color].
-  static final color = obx.QueryStringProperty<Product>(
-    _entities[0].properties[14],
-  );
-
-  /// See [Product.colorHex].
-  static final colorHex = obx.QueryStringProperty<Product>(
-    _entities[0].properties[15],
-  );
-
-  /// See [Product.material].
-  static final material = obx.QueryStringProperty<Product>(
-    _entities[0].properties[16],
-  );
-
-  /// See [Product.careInstructions].
-  static final careInstructions = obx.QueryStringProperty<Product>(
-    _entities[0].properties[17],
-  );
-
-  /// See [Product.season].
-  static final season = obx.QueryStringProperty<Product>(
-    _entities[0].properties[18],
-  );
-
-  /// See [Product.originalPriceCents].
-  static final originalPriceCents = obx.QueryDoubleProperty<Product>(
-    _entities[0].properties[19],
   );
 }

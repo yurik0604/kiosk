@@ -484,7 +484,111 @@ class AppLocalizationsRu extends AppLocalizations {
   String get menuTitle => 'Меню киоска';
 
   @override
+  String get menuCatalog => 'Каталог';
+
+  @override
   String get menuReaderSettings => 'Настройки считывателя';
+
+  @override
+  String get catalogTitle => 'Каталог';
+
+  @override
+  String get catalogLoading => 'Загрузка товаров…';
+
+  @override
+  String get catalogEmpty => 'В каталоге пока нет товаров';
+
+  @override
+  String get catalogSearchHint => 'Поиск по названию или штрих-коду';
+
+  @override
+  String get catalogNoResults => 'Нет товаров по вашему запросу';
+
+  @override
+  String get catalogSyncing => 'Синхронизация каталога…';
+
+  @override
+  String get catalogRetry => 'Повторить';
+
+  @override
+  String get catalogInfo => 'Синхр.';
+
+  @override
+  String get catalogSyncTitle => 'Синхронизация каталога';
+
+  @override
+  String get catalogStatus => 'Статус';
+
+  @override
+  String get catalogLastSync => 'Последняя синхронизация';
+
+  @override
+  String get catalogServerUpdated => 'Обновлено на сервере';
+
+  @override
+  String get catalogHoursFromSync => 'С последней синхронизации';
+
+  @override
+  String get catalogItemsLabel => 'Товаров в каталоге';
+
+  @override
+  String get catalogValidity => 'Срок действия';
+
+  @override
+  String get catalogValidityNeverExpires => 'Бессрочно';
+
+  @override
+  String catalogValidityDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days дн.',
+      one: '1 день',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get catalogNever => 'Никогда';
+
+  @override
+  String get catalogJustNow => 'Только что';
+
+  @override
+  String get catalogStatusSyncing => 'Синхронизация…';
+
+  @override
+  String get catalogStatusFailed => 'Ошибка синхронизации';
+
+  @override
+  String get catalogStatusUpdateAvailable => 'Доступно обновление';
+
+  @override
+  String get catalogStatusUpToDate => 'Актуально';
+
+  @override
+  String get catalogStatusNoUpdate => 'Нет обновлений';
+
+  @override
+  String get catalogProgress => 'Прогресс';
+
+  @override
+  String get catalogPressSyncToStart => 'Нажмите «Синхронизировать»';
+
+  @override
+  String get catalogNoNewData => 'Нет нового каталога';
+
+  @override
+  String get catalogSyncNow => 'Синхронизировать';
+
+  @override
+  String get catalogRetrySync => 'Повторить синхронизацию';
+
+  @override
+  String get catalogCheckForUpdates => 'Проверить обновления';
+
+  @override
+  String get catalogNotAvailable => 'Для этой группы нет каталога';
 
   @override
   String get memberLookupTitle => 'Вы участник клуба?';

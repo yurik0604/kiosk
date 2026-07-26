@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../catalog/data/catalog_repository.dart';
-import '../../catalog/domain/product.dart';
+import '../../catalog/domain/catalog_item.dart';
 import '../../member/data/current_shopper_controller.dart';
 import '../../member/data/member_controller.dart';
 import '../domain/cart_item.dart';
@@ -21,17 +21,15 @@ class SessionState {
   int get itemCount => items.length;
 
   /// Whether the member discount can be applied to this specific line.
-  /// Items already on sale are excluded so that promotions don't stack.
-  bool isMemberEligible(CartItem item) =>
-      memberDiscountPct > 0 && !item.product.isOnSale;
+  /// The catalog has no per-item sale concept, so every line is eligible.
+  bool isMemberEligible(CartItem item) => memberDiscountPct > 0;
 
-  /// Per-line member savings (0 when the item is on sale or no member).
+  /// Per-line member savings (0 when no member is attached).
   double memberSavingsFor(CartItem item) => isMemberEligible(item)
       ? item.lineTotal * (memberDiscountPct / 100.0)
       : 0.0;
 
-  /// Per-line price after the member discount (catalog price when the
-  /// member discount doesn't apply to this item).
+  /// Per-line price after the member discount.
   double effectivePriceFor(CartItem item) =>
       item.lineTotal - memberSavingsFor(item);
 
@@ -40,51 +38,31 @@ class SessionState {
       items.fold(0.0, (sum, item) => sum + item.lineTotal);
 
   /// Absolute amount removed by the member discount on this session.
-  /// Computed per-item so sale items are skipped.
   double get memberDiscountAmount =>
       items.fold(0.0, (sum, item) => sum + memberSavingsFor(item));
 
   bool get hasMemberDiscount =>
       memberDiscountPct > 0 && memberDiscountAmount > 0.005;
 
-  /// Amount saved purely from in-store sale prices (catalog vs. sale price),
-  /// summed across every line. Independent of the member discount.
-  double get saleDiscountAmount =>
-      (originalTotal - subtotalBeforeMemberDiscount).clamp(0.0, double.infinity);
+  /// Final amount the customer pays (post-member-discount).
+  double get total => subtotalBeforeMemberDiscount - memberDiscountAmount;
 
-  bool get hasSaleDiscount => saleDiscountAmount > 0.005;
-
-  /// Final amount the customer pays (post-sale + post-member-discount).
-  double get total =>
-      subtotalBeforeMemberDiscount - memberDiscountAmount;
-
-  /// Sum of catalog (pre-sale) prices, used as the "before" reference for
-  /// the combined savings line.
-  double get originalTotal => items.fold(
-        0.0,
-        (sum, item) => sum +
-            (item.product.isOnSale
-                ? item.product.originalPrice
-                : item.product.price),
-      );
-
-  double get savings => (originalTotal - total).clamp(0.0, double.infinity);
+  double get savings => memberDiscountAmount;
   bool get hasSavings => savings > 0.005;
   bool get isEmpty => items.isEmpty;
 
-  /// Whether a given product is a shopping-bag SKU. Recognized by SKU
-  /// prefix so the picker auto-discovers new bag variants from the catalog
-  /// without needing UI code changes.
-  static bool isBag(Product product) =>
-      product.sku.startsWith(shoppingBagSkuPrefix);
+  /// Whether a given catalog item is a shopping bag. Recognized by `model`
+  /// prefix so the picker auto-discovers new bag variants from the synced
+  /// catalog without needing UI code changes.
+  static bool isBag(CatalogItem item) => CatalogRepository.isBag(item);
 
   /// Total number of shopping-bag line items currently in the cart, across
   /// all variants.
-  int get bagCount => items.where((i) => isBag(i.product)).length;
+  int get bagCount => items.where((i) => isBag(i.item)).length;
 
-  /// Number of bag line items in the cart for a specific variant SKU.
-  int countOfBagSku(String sku) =>
-      items.where((i) => i.product.sku == sku).length;
+  /// Number of bag line items in the cart for a specific variant barcode.
+  int countOfBagBarcode(String barcode) =>
+      items.where((i) => i.item.barcode == barcode).length;
 
   SessionState copyWith({
     List<CartItem>? items,
@@ -121,12 +99,12 @@ class SessionController extends Notifier<SessionState> {
     return SessionState(memberDiscountPct: initialPct);
   }
 
-  void addProduct(Product product) {
+  void addProduct(CatalogItem item) {
     _seq += 1;
     final lineId =
         '${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}-$_seq';
     state = state.copyWith(
-      items: [...state.items, CartItem(lineId: lineId, product: product)],
+      items: [...state.items, CartItem(lineId: lineId, item: item)],
     );
   }
 
@@ -144,31 +122,31 @@ class SessionController extends Notifier<SessionState> {
   }
 
   void simulateScan() {
-    final product = ref.read(catalogRepositoryProvider).randomAvailable();
-    if (product != null) addProduct(product);
+    final item = ref.read(catalogRepositoryProvider).randomAvailable();
+    if (item != null) addProduct(item);
   }
 
-  /// Adds [qty] bags of the given variant SKU. No-op if the SKU isn't
+  /// Adds [qty] bags of the given variant barcode. No-op if the barcode isn't
   /// found in the catalog (UI degrades safely).
-  void addBagBySku(String sku, {int qty = 1}) {
+  void addBagByBarcode(String barcode, {int qty = 1}) {
     if (qty <= 0) return;
-    final bag = ref.read(catalogRepositoryProvider).findBySku(sku);
+    final bag = ref.read(catalogRepositoryProvider).findByBarcode(barcode);
     if (bag == null) return;
     for (var i = 0; i < qty; i++) {
       addProduct(bag);
     }
   }
 
-  /// Removes [qty] bag line items of the given variant SKU (most-recently
+  /// Removes [qty] bag line items of the given variant barcode (most-recently
   /// added first). Stops when no more matching bag lines remain.
-  void removeBagBySku(String sku, {int qty = 1}) {
+  void removeBagByBarcode(String barcode, {int qty = 1}) {
     if (qty <= 0) return;
     var toRemove = qty;
     final next = <CartItem>[];
     // Walk from the end so we drop the most recent matching line first;
     // matches typical "undo last add" intent.
     for (final item in state.items.reversed) {
-      if (toRemove > 0 && item.product.sku == sku) {
+      if (toRemove > 0 && item.item.barcode == barcode) {
         toRemove -= 1;
         continue;
       }

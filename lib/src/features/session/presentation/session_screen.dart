@@ -12,7 +12,8 @@ import '../../../core/widgets/idle_timeout_detector.dart';
 import '../../../core/widgets/idle_warning_dialog.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../catalog/data/catalog_repository.dart';
-import '../../catalog/domain/product.dart';
+import '../../catalog/domain/catalog_item.dart';
+import '../../catalog/domain/catalog_item_display.dart';
 import '../../member/data/member_controller.dart';
 import '../../rfid/data/rfid_reader_controller.dart';
 import '../../rfid/domain/reader_event.dart';
@@ -85,8 +86,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                 ),
                 _Footer(
                   total: session.total,
-                  originalTotal: session.originalTotal,
-                  saleDiscountAmount: session.saleDiscountAmount,
+                  subtotal: session.subtotalBeforeMemberDiscount,
                   memberDiscountPct: session.memberDiscountPct,
                   memberDiscountAmount: session.memberDiscountAmount,
                   isEmpty: session.isEmpty,
@@ -553,16 +553,14 @@ class _ProductList extends ConsumerWidget {
 class _Footer extends ConsumerWidget {
   const _Footer({
     required this.total,
-    required this.originalTotal,
-    required this.saleDiscountAmount,
+    required this.subtotal,
     required this.memberDiscountPct,
     required this.memberDiscountAmount,
     required this.isEmpty,
     required this.itemCount,
   });
   final double total;
-  final double originalTotal;
-  final double saleDiscountAmount;
+  final double subtotal;
   final double memberDiscountPct;
   final double memberDiscountAmount;
   final bool isEmpty;
@@ -576,10 +574,9 @@ class _Footer extends ConsumerWidget {
       Localizations.localeOf(context).toString(),
       name: 'ILS',
     );
-    final hasSaleDiscount = saleDiscountAmount > 0.005;
     final hasMemberDiscount =
         memberDiscountPct > 0 && memberDiscountAmount > 0.005;
-    final hasAnyDiscount = hasSaleDiscount || hasMemberDiscount;
+    final hasAnyDiscount = hasMemberDiscount;
     final titleLarge = Theme.of(context).textTheme.titleLarge;
 
     return Container(
@@ -629,7 +626,7 @@ class _Footer extends ConsumerWidget {
                   ),
                   amount: Currency.ltr(
                     Text(
-                      fmt.format(originalTotal),
+                      fmt.format(subtotal),
                       style: titleLarge?.copyWith(
                         color: scheme.onSurfaceVariant,
                         fontWeight: FontWeight.w700,
@@ -638,25 +635,6 @@ class _Footer extends ConsumerWidget {
                     ),
                   ),
                 ),
-                if (hasSaleDiscount)
-                  (
-                    label: Text(
-                      l10n.saleDiscountShort,
-                      style: titleLarge?.copyWith(
-                        color: scheme.error,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    amount: Currency.ltr(
-                      Text(
-                        fmt.format(saleDiscountAmount, signed: true),
-                        style: titleLarge?.copyWith(
-                          color: scheme.error,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
                 if (hasMemberDiscount)
                   (
                     label: Text(
@@ -1073,15 +1051,15 @@ String _formatPercent(double pct) {
   return pct.toStringAsFixed(1);
 }
 
-/// Returns the localized display copy for a known bag variant SKU. Falls
-/// back to the catalog's English name/description if the SKU isn't one of
-/// the seeded variants — so new bag SKUs added later still render (just
-/// without localized copy until translations are added).
+/// Returns the localized display copy for a known bag variant. Falls back to
+/// the catalog's name/description if the barcode isn't one of the known
+/// variants — so new bag variants synced later still render (just without
+/// localized copy until translations are added).
 ({String name, String? description}) _localizedBagCopy(
   AppLocalizations l10n,
-  Product bag,
+  CatalogItem bag,
 ) {
-  switch (bag.sku) {
+  switch (bag.barcode) {
     case 'BAG-STD-S-001':
       return (name: l10n.bagSmallName, description: l10n.bagSmallDescription);
     case 'BAG-STD-L-001':
@@ -1102,10 +1080,7 @@ class _BagTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final catalog = ref.watch(catalogRepositoryProvider);
-    final bags = shoppingBagSkus
-        .map(catalog.findBySku)
-        .whereType<Product>()
-        .toList(growable: false);
+    final bags = catalog.shoppingBags();
     if (bags.isEmpty) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
@@ -1382,10 +1357,7 @@ class _BagPickerSheet extends ConsumerWidget {
     );
 
     final catalog = ref.watch(catalogRepositoryProvider);
-    final bags = shoppingBagSkus
-        .map(catalog.findBySku)
-        .whereType<Product>()
-        .toList(growable: false);
+    final bags = catalog.shoppingBags();
 
     return FractionallySizedBox(
       heightFactor: 0.85,
@@ -1506,7 +1478,7 @@ class _BagVariantCard extends ConsumerWidget {
     required this.l10n,
   });
 
-  final Product bag;
+  final CatalogItem bag;
   final NumberFormat fmt;
   final AppLocalizations l10n;
 
@@ -1516,14 +1488,17 @@ class _BagVariantCard extends ConsumerWidget {
     final scheme = theme.colorScheme;
     final copy = _localizedBagCopy(l10n, bag);
     final count = ref.watch(
-      sessionControllerProvider.select((s) => s.countOfBagSku(bag.sku)),
+      sessionControllerProvider
+          .select((s) => s.countOfBagBarcode(bag.barcode)),
     );
     final canRemove = count > 0;
 
     Color fallback;
     try {
       final hex = bag.colorHex.replaceFirst('#', '');
-      fallback = Color(int.parse('FF$hex', radix: 16));
+      fallback = hex.length == 6
+          ? Color(int.parse('FF$hex', radix: 16))
+          : scheme.primaryContainer;
     } catch (_) {
       fallback = scheme.primaryContainer;
     }
@@ -1567,9 +1542,9 @@ class _BagVariantCard extends ConsumerWidget {
                         ),
                         child: ColoredBox(
                           color: fallback.withValues(alpha: 0.18),
-                          child: bag.imageUrl.isNotEmpty
+                          child: bag.imgUrl.isNotEmpty
                               ? Image.network(
-                                  bag.imageUrl,
+                                  bag.imgUrl,
                                   fit: BoxFit.cover,
                                   errorBuilder: (_, _, _) => Center(
                                     child: Icon(
@@ -1659,13 +1634,13 @@ class _BagVariantCard extends ConsumerWidget {
                   HapticFeedback.selectionClick();
                   ref
                       .read(sessionControllerProvider.notifier)
-                      .addBagBySku(bag.sku);
+                      .addBagByBarcode(bag.barcode);
                 },
                 onRemove: () {
                   HapticFeedback.selectionClick();
                   ref
                       .read(sessionControllerProvider.notifier)
-                      .removeBagBySku(bag.sku);
+                      .removeBagByBarcode(bag.barcode);
                 },
                 decreaseLabel: l10n.bagTileDecrease,
                 increaseLabel: l10n.bagTileIncrease,

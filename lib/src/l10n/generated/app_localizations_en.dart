@@ -472,7 +472,111 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menuTitle => 'Kiosk Menu';
 
   @override
+  String get menuCatalog => 'Catalog';
+
+  @override
   String get menuReaderSettings => 'Reader Settings';
+
+  @override
+  String get catalogTitle => 'Catalog';
+
+  @override
+  String get catalogLoading => 'Loading products…';
+
+  @override
+  String get catalogEmpty => 'No products in the catalog yet';
+
+  @override
+  String get catalogSearchHint => 'Search by name or barcode';
+
+  @override
+  String get catalogNoResults => 'No products match your search';
+
+  @override
+  String get catalogSyncing => 'Syncing catalog…';
+
+  @override
+  String get catalogRetry => 'Try again';
+
+  @override
+  String get catalogInfo => 'Sync';
+
+  @override
+  String get catalogSyncTitle => 'Catalog Sync';
+
+  @override
+  String get catalogStatus => 'Status';
+
+  @override
+  String get catalogLastSync => 'Last Sync';
+
+  @override
+  String get catalogServerUpdated => 'Server Updated';
+
+  @override
+  String get catalogHoursFromSync => 'Since Last Sync';
+
+  @override
+  String get catalogItemsLabel => 'Catalog Items';
+
+  @override
+  String get catalogValidity => 'Validity';
+
+  @override
+  String get catalogValidityNeverExpires => 'Never expires';
+
+  @override
+  String catalogValidityDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get catalogNever => 'Never';
+
+  @override
+  String get catalogJustNow => 'Just now';
+
+  @override
+  String get catalogStatusSyncing => 'Syncing…';
+
+  @override
+  String get catalogStatusFailed => 'Sync failed';
+
+  @override
+  String get catalogStatusUpdateAvailable => 'Update available';
+
+  @override
+  String get catalogStatusUpToDate => 'Up to date';
+
+  @override
+  String get catalogStatusNoUpdate => 'No update available';
+
+  @override
+  String get catalogProgress => 'Progress';
+
+  @override
+  String get catalogPressSyncToStart => 'Press Sync to start';
+
+  @override
+  String get catalogNoNewData => 'No new catalog available';
+
+  @override
+  String get catalogSyncNow => 'Sync Now';
+
+  @override
+  String get catalogRetrySync => 'Retry Sync';
+
+  @override
+  String get catalogCheckForUpdates => 'Check for updates';
+
+  @override
+  String get catalogNotAvailable => 'No catalog available for this group';
 
   @override
   String get memberLookupTitle => 'Are you a club member?';

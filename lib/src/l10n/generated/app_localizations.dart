@@ -870,11 +870,203 @@ abstract class AppLocalizations {
   /// **'Kiosk Menu'**
   String get menuTitle;
 
+  /// No description provided for @menuCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog'**
+  String get menuCatalog;
+
   /// No description provided for @menuReaderSettings.
   ///
   /// In en, this message translates to:
   /// **'Reader Settings'**
   String get menuReaderSettings;
+
+  /// No description provided for @catalogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog'**
+  String get catalogTitle;
+
+  /// No description provided for @catalogLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading products…'**
+  String get catalogLoading;
+
+  /// No description provided for @catalogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No products in the catalog yet'**
+  String get catalogEmpty;
+
+  /// No description provided for @catalogSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or barcode'**
+  String get catalogSearchHint;
+
+  /// No description provided for @catalogNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No products match your search'**
+  String get catalogNoResults;
+
+  /// No description provided for @catalogSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing catalog…'**
+  String get catalogSyncing;
+
+  /// No description provided for @catalogRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get catalogRetry;
+
+  /// No description provided for @catalogInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get catalogInfo;
+
+  /// No description provided for @catalogSyncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog Sync'**
+  String get catalogSyncTitle;
+
+  /// No description provided for @catalogStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get catalogStatus;
+
+  /// No description provided for @catalogLastSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Sync'**
+  String get catalogLastSync;
+
+  /// No description provided for @catalogServerUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Server Updated'**
+  String get catalogServerUpdated;
+
+  /// No description provided for @catalogHoursFromSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Since Last Sync'**
+  String get catalogHoursFromSync;
+
+  /// No description provided for @catalogItemsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog Items'**
+  String get catalogItemsLabel;
+
+  /// No description provided for @catalogValidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Validity'**
+  String get catalogValidity;
+
+  /// No description provided for @catalogValidityNeverExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Never expires'**
+  String get catalogValidityNeverExpires;
+
+  /// No description provided for @catalogValidityDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1 day} other{{days} days}}'**
+  String catalogValidityDays(int days);
+
+  /// No description provided for @catalogNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get catalogNever;
+
+  /// No description provided for @catalogJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get catalogJustNow;
+
+  /// No description provided for @catalogStatusSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing…'**
+  String get catalogStatusSyncing;
+
+  /// No description provided for @catalogStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed'**
+  String get catalogStatusFailed;
+
+  /// No description provided for @catalogStatusUpdateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get catalogStatusUpdateAvailable;
+
+  /// No description provided for @catalogStatusUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get catalogStatusUpToDate;
+
+  /// No description provided for @catalogStatusNoUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'No update available'**
+  String get catalogStatusNoUpdate;
+
+  /// No description provided for @catalogProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get catalogProgress;
+
+  /// No description provided for @catalogPressSyncToStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Press Sync to start'**
+  String get catalogPressSyncToStart;
+
+  /// No description provided for @catalogNoNewData.
+  ///
+  /// In en, this message translates to:
+  /// **'No new catalog available'**
+  String get catalogNoNewData;
+
+  /// No description provided for @catalogSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Now'**
+  String get catalogSyncNow;
+
+  /// No description provided for @catalogRetrySync.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry Sync'**
+  String get catalogRetrySync;
+
+  /// No description provided for @catalogCheckForUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for updates'**
+  String get catalogCheckForUpdates;
+
+  /// No description provided for @catalogNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No catalog available for this group'**
+  String get catalogNotAvailable;
 
   /// No description provided for @memberLookupTitle.
   ///

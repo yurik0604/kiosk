@@ -156,6 +156,61 @@ class AuthService {
   static String _preview(String body, {int max = 300}) =>
       body.length <= max ? body : '${body.substring(0, max)}…';
 
+  /// Fetch the full current user from `/v1/users/me/` (Bearer auth, no tenant
+  /// slug). This is the only source of `customer_group_ids` and `tenant_slug` —
+  /// the login token response doesn't include them. On success the stored
+  /// session user is updated so group/catalog init can resolve the group.
+  ///
+  /// Returns the fetched user, or null on any failure (non-fatal).
+  Future<AuthUser?> fetchCurrentUser() async {
+    final token = await readToken();
+    if (token == null || token.isEmpty) return null;
+
+    final url = Uri.parse(AppConfig.apiUrl(AppConfig.currentUserEndpoint));
+    try {
+      final response = await _client.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${token.accessToken}',
+        },
+      ).timeout(AppConfig.apiTimeout);
+
+      if (response.statusCode != 200) {
+        _log.w('fetchCurrentUser: HTTP ${response.statusCode}');
+        return null;
+      }
+
+      final decoded = jsonDecode(response.body);
+      if (decoded is! Map<String, dynamic>) return null;
+
+      // Support both a bare user object and an {status, data} envelope.
+      final Map<String, dynamic> userJson =
+          (decoded.containsKey('data') && decoded['data'] is Map<String, dynamic>)
+              ? decoded['data'] as Map<String, dynamic>
+              : decoded;
+
+      final user = AuthUser.fromJson(userJson);
+      // Persist so validateSession()/readUser() return the enriched user.
+      await _storage.write(
+        AppConfig.userStorageKey,
+        jsonEncode(user.toJson()),
+      );
+      _log.i('fetchCurrentUser: ${user.email} '
+          'groups=${user.customerGroupIds} slug=${user.tenantSlug}');
+      return user;
+    } on TimeoutException {
+      _log.w('fetchCurrentUser: timeout');
+      return null;
+    } on http.ClientException catch (e) {
+      _log.w('fetchCurrentUser: network error ${e.message}');
+      return null;
+    } catch (e, st) {
+      _log.e('fetchCurrentUser: unexpected error', error: e, stackTrace: st);
+      return null;
+    }
+  }
+
   Future<AuthUser?> validateSession() async {
     final token = await readToken();
     if (token == null || token.isEmpty) return null;

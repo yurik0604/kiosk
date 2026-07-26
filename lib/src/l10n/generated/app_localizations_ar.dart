@@ -491,7 +491,111 @@ class AppLocalizationsAr extends AppLocalizations {
   String get menuTitle => 'قائمة الجهاز';
 
   @override
+  String get menuCatalog => 'الكتالوج';
+
+  @override
   String get menuReaderSettings => 'إعدادات القارئ';
+
+  @override
+  String get catalogTitle => 'الكتالوج';
+
+  @override
+  String get catalogLoading => 'جارٍ تحميل المنتجات…';
+
+  @override
+  String get catalogEmpty => 'لا توجد منتجات في الكتالوج بعد';
+
+  @override
+  String get catalogSearchHint => 'ابحث بالاسم أو الباركود';
+
+  @override
+  String get catalogNoResults => 'لا توجد منتجات مطابقة لبحثك';
+
+  @override
+  String get catalogSyncing => 'جارٍ مزامنة الكتالوج…';
+
+  @override
+  String get catalogRetry => 'أعد المحاولة';
+
+  @override
+  String get catalogInfo => 'مزامنة';
+
+  @override
+  String get catalogSyncTitle => 'مزامنة الكتالوج';
+
+  @override
+  String get catalogStatus => 'الحالة';
+
+  @override
+  String get catalogLastSync => 'آخر مزامنة';
+
+  @override
+  String get catalogServerUpdated => 'تحديث الخادم';
+
+  @override
+  String get catalogHoursFromSync => 'منذ آخر مزامنة';
+
+  @override
+  String get catalogItemsLabel => 'عناصر الكتالوج';
+
+  @override
+  String get catalogValidity => 'الصلاحية';
+
+  @override
+  String get catalogValidityNeverExpires => 'لا تنتهي';
+
+  @override
+  String catalogValidityDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days أيام',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get catalogNever => 'أبداً';
+
+  @override
+  String get catalogJustNow => 'الآن';
+
+  @override
+  String get catalogStatusSyncing => 'جارٍ المزامنة…';
+
+  @override
+  String get catalogStatusFailed => 'فشلت المزامنة';
+
+  @override
+  String get catalogStatusUpdateAvailable => 'يتوفر تحديث';
+
+  @override
+  String get catalogStatusUpToDate => 'محدَّث';
+
+  @override
+  String get catalogStatusNoUpdate => 'لا يوجد تحديث';
+
+  @override
+  String get catalogProgress => 'التقدم';
+
+  @override
+  String get catalogPressSyncToStart => 'اضغط مزامنة للبدء';
+
+  @override
+  String get catalogNoNewData => 'لا يتوفر كتالوج جديد';
+
+  @override
+  String get catalogSyncNow => 'زامن الآن';
+
+  @override
+  String get catalogRetrySync => 'أعد المزامنة';
+
+  @override
+  String get catalogCheckForUpdates => 'التحقق من التحديثات';
+
+  @override
+  String get catalogNotAvailable => 'لا يوجد كتالوج متاح لهذه المجموعة';
 
   @override
   String get memberLookupTitle => 'هل أنت عضو في النادي؟';

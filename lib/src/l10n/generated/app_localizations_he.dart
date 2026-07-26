@@ -473,7 +473,111 @@ class AppLocalizationsHe extends AppLocalizations {
   String get menuTitle => 'תפריט העמדה';
 
   @override
+  String get menuCatalog => 'קטלוג';
+
+  @override
   String get menuReaderSettings => 'הגדרות קורא';
+
+  @override
+  String get catalogTitle => 'קטלוג';
+
+  @override
+  String get catalogLoading => 'טוען מוצרים…';
+
+  @override
+  String get catalogEmpty => 'אין עדיין מוצרים בקטלוג';
+
+  @override
+  String get catalogSearchHint => 'חיפוש לפי שם או ברקוד';
+
+  @override
+  String get catalogNoResults => 'אין מוצרים התואמים לחיפוש';
+
+  @override
+  String get catalogSyncing => 'מסנכרן קטלוג…';
+
+  @override
+  String get catalogRetry => 'נסה שוב';
+
+  @override
+  String get catalogInfo => 'סנכרון';
+
+  @override
+  String get catalogSyncTitle => 'סנכרון קטלוג';
+
+  @override
+  String get catalogStatus => 'סטטוס';
+
+  @override
+  String get catalogLastSync => 'סנכרון אחרון';
+
+  @override
+  String get catalogServerUpdated => 'עודכן בשרת';
+
+  @override
+  String get catalogHoursFromSync => 'מאז הסנכרון האחרון';
+
+  @override
+  String get catalogItemsLabel => 'פריטים בקטלוג';
+
+  @override
+  String get catalogValidity => 'תוקף';
+
+  @override
+  String get catalogValidityNeverExpires => 'ללא תפוגה';
+
+  @override
+  String catalogValidityDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days ימים',
+      one: 'יום אחד',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get catalogNever => 'אף פעם';
+
+  @override
+  String get catalogJustNow => 'עכשיו';
+
+  @override
+  String get catalogStatusSyncing => 'מסנכרן…';
+
+  @override
+  String get catalogStatusFailed => 'הסנכרון נכשל';
+
+  @override
+  String get catalogStatusUpdateAvailable => 'קיים עדכון';
+
+  @override
+  String get catalogStatusUpToDate => 'מעודכן';
+
+  @override
+  String get catalogStatusNoUpdate => 'אין עדכון זמין';
+
+  @override
+  String get catalogProgress => 'התקדמות';
+
+  @override
+  String get catalogPressSyncToStart => 'לחצו על סנכרון כדי להתחיל';
+
+  @override
+  String get catalogNoNewData => 'אין קטלוג חדש זמין';
+
+  @override
+  String get catalogSyncNow => 'סנכרן עכשיו';
+
+  @override
+  String get catalogRetrySync => 'נסה לסנכרן שוב';
+
+  @override
+  String get catalogCheckForUpdates => 'בדוק עדכונים';
+
+  @override
+  String get catalogNotAvailable => 'אין קטלוג זמין לקבוצה זו';
 
   @override
   String get memberLookupTitle => 'האם אתם חברי מועדון?';

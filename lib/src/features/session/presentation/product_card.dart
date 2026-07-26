@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/format/currency.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../catalog/domain/barcode.dart';
+import '../../catalog/domain/catalog_item_display.dart';
 import '../data/session_controller.dart';
 import '../domain/cart_item.dart';
 import 'product_details_sheet.dart';
@@ -16,10 +16,22 @@ const double _kCardMinHeight = 176;
 const double _kImageWidth = 160;
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key, required this.item, required this.onRemove});
+  const ProductCard({
+    super.key,
+    required this.item,
+    this.onRemove,
+    this.onTap,
+  });
 
   final CartItem item;
-  final VoidCallback onRemove;
+
+  /// Cart action. When null (browse mode), no remove affordance is offered.
+  final VoidCallback? onRemove;
+
+  /// Optional tap override. When provided it replaces the default behaviour
+  /// (opening the cart details sheet), letting the catalog browse screen reuse
+  /// the card without the cart's remove flow.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +40,7 @@ class ProductCard extends StatelessWidget {
       Localizations.localeOf(context).toString(),
       name: 'ILS',
     );
-    final p = item.product;
+    final p = item.item;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -55,11 +67,15 @@ class ProductCard extends StatelessWidget {
         child: InkWell(
           onTap: () {
             HapticFeedback.selectionClick();
-            showProductDetailsSheet(
-              context: context,
-              item: item,
-              onRemove: onRemove,
-            );
+            if (onTap != null) {
+              onTap!();
+            } else if (onRemove != null) {
+              showProductDetailsSheet(
+                context: context,
+                item: item,
+                onRemove: onRemove!,
+              );
+            }
           },
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: _kCardMinHeight),
@@ -75,7 +91,7 @@ class ProductCard extends StatelessWidget {
                   start: 0,
                   width: _kImageWidth,
                   child: _ProductImage(
-                    imageUrl: p.imageUrl,
+                    imageUrl: p.imgUrl,
                     category: p.category,
                     subCategory: p.subCategory,
                   ),
@@ -114,7 +130,7 @@ class _ProductBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
-    final product = item.product;
+    final product = item.item;
 
     final chips = _FadingChipRow(
       children: [
@@ -133,9 +149,9 @@ class _ProductBody extends StatelessWidget {
       ],
     );
 
-    final ean = Ean13.fromSku(product.sku);
+    final barcodeText = product.barcode;
     final barcode = Semantics(
-      label: l10n.barcodeLabel(ean.digits),
+      label: l10n.barcodeLabel(barcodeText),
       child: Row(
         children: [
           Icon(
@@ -146,7 +162,7 @@ class _ProductBody extends StatelessWidget {
           const SizedBox(width: 6),
           Flexible(
             child: Text(
-              ean.formatted,
+              barcodeText,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: scheme.onSurfaceVariant,
                 fontFeatures: const [FontFeature.tabularFigures()],
@@ -165,9 +181,10 @@ class _ProductBody extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Row 1 — brand / model name, full width, single line.
+        // Row 1 — model name (falls back to 'model'), above the product name.
         Text(
-          product.brand.toUpperCase(),
+          (product.modelName.isNotEmpty ? product.modelName : 'model')
+              .toUpperCase(),
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
             color: scheme.secondary,
             fontSize: 14,
@@ -259,7 +276,7 @@ class _DetailsPriceGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
-    final product = item.product;
+    final product = item.item;
 
     final session = ref.watch(sessionControllerProvider);
     final memberSaves = session.memberSavingsFor(item);
@@ -287,16 +304,10 @@ class _DetailsPriceGrid extends ConsumerWidget {
       decoration: TextDecoration.lineThrough,
     );
 
-    // Discount context, if any (sale takes precedence over member pricing).
+    // Discount context, if any. The catalog carries a single price with no
+    // sale concept, so the only discount shown is the club-member discount.
     final ({String label, double from, double savings, double to})? discount;
-    if (product.isOnSale) {
-      discount = (
-        label: l10n.saleDiscountShort.toUpperCase(),
-        from: product.originalPrice,
-        savings: product.originalPrice - product.price,
-        to: product.price,
-      );
-    } else if (hasMemberDiscount) {
+    if (hasMemberDiscount) {
       discount = (
         label: l10n.memberDiscountShort.toUpperCase(),
         from: product.price,

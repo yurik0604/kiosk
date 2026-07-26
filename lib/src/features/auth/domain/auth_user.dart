@@ -7,6 +7,7 @@ class AuthUser {
     this.tenantId,
     this.tenantSlug,
     this.role,
+    this.customerGroupIds = const [],
   });
 
   final int id;
@@ -16,6 +17,10 @@ class AuthUser {
   final int? tenantId;
   final String? tenantSlug;
   final String? role;
+
+  /// Group ids this user has access to. The kiosk uses the first one as the
+  /// device's group.
+  final List<int> customerGroupIds;
 
   String get displayName => fullName.isNotEmpty ? fullName : username;
 
@@ -28,6 +33,10 @@ class AuthUser {
       tenantId: json['tenant_id'] as int?,
       tenantSlug: json['tenant_slug'] as String?,
       role: json['role']?.toString(),
+      customerGroupIds: (json['customer_group_ids'] as List<dynamic>?)
+              ?.map((e) => e is int ? e : int.parse(e.toString()))
+              .toList() ??
+          const [],
     );
   }
 
@@ -39,5 +48,6 @@ class AuthUser {
         if (tenantId != null) 'tenant_id': tenantId,
         if (tenantSlug != null) 'tenant_slug': tenantSlug,
         if (role != null) 'role': role,
+        'customer_group_ids': customerGroupIds,
       };
 }

@@ -41,7 +41,8 @@ class _ReaderSettingsScreenState extends ConsumerState<ReaderSettingsScreen> {
       text: (current?.txPowerDbm ?? 30.0).toStringAsFixed(1),
     );
     _antennaMaskCtrl = TextEditingController(
-      text: '0x${(current?.antennaMask ?? 0xFFFF).toRadixString(16).toUpperCase()}',
+      text:
+          '0x${(current?.antennaMask ?? 0xFFFF).toRadixString(16).toUpperCase()}',
     );
     _preventDuplicates = current?.preventDuplicates ?? true;
   }
@@ -73,17 +74,13 @@ class _ReaderSettingsScreenState extends ConsumerState<ReaderSettingsScreen> {
           .applyConfig(config, connect: connect);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            connect ? 'Saved & connecting…' : 'Saved',
-          ),
-        ),
+        SnackBar(content: Text(connect ? 'Saved & connecting…' : 'Saved')),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed: $e')));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -119,204 +116,223 @@ class _ReaderSettingsScreenState extends ConsumerState<ReaderSettingsScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(KioskTokens.spaceL),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _StatusCard(
-                  status: state.status,
-                  message: state.lastError,
-                  vendorLabel: state.config?.vendor.displayName ?? '—',
-                ),
-                const SizedBox(height: KioskTokens.spaceL),
-                _SectionLabel(label: 'Vendor'),
-                const SizedBox(height: KioskTokens.spaceS),
-                DropdownButtonFormField<ReaderVendor>(
-                  initialValue: _vendor,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                  items: ReaderVendor.values
-                      .map(
-                        (v) => DropdownMenuItem(
-                          value: v,
-                          child: Text(v.displayName),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (v) => setState(() => _vendor = v!),
-                ),
-                const SizedBox(height: KioskTokens.spaceL),
-                _SectionLabel(label: 'Network'),
-                const SizedBox(height: KioskTokens.spaceS),
-                TextFormField(
-                  controller: _hostCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Host / IP',
-                    hintText: '192.168.1.50',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.url,
-                  textInputAction: TextInputAction.next,
-                  validator: (v) {
-                    if (v == null || v.trim().isEmpty) return 'Required';
-                    return null;
-                  },
-                ),
-                const SizedBox(height: KioskTokens.spaceM),
-                TextFormField(
-                  controller: _portCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'LLRP Port',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: (v) {
-                    final n = int.tryParse(v ?? '');
-                    if (n == null || n <= 0 || n > 65535) return 'Invalid port';
-                    return null;
-                  },
-                ),
-                const SizedBox(height: KioskTokens.spaceL),
-                _SectionLabel(label: 'RF Parameters'),
-                const SizedBox(height: KioskTokens.spaceS),
-                TextFormField(
-                  controller: _powerCtrl,
-                  decoration: InputDecoration(
-                    labelText: _vendorOverridesRf
-                        ? 'Tx Power (dBm) — reader-managed'
-                        : 'Tx Power (dBm)',
-                    helperText: _vendorOverridesRf
-                        ? 'This reader ignores LLRP power overrides. Configure on the reader itself.'
-                        : 'Driver clamps to vendor range',
-                    border: const OutlineInputBorder(),
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  enabled: !_vendorOverridesRf,
-                  validator: (v) {
-                    final n = double.tryParse(v ?? '');
-                    if (n == null || n < 0 || n > 36) {
-                      return 'Enter 0–36 dBm';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: KioskTokens.spaceM),
-                TextFormField(
-                  controller: _antennaMaskCtrl,
-                  decoration: InputDecoration(
-                    labelText: _vendorOverridesRf
-                        ? 'Antenna Mask — reader-managed'
-                        : 'Antenna Mask',
-                    helperText: _vendorOverridesRf
-                        ? 'This reader ignores LLRP antenna selection. Configure on the reader itself.'
-                        : 'Hex (0xFFFF) or decimal; bit 0 = antenna 1',
-                    border: const OutlineInputBorder(),
-                  ),
-                  enabled: !_vendorOverridesRf,
-                  validator: (v) {
-                    try {
-                      final n = _parseHexOrInt(v ?? '');
-                      if (n <= 0) return 'Must be > 0';
-                      return null;
-                    } catch (_) {
-                      return 'Invalid';
-                    }
-                  },
-                ),
-                const SizedBox(height: KioskTokens.spaceL),
-                _SectionLabel(label: 'Reporting'),
-                const SizedBox(height: KioskTokens.spaceS),
-                SwitchListTile(
-                  value: _preventDuplicates,
-                  onChanged: (v) => setState(() => _preventDuplicates = v),
-                  title: const Text('Prevent Duplicates'),
-                  subtitle: const Text(
-                    'Report each EPC only once per inventory run. '
-                    'List clears on every START INVENTORY.',
-                  ),
-                  contentPadding: EdgeInsets.zero,
-                ),
-                const SizedBox(height: KioskTokens.spaceXL),
-                Row(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: KioskTokens.maxContentWidth,
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed:
-                            _saving ? null : () => _save(connect: false),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                        ),
-                        child: const Text('SAVE'),
-                      ),
+                    _StatusCard(
+                      status: state.status,
+                      message: state.lastError,
+                      vendorLabel: state.config?.vendor.displayName ?? '—',
                     ),
-                    const SizedBox(width: KioskTokens.spaceM),
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: _saving ? null : () => _save(connect: true),
-                        style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                        ),
-                        child: Text(
-                          _saving ? 'WORKING…' : 'SAVE & CONNECT',
-                        ),
+                    const SizedBox(height: KioskTokens.spaceL),
+                    _SectionLabel(label: 'Vendor'),
+                    const SizedBox(height: KioskTokens.spaceS),
+                    DropdownButtonFormField<ReaderVendor>(
+                      initialValue: _vendor,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
                       ),
+                      items: ReaderVendor.values
+                          .map(
+                            (v) => DropdownMenuItem(
+                              value: v,
+                              child: Text(v.displayName),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (v) => setState(() => _vendor = v!),
                     ),
-                  ],
-                ),
-                const SizedBox(height: KioskTokens.spaceL),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: state.status.canStop
-                            ? () => ref
-                                .read(rfidReaderControllerProvider.notifier)
-                                .stopInventory()
-                            : (state.status.canStart
+                    const SizedBox(height: KioskTokens.spaceL),
+                    _SectionLabel(label: 'Network'),
+                    const SizedBox(height: KioskTokens.spaceS),
+                    TextFormField(
+                      controller: _hostCtrl,
+                      decoration: const InputDecoration(
+                        labelText: 'Host / IP',
+                        hintText: '192.168.1.50',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.url,
+                      textInputAction: TextInputAction.next,
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) return 'Required';
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: KioskTokens.spaceM),
+                    TextFormField(
+                      controller: _portCtrl,
+                      decoration: const InputDecoration(
+                        labelText: 'LLRP Port',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (v) {
+                        final n = int.tryParse(v ?? '');
+                        if (n == null || n <= 0 || n > 65535) {
+                          return 'Invalid port';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: KioskTokens.spaceL),
+                    _SectionLabel(label: 'RF Parameters'),
+                    const SizedBox(height: KioskTokens.spaceS),
+                    TextFormField(
+                      controller: _powerCtrl,
+                      decoration: InputDecoration(
+                        labelText: _vendorOverridesRf
+                            ? 'Tx Power (dBm) — reader-managed'
+                            : 'Tx Power (dBm)',
+                        helperText: _vendorOverridesRf
+                            ? 'This reader ignores LLRP power overrides. Configure on the reader itself.'
+                            : 'Driver clamps to vendor range',
+                        border: const OutlineInputBorder(),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      enabled: !_vendorOverridesRf,
+                      validator: (v) {
+                        final n = double.tryParse(v ?? '');
+                        if (n == null || n < 0 || n > 36) {
+                          return 'Enter 0–36 dBm';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: KioskTokens.spaceM),
+                    TextFormField(
+                      controller: _antennaMaskCtrl,
+                      decoration: InputDecoration(
+                        labelText: _vendorOverridesRf
+                            ? 'Antenna Mask — reader-managed'
+                            : 'Antenna Mask',
+                        helperText: _vendorOverridesRf
+                            ? 'This reader ignores LLRP antenna selection. Configure on the reader itself.'
+                            : 'Hex (0xFFFF) or decimal; bit 0 = antenna 1',
+                        border: const OutlineInputBorder(),
+                      ),
+                      enabled: !_vendorOverridesRf,
+                      validator: (v) {
+                        try {
+                          final n = _parseHexOrInt(v ?? '');
+                          if (n <= 0) return 'Must be > 0';
+                          return null;
+                        } catch (_) {
+                          return 'Invalid';
+                        }
+                      },
+                    ),
+                    const SizedBox(height: KioskTokens.spaceL),
+                    _SectionLabel(label: 'Reporting'),
+                    const SizedBox(height: KioskTokens.spaceS),
+                    SwitchListTile(
+                      value: _preventDuplicates,
+                      onChanged: (v) => setState(() => _preventDuplicates = v),
+                      title: const Text('Prevent Duplicates'),
+                      subtitle: const Text(
+                        'Report each EPC only once per inventory run. '
+                        'List clears on every START INVENTORY.',
+                      ),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    const SizedBox(height: KioskTokens.spaceXL),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: _saving
+                                ? null
+                                : () => _save(connect: false),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 18),
+                            ),
+                            child: const Text('SAVE'),
+                          ),
+                        ),
+                        const SizedBox(width: KioskTokens.spaceM),
+                        Expanded(
+                          child: FilledButton(
+                            onPressed: _saving
+                                ? null
+                                : () => _save(connect: true),
+                            style: FilledButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 18),
+                            ),
+                            child: Text(
+                              _saving ? 'WORKING…' : 'SAVE & CONNECT',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: KioskTokens.spaceL),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: state.status.canStop
                                 ? () => ref
-                                    .read(rfidReaderControllerProvider.notifier)
-                                    .startInventory()
-                                : null),
-                        icon: Icon(
-                          state.status == ReaderStatus.reading
-                              ? Icons.stop_circle_outlined
-                              : Icons.play_circle_outline,
+                                      .read(
+                                        rfidReaderControllerProvider.notifier,
+                                      )
+                                      .stopInventory()
+                                : (state.status.canStart
+                                      ? () => ref
+                                            .read(
+                                              rfidReaderControllerProvider
+                                                  .notifier,
+                                            )
+                                            .startInventory()
+                                      : null),
+                            icon: Icon(
+                              state.status == ReaderStatus.reading
+                                  ? Icons.stop_circle_outlined
+                                  : Icons.play_circle_outline,
+                            ),
+                            label: Text(
+                              state.status == ReaderStatus.reading
+                                  ? 'STOP INVENTORY'
+                                  : 'START INVENTORY',
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              foregroundColor: scheme.primary,
+                            ),
+                          ),
                         ),
-                        label: Text(
-                          state.status == ReaderStatus.reading
-                              ? 'STOP INVENTORY'
-                              : 'START INVENTORY',
+                        const SizedBox(width: KioskTokens.spaceM),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: state.status.isConnected
+                                ? () => ref
+                                      .read(
+                                        rfidReaderControllerProvider.notifier,
+                                      )
+                                      .disconnect()
+                                : null,
+                            icon: const Icon(Icons.power_settings_new_rounded),
+                            label: const Text('DISCONNECT'),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              foregroundColor: scheme.error,
+                            ),
+                          ),
                         ),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          foregroundColor: scheme.primary,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: KioskTokens.spaceM),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: state.status.isConnected
-                            ? () => ref
-                                .read(rfidReaderControllerProvider.notifier)
-                                .disconnect()
-                            : null,
-                        icon: const Icon(Icons.power_settings_new_rounded),
-                        label: const Text('DISCONNECT'),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          foregroundColor: scheme.error,
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -334,9 +350,9 @@ class _SectionLabel extends StatelessWidget {
     return Text(
       label.toUpperCase(),
       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            letterSpacing: 2,
-            color: Theme.of(context).colorScheme.secondary,
-          ),
+        letterSpacing: 2,
+        color: Theme.of(context).colorScheme.secondary,
+      ),
     );
   }
 }
@@ -384,10 +400,7 @@ class _StatusCard extends StatelessWidget {
           Container(
             width: 14,
             height: 14,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(width: KioskTokens.spaceM),
           Expanded(
@@ -397,23 +410,23 @@ class _StatusCard extends StatelessWidget {
                 Text(
                   status.name.toUpperCase(),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.2,
-                      ),
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                  ),
                 ),
                 Text(
                   vendorLabel,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
                 if (message != null && message!.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
                     message!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: scheme.error,
-                        ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: scheme.error),
                   ),
                 ],
               ],

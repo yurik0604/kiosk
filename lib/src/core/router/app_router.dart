@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/data/auth_controller.dart';
 import '../../features/auth/domain/auth_state.dart';
 import '../../features/auth/presentation/login_screen.dart';
+import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/checkout/checkout_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/rfid/presentation/reader_settings_screen.dart';
@@ -17,6 +18,7 @@ abstract class AppRoutes {
   static const home = '/home';
   static const session = '/session';
   static const checkout = '/checkout';
+  static const catalog = '/catalog';
   static const readerSettings = '/admin/reader';
 }
 
@@ -62,6 +64,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.checkout,
         pageBuilder: (_, st) => _slide(st, const CheckoutScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.catalog,
+        pageBuilder: (_, st) => _slide(st, const CatalogScreen()),
       ),
       GoRoute(
         path: AppRoutes.readerSettings,

@@ -10,6 +10,7 @@ import '../../core/widgets/cancel_session_dialog.dart';
 import '../../core/widgets/idle_timeout_detector.dart';
 import '../../core/widgets/idle_warning_dialog.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../catalog/domain/catalog_item_display.dart';
 import '../session/data/session_controller.dart';
 import '../session/domain/cart_item.dart';
 import 'data/payment_controller.dart';
@@ -383,7 +384,7 @@ class _CartPreview extends StatelessWidget {
         thumbSize +
         (shown.length - 1).clamp(0, maxThumbs) * (thumbSize - overlap);
 
-    final names = items.take(3).map((i) => i.product.name).join(' · ');
+    final names = items.take(3).map((i) => i.item.name).join(' · ');
 
     return Row(
       children: [
@@ -453,11 +454,13 @@ class _Thumb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage = item.product.imageUrl.isNotEmpty;
+    final hasImage = item.item.imgUrl.isNotEmpty;
     Color fallback;
     try {
-      final hex = item.product.colorHex.replaceFirst('#', '');
-      fallback = Color(int.parse('FF$hex', radix: 16));
+      final hex = item.item.colorHex.replaceFirst('#', '');
+      fallback = hex.length == 6
+          ? Color(int.parse('FF$hex', radix: 16))
+          : Theme.of(context).colorScheme.tertiary;
     } catch (_) {
       fallback = Theme.of(context).colorScheme.tertiary;
     }
@@ -472,7 +475,7 @@ class _Thumb extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: hasImage
           ? Image.network(
-              item.product.imageUrl,
+              item.item.imgUrl,
               fit: BoxFit.cover,
               errorBuilder: (_, _, _) => const SizedBox.shrink(),
               loadingBuilder: (context, child, progress) {
