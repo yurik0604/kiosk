@@ -858,6 +858,54 @@ abstract class AppLocalizations {
   /// **'Please enter your password'**
   String get loginPasswordRequired;
 
+  /// No description provided for @loginLoadingKiosk.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading kiosk…'**
+  String get loginLoadingKiosk;
+
+  /// No description provided for @kioskNotDefinedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiosk not available'**
+  String get kioskNotDefinedTitle;
+
+  /// No description provided for @kioskNotDefinedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The kiosk app is not available for this user. Please contact your IT administrator.'**
+  String get kioskNotDefinedBody;
+
+  /// No description provided for @kioskUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t reach the server'**
+  String get kioskUnavailableTitle;
+
+  /// No description provided for @kioskUnavailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t load this kiosk\'s configuration. Please check the network and try again.'**
+  String get kioskUnavailableBody;
+
+  /// No description provided for @kioskServerErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiosk unavailable'**
+  String get kioskServerErrorTitle;
+
+  /// No description provided for @kioskServerErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The server couldn\'t load this kiosk\'s configuration. Please try again or contact your IT administrator.'**
+  String get kioskServerErrorBody;
+
+  /// No description provided for @kioskNotDefinedClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get kioskNotDefinedClose;
+
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:

@@ -190,14 +190,23 @@ class AuthService {
               ? decoded['data'] as Map<String, dynamic>
               : decoded;
 
-      final user = AuthUser.fromJson(userJson);
+      final fetched = AuthUser.fromJson(userJson);
+
+      // Merge over the stored (login-provided) user so a null/empty tenant slug
+      // from `/me/` doesn't wipe the slug the login token supplied — losing it
+      // breaks tenant-routed calls (e.g. the kiosk fetch) after a restart.
+      final existing = await readUser();
+      final user =
+          existing != null ? existing.mergePreservingTenant(fetched) : fetched;
+
       // Persist so validateSession()/readUser() return the enriched user.
       await _storage.write(
         AppConfig.userStorageKey,
         jsonEncode(user.toJson()),
       );
       _log.i('fetchCurrentUser: ${user.email} '
-          'groups=${user.customerGroupIds} slug=${user.tenantSlug}');
+          'groups=${user.customerGroupIds} slug=${user.tenantSlug} '
+          '(fetched slug=${fetched.tenantSlug})');
       return user;
     } on TimeoutException {
       _log.w('fetchCurrentUser: timeout');

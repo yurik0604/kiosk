@@ -23,6 +23,11 @@ class AppConfig {
   /// path by [AuthedApiClient].
   static const String groupsEndpoint = 'v1/groups/';
 
+  /// Current-user kiosk endpoint (`GET v1/kiosks/me/`). Returns the single
+  /// kiosk dedicated to the authenticated user (200), or 404 when the user has
+  /// no kiosk. The tenant slug is injected into the path by [AuthedApiClient].
+  static const String kioskMeEndpoint = 'v1/kiosks/me/';
+
   /// Catalog endpoints are built per-group:
   ///   GET v1/groups/{id}/catalog/            → catalog metadata
   ///   GET v1/groups/{id}/catalog/download-url/ → presigned download info
@@ -35,6 +40,10 @@ class AppConfig {
 
   /// Group data persisted across restarts.
   static const String groupStorageKey = 'kiosk_group_data';
+
+  /// Kiosk data persisted across restarts (available offline / instantly on the
+  /// next boot).
+  static const String kioskStorageKey = 'kiosk_kiosk_data';
 
   static Duration get apiTimeout => Duration(
         seconds:

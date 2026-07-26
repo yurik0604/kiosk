@@ -32,11 +32,20 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     if (!mounted) return;
     final minimumSplash =
         Future<void>.delayed(const Duration(milliseconds: 1600));
-    await ref.read(authControllerProvider.notifier).bootstrap();
+    // Returns true only when authenticated AND the device's kiosk resolved.
+    final kioskReady =
+        await ref.read(authControllerProvider.notifier).bootstrap();
     await minimumSplash;
     if (!mounted) return;
     final auth = ref.read(authControllerProvider);
-    context.go(auth.isAuthenticated ? AppRoutes.home : AppRoutes.login);
+    if (!auth.isAuthenticated) {
+      context.go(AppRoutes.login);
+    } else if (kioskReady) {
+      context.go(AppRoutes.home);
+    } else {
+      // Authenticated but the kiosk is not defined / couldn't load — block.
+      context.go(AppRoutes.kioskNotDefined);
+    }
   }
 
   @override

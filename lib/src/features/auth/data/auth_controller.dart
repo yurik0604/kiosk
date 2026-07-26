@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../catalog/data/catalog_sync_controller.dart';
 import '../../group/data/group_controller.dart';
+import '../../kiosk/data/kiosk_controller.dart';
 import '../domain/auth_state.dart';
 import 'auth_service.dart';
 
@@ -19,7 +20,10 @@ class AuthController extends Notifier<AuthStateData> {
 
   AuthService get _service => ref.read(authServiceProvider);
 
-  Future<void> bootstrap() async {
+  /// Restore a prior session. Returns `true` only when the user is authenticated
+  /// AND the device's kiosk is ready (the loading gate); `false` otherwise, so
+  /// the caller routes to login or the kiosk-not-defined screen accordingly.
+  Future<bool> bootstrap() async {
     state = const AuthStateData.authenticating();
     try {
       final user = await _service
@@ -27,22 +31,26 @@ class AuthController extends Notifier<AuthStateData> {
           .timeout(const Duration(seconds: 5));
       if (user != null) {
         state = AuthStateData.authenticated(user);
-        _onAuthenticated();
-      } else {
-        state = const AuthStateData.unauthenticated();
+        return await _onAuthenticated();
       }
+      state = const AuthStateData.unauthenticated();
+      return false;
     } catch (_) {
       state = const AuthStateData.unauthenticated();
+      return false;
     }
   }
 
+  /// Log in. Returns `true` only when authentication succeeds AND the device's
+  /// kiosk is ready (see [_onAuthenticated]). A `false` return with the state
+  /// still `authenticated` means login worked but the kiosk is not defined — the
+  /// caller must route to the kiosk-not-defined screen, not the home screen.
   Future<bool> login({required String email, required String password}) async {
     state = const AuthStateData.authenticating();
     try {
       final result = await _service.login(email: email, password: password);
       state = AuthStateData.authenticated(result.user);
-      _onAuthenticated();
-      return true;
+      return await _onAuthenticated();
     } on AuthException catch (e) {
       state = AuthStateData.error(e.message);
       return false;
@@ -52,25 +60,40 @@ class AuthController extends Notifier<AuthStateData> {
     }
   }
 
-  /// Fetch the full user, then initialize the device's group and catalog after
-  /// authentication.
+  /// Post-authentication sequence, in order:
   ///
-  /// The login token response does NOT include `customer_group_ids` /
-  /// `tenant_slug`, so we first hydrate the user from `/v1/users/me/` (the same
-  /// source the app uses). Group resolution + tenant-routed catalog calls depend
-  /// on those fields, so this must run before group/catalog init.
+  ///   1. **Kiosk gate (blocking).** Using the login token, fetch
+  ///      `kiosks/me/`. The kiosk model is essential — if it doesn't resolve
+  ///      (404 / error) this returns `false` and the home screen must not open
+  ///      (the router routes to the kiosk-not-defined screen). The tenant is
+  ///      resolved from the JWT's tenant claim, and the login response already
+  ///      carries `tenant_slug` for the URL, so this needs no prior `/me/` call.
+  ///   2. **Hydrate the user (`/v1/users/me/`).** Only once the kiosk is
+  ///      confirmed do we enrich the user with `customer_group_ids` /
+  ///      `tenant_slug` — the data group/catalog resolution depends on.
+  ///   3. **Group + catalog (best-effort, non-blocking).** Never gates
+  ///      navigation; the app still works without a synced catalog.
   ///
-  /// Fire-and-forget so navigation (splash → home / login → home) is never
-  /// blocked, mirroring how `main()` fires the RFID reader bootstrap.
-  void _onAuthenticated() {
+  /// Returns `true` only when the kiosk resolved.
+  Future<bool> _onAuthenticated() async {
+    // 1) Blocking gate: no kiosk → not allowed past login.
+    final kioskReady =
+        await ref.read(kioskControllerProvider.notifier).initialize();
+    if (!kioskReady) return false;
+
+    // 2) Kiosk confirmed — hydrate the full user for group ids + tenant slug.
+    try {
+      final fullUser = await _service.fetchCurrentUser();
+      if (fullUser != null) {
+        state = AuthStateData.authenticated(fullUser);
+      }
+    } catch (_) {
+      // Non-fatal: proceed with the login-provided user.
+    }
+
+    // 3) Best-effort, non-blocking: group + catalog.
     unawaited(() async {
       try {
-        // Hydrate the user with group ids + tenant slug.
-        final fullUser = await _service.fetchCurrentUser();
-        if (fullUser != null) {
-          state = AuthStateData.authenticated(fullUser);
-        }
-        // Group first so the catalog controller has a group id to sync against.
         await ref.read(groupControllerProvider.notifier).initialize();
         await ref
             .read(catalogSyncControllerProvider.notifier)
@@ -79,10 +102,13 @@ class AuthController extends Notifier<AuthStateData> {
         // Non-fatal: the app still works without a synced catalog.
       }
     }());
+
+    return true;
   }
 
   Future<void> logout() async {
     await _service.logout();
+    await ref.read(kioskControllerProvider.notifier).clear();
     await ref.read(groupControllerProvider.notifier).clear();
     await ref.read(catalogSyncControllerProvider.notifier).reset();
     state = const AuthStateData.unauthenticated();

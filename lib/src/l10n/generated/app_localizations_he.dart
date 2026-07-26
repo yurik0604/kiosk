@@ -467,6 +467,33 @@ class AppLocalizationsHe extends AppLocalizations {
   String get loginPasswordRequired => 'נא להזין סיסמה';
 
   @override
+  String get loginLoadingKiosk => 'טוען קיוסק…';
+
+  @override
+  String get kioskNotDefinedTitle => 'הקיוסק אינו זמין';
+
+  @override
+  String get kioskNotDefinedBody =>
+      'אפליקציית הקיוסק אינה זמינה עבור משתמש זה. נא לפנות למנהל ה-IT.';
+
+  @override
+  String get kioskUnavailableTitle => 'אין גישה לשרת';
+
+  @override
+  String get kioskUnavailableBody =>
+      'לא הצלחנו לטעון את הגדרות הקיוסק. נא לבדוק את החיבור לרשת ולנסות שוב.';
+
+  @override
+  String get kioskServerErrorTitle => 'הקיוסק אינו זמין';
+
+  @override
+  String get kioskServerErrorBody =>
+      'השרת לא הצליח לטעון את הגדרות הקיוסק. נא לנסות שוב או לפנות למנהל ה-IT.';
+
+  @override
+  String get kioskNotDefinedClose => 'סגירה';
+
+  @override
   String get logout => 'התנתקות';
 
   @override

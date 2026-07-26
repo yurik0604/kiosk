@@ -31,4 +31,17 @@ enum ReaderVendor {
     }
     return null;
   }
+
+  /// Resolve a vendor from the backend's human label (the kiosk
+  /// `rfid_config.vendor` value, e.g. `"Sensormatic IDX-4000"`). Matching is
+  /// case-insensitive. Returns null when no vendor matches.
+  static ReaderVendor? fromDisplayName(String? displayName) {
+    if (displayName == null) return null;
+    final needle = displayName.trim().toLowerCase();
+    if (needle.isEmpty) return null;
+    for (final v in ReaderVendor.values) {
+      if (v.displayName.toLowerCase() == needle) return v;
+    }
+    return null;
+  }
 }

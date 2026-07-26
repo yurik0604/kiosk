@@ -478,6 +478,33 @@ class AppLocalizationsRu extends AppLocalizations {
   String get loginPasswordRequired => 'Введите пароль';
 
   @override
+  String get loginLoadingKiosk => 'Загрузка киоска…';
+
+  @override
+  String get kioskNotDefinedTitle => 'Киоск недоступен';
+
+  @override
+  String get kioskNotDefinedBody =>
+      'Приложение киоска недоступно для этого пользователя. Обратитесь к ИТ-администратору.';
+
+  @override
+  String get kioskUnavailableTitle => 'Нет связи с сервером';
+
+  @override
+  String get kioskUnavailableBody =>
+      'Не удалось загрузить настройки киоска. Проверьте сеть и повторите попытку.';
+
+  @override
+  String get kioskServerErrorTitle => 'Киоск недоступен';
+
+  @override
+  String get kioskServerErrorBody =>
+      'Серверу не удалось загрузить настройки киоска. Повторите попытку или обратитесь к ИТ-администратору.';
+
+  @override
+  String get kioskNotDefinedClose => 'Закрыть';
+
+  @override
   String get logout => 'Выйти';
 
   @override

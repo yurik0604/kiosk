@@ -56,7 +56,9 @@ class _ReaderSettingsScreenState extends ConsumerState<ReaderSettingsScreen> {
     super.dispose();
   }
 
-  /// Persist the form values only — does not connect.
+  /// Apply the form values to the current runtime only — does not connect and
+  /// does NOT persist. On the next app start the reader is re-initialized from
+  /// the kiosk's server `rfid_config`, overriding whatever is set here.
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
@@ -74,9 +76,11 @@ class _ReaderSettingsScreenState extends ConsumerState<ReaderSettingsScreen> {
           .read(rfidReaderControllerProvider.notifier)
           .applyConfig(config, connect: false);
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Saved')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Applied for this session (resets on restart)'),
+        ),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(

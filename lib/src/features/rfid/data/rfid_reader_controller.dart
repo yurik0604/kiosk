@@ -6,7 +6,6 @@ import '../../../core/logging/app_logger.dart';
 import '../domain/reader_config.dart';
 import '../domain/reader_event.dart';
 import '../domain/reader_status.dart';
-import 'reader_config_repository.dart';
 import 'rfid_reader.dart';
 import 'rfid_reader_registry.dart';
 
@@ -69,21 +68,43 @@ class RfidReaderController extends Notifier<RfidReaderState> {
     return RfidReaderState.initial();
   }
 
-  /// Load the persisted config (if any) and connect. Call from app boot.
-  Future<void> bootstrap() async {
-    final repo = ref.read(readerConfigRepositoryProvider);
-    final saved = await repo.load();
-    if (saved == null || saved.host.isEmpty) {
-      AppLogger.instance.i('RFID: no saved reader config, skipping auto-connect');
+  /// Initialize the reader from the kiosk's server config and connect.
+  ///
+  /// This is the source of truth for reader settings: the config comes from
+  /// `kiosk.rfid_config` on every boot (after login / session-restore), so the
+  /// server always wins and overrides any prior runtime state. Local [Save]
+  /// changes (see [applyConfig]) are runtime-only and do NOT survive a restart —
+  /// the next boot re-initializes from the server here.
+  ///
+  /// No-op (skips connecting) when the server config has no host, so an
+  /// unconfigured kiosk doesn't dial a blank address.
+  Future<void> initFromServer(ReaderConfig config) async {
+    if (config.host.isEmpty) {
+      AppLogger.instance
+          .i('RFID: server rfid_config has no host; loading without connect');
+      await _swapReader(config);
       return;
     }
-    await applyConfig(saved, connect: true);
+    await applyConfig(config, connect: true);
   }
 
-  /// Persist [config], reset the active reader, and optionally connect.
+  /// Apply [config] to the active reader for the current runtime only, then
+  /// optionally connect.
+  ///
+  /// This is the [Save]/connect path from the settings screen. It updates the
+  /// in-memory state and swaps the active reader, but does NOT persist anywhere:
+  /// after a restart the config is re-loaded from the server (see
+  /// [initFromServer]), overriding these local changes.
   Future<void> applyConfig(ReaderConfig config, {bool connect = true}) async {
-    await ref.read(readerConfigRepositoryProvider).save(config);
+    await _swapReader(config);
+    if (connect) {
+      await _connectInternal(config);
+    }
+  }
 
+  /// Tear down the current reader and stand up a fresh one for [config]'s
+  /// vendor, mirroring the config into state. Does not connect.
+  Future<void> _swapReader(ReaderConfig config) async {
     await _eventSub?.cancel();
     await _reader?.dispose();
 
@@ -92,10 +113,6 @@ class RfidReaderController extends Notifier<RfidReaderState> {
     _eventSub = reader.events.listen(_handleEvent);
 
     state = state.copyWith(config: config, clearError: true);
-
-    if (connect) {
-      await _connectInternal(config);
-    }
   }
 
   Future<void> connect() async {

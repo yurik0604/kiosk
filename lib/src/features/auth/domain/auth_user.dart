@@ -24,6 +24,49 @@ class AuthUser {
 
   String get displayName => fullName.isNotEmpty ? fullName : username;
 
+  AuthUser copyWith({
+    int? id,
+    String? username,
+    String? email,
+    String? fullName,
+    int? tenantId,
+    String? tenantSlug,
+    String? role,
+    List<int>? customerGroupIds,
+  }) {
+    return AuthUser(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      email: email ?? this.email,
+      fullName: fullName ?? this.fullName,
+      tenantId: tenantId ?? this.tenantId,
+      tenantSlug: tenantSlug ?? this.tenantSlug,
+      role: role ?? this.role,
+      customerGroupIds: customerGroupIds ?? this.customerGroupIds,
+    );
+  }
+
+  /// Merge [other] onto this user, keeping this user's tenant identity
+  /// (`tenantId` / `tenantSlug` / `customerGroupIds`) whenever [other] leaves
+  /// those blank.
+  ///
+  /// The login token response carries `tenant_slug` / `tenant_id`, but the
+  /// `/v1/users/me/` payload can return them null/empty for some deployments.
+  /// Merging (rather than replacing) prevents a later `/me/` hydrate from wiping
+  /// the tenant slug the login provided — losing it breaks tenant-routed calls
+  /// (e.g. the kiosk fetch) after a restart.
+  AuthUser mergePreservingTenant(AuthUser other) {
+    return other.copyWith(
+      tenantId: other.tenantId ?? tenantId,
+      tenantSlug: (other.tenantSlug != null && other.tenantSlug!.isNotEmpty)
+          ? other.tenantSlug
+          : tenantSlug,
+      customerGroupIds: other.customerGroupIds.isNotEmpty
+          ? other.customerGroupIds
+          : customerGroupIds,
+    );
+  }
+
   factory AuthUser.fromJson(Map<String, dynamic> json) {
     return AuthUser(
       id: json['id'] as int? ?? 0,

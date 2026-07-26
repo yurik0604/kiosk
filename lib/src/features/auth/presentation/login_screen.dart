@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../data/auth_controller.dart';
@@ -37,14 +35,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
-    final ok = await ref.read(authControllerProvider.notifier).login(
+    // Fire the login + kiosk gate. Navigation is owned by the router redirect,
+    // which gates on kiosk readiness: it routes to home only once the kiosk
+    // resolves, to the kiosk-not-defined screen on failure, and keeps us here
+    // on an auth error. No manual navigation needed.
+    await ref.read(authControllerProvider.notifier).login(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
-    if (!mounted) return;
-    if (ok) {
-      context.go(AppRoutes.home);
-    }
   }
 
   @override

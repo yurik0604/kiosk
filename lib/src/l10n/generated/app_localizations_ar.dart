@@ -485,6 +485,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginPasswordRequired => 'يرجى إدخال كلمة المرور';
 
   @override
+  String get loginLoadingKiosk => 'جارٍ تحميل الكشك…';
+
+  @override
+  String get kioskNotDefinedTitle => 'الكشك غير متاح';
+
+  @override
+  String get kioskNotDefinedBody =>
+      'تطبيق الكشك غير متاح لهذا المستخدم. يرجى التواصل مع مسؤول تقنية المعلومات.';
+
+  @override
+  String get kioskUnavailableTitle => 'تعذّر الوصول إلى الخادم';
+
+  @override
+  String get kioskUnavailableBody =>
+      'تعذّر تحميل إعدادات الكشك. يرجى التحقق من الشبكة والمحاولة مرة أخرى.';
+
+  @override
+  String get kioskServerErrorTitle => 'الكشك غير متاح';
+
+  @override
+  String get kioskServerErrorBody =>
+      'تعذّر على الخادم تحميل إعدادات الكشك. يرجى المحاولة مرة أخرى أو التواصل مع مسؤول تقنية المعلومات.';
+
+  @override
+  String get kioskNotDefinedClose => 'إغلاق';
+
+  @override
   String get logout => 'تسجيل الخروج';
 
   @override

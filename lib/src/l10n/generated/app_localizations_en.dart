@@ -466,6 +466,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginPasswordRequired => 'Please enter your password';
 
   @override
+  String get loginLoadingKiosk => 'Loading kiosk…';
+
+  @override
+  String get kioskNotDefinedTitle => 'Kiosk not available';
+
+  @override
+  String get kioskNotDefinedBody =>
+      'The kiosk app is not available for this user. Please contact your IT administrator.';
+
+  @override
+  String get kioskUnavailableTitle => 'Can\'t reach the server';
+
+  @override
+  String get kioskUnavailableBody =>
+      'We couldn\'t load this kiosk\'s configuration. Please check the network and try again.';
+
+  @override
+  String get kioskServerErrorTitle => 'Kiosk unavailable';
+
+  @override
+  String get kioskServerErrorBody =>
+      'The server couldn\'t load this kiosk\'s configuration. Please try again or contact your IT administrator.';
+
+  @override
+  String get kioskNotDefinedClose => 'Close';
+
+  @override
   String get logout => 'Sign out';
 
   @override

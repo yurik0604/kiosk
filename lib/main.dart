@@ -14,7 +14,6 @@ import 'src/core/network/connectivity_controller.dart';
 import 'src/core/router/app_router.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/features/catalog/data/catalog_repository.dart';
-import 'src/features/rfid/data/rfid_reader_controller.dart';
 import 'src/l10n/generated/app_localizations.dart';
 
 Future<void> main() async {
@@ -39,10 +38,9 @@ Future<void> main() async {
     overrides: [objectBoxProvider.overrideWithValue(objectBox)],
   );
 
-  // Fire-and-forget: reader auto-connect must not block UI boot.
-  unawaited(
-    container.read(rfidReaderControllerProvider.notifier).bootstrap(),
-  );
+  // Reader config now comes from the kiosk's server rfid_config after login
+  // (see KioskController._initReaderFromKiosk), so there's no storage-based
+  // reader auto-connect at boot anymore.
 
   // Fire-and-forget: start watching OS network status for the indicator.
   unawaited(
