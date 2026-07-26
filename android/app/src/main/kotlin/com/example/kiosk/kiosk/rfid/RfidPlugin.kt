@@ -60,6 +60,10 @@ class RfidPlugin(private val context: Context) {
                     driver?.disconnect()
                     result.success(null)
                 }
+                "cancelConnect" -> {
+                    driver?.cancelConnect()
+                    result.success(null)
+                }
                 "startInventory" -> {
                     requireDriver().startInventory()
                     result.success(null)

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/locale/locale_controller.dart';
+import '../../core/network/connectivity_controller.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/logout_confirm_dialog.dart';
@@ -160,6 +161,9 @@ class _TopBar extends ConsumerWidget {
     final readerStatus = ref.watch(
       rfidReaderControllerProvider.select((s) => s.status),
     );
+    final internetStatus = ref.watch(
+      connectivityControllerProvider.select((s) => s.status),
+    );
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -208,38 +212,23 @@ class _TopBar extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(Icons.wifi_rounded, color: scheme.onSurfaceVariant),
+            // Internet status: color-coded to backend reachability.
+            Tooltip(
+              message: internetStatus.isOnline ? l10n.online : l10n.offline,
+              child: Icon(
+                internetStatus.isOnline
+                    ? Icons.cloud_done_rounded
+                    : Icons.cloud_off_rounded,
+                color: _internetColor(internetStatus, scheme),
+              ),
+            ),
             const SizedBox(width: KioskTokens.spaceS),
-            // The status pill is display-only: it shows the reader status.
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: KioskTokens.spaceS,
-                vertical: KioskTokens.spaceXS,
-              ),
-              decoration: BoxDecoration(
-                color: scheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(KioskTokens.radiusSmall),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: _statusColor(readerStatus, scheme),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    readerStatus.isConnected ? l10n.online : 'OFFLINE',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontSize: 14,
-                          color: scheme.onSurfaceVariant,
-                        ),
-                  ),
-                ],
+            // Reader status: the icon is color-coded to the RFID reader state.
+            Tooltip(
+              message: readerStatus.isConnected ? l10n.online : l10n.offline,
+              child: Icon(
+                Icons.sensors_rounded,
+                color: _statusColor(readerStatus, scheme),
               ),
             ),
             const SizedBox(width: KioskTokens.spaceS),
@@ -264,13 +253,24 @@ class _TopBar extends ConsumerWidget {
       case ReaderStatus.reading:
       case ReaderStatus.connected:
       case ReaderStatus.idle:
-        return scheme.tertiary;
+        return KioskTokens.statusOnline;
       case ReaderStatus.connecting:
         return scheme.secondary;
       case ReaderStatus.error:
         return scheme.error;
       case ReaderStatus.offline:
       case ReaderStatus.disconnected:
+        return scheme.outline;
+    }
+  }
+
+  Color _internetColor(ConnectivityStatus s, ColorScheme scheme) {
+    switch (s) {
+      case ConnectivityStatus.online:
+        return KioskTokens.statusOnline;
+      case ConnectivityStatus.offline:
+        return scheme.error;
+      case ConnectivityStatus.unknown:
         return scheme.outline;
     }
   }

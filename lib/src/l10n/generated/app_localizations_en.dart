@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get online => 'Online';
 
   @override
+  String get offline => 'Offline';
+
+  @override
   String get heroEyebrow => 'FW26 COLLECTION';
 
   @override

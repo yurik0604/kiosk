@@ -164,4 +164,9 @@ class KioskTokens {
   static const Duration motionFast = Duration(milliseconds: 180);
   static const Duration motionMedium = Duration(milliseconds: 360);
   static const Duration motionSlow = Duration(milliseconds: 600);
+
+  /// Semantic "healthy/connected" green for status indicators (internet,
+  /// reader). The theme's `tertiary` is a warm beige, which does not read as a
+  /// positive/OK signal, so status greens use this dedicated token instead.
+  static const Color statusOnline = Color(0xFF2E7D32);
 }

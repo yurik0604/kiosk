@@ -23,6 +23,10 @@ abstract class RfidReader {
   /// Stop reading (if active) and close the transport.
   Future<void> disconnect();
 
+  /// Abort an in-flight [connect] attempt without waiting out the connect
+  /// timeout. No-op if no connect is in progress.
+  Future<void> cancelConnect();
+
   /// Start the inventory ROSpec / SDK read loop.
   Future<void> startInventory();
 

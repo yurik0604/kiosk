@@ -85,6 +85,15 @@ class ChannelRfidReader implements RfidReader {
   }
 
   @override
+  Future<void> cancelConnect() async {
+    try {
+      await _method.invokeMethod<void>('cancelConnect');
+    } on PlatformException catch (e) {
+      AppLogger.instance.w('RFID cancelConnect: ${e.code} ${e.message}');
+    }
+  }
+
+  @override
   Future<void> startInventory() async {
     await _method.invokeMethod<void>('startInventory');
   }

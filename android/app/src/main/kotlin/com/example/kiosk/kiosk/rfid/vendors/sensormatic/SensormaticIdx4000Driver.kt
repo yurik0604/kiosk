@@ -62,6 +62,13 @@ class SensormaticIdx4000Driver(
         binder?.disconnect()
     }
 
+    override fun cancelConnect() {
+        // Clear any queued connect that hasn't reached the service yet, then
+        // abort an attempt already in progress inside the service.
+        pendingConfig = null
+        binder?.cancelConnect()
+    }
+
     override fun startInventory() {
         binder?.startInventory()
             ?: throw IllegalStateException("Reader not connected")

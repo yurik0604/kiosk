@@ -21,6 +21,9 @@ class AppLocalizationsHe extends AppLocalizations {
   String get online => 'מחובר';
 
   @override
+  String get offline => 'מנותק';
+
+  @override
   String get heroEyebrow => 'קולקציית FW26';
 
   @override

@@ -10,6 +10,7 @@ import 'src/core/config/app_config.dart';
 import 'src/core/database/object_box.dart';
 import 'src/core/logging/app_logger.dart';
 import 'src/core/locale/locale_controller.dart';
+import 'src/core/network/connectivity_controller.dart';
 import 'src/core/router/app_router.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/features/catalog/data/catalog_repository.dart';
@@ -41,6 +42,11 @@ Future<void> main() async {
   // Fire-and-forget: reader auto-connect must not block UI boot.
   unawaited(
     container.read(rfidReaderControllerProvider.notifier).bootstrap(),
+  );
+
+  // Fire-and-forget: start watching OS network status for the indicator.
+  unawaited(
+    container.read(connectivityControllerProvider.notifier).start(),
   );
 
   runApp(

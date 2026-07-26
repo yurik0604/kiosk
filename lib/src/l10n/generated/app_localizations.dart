@@ -126,6 +126,12 @@ abstract class AppLocalizations {
   /// **'Online'**
   String get online;
 
+  /// No description provided for @offline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get offline;
+
   /// No description provided for @heroEyebrow.
   ///
   /// In en, this message translates to:

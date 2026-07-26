@@ -20,6 +20,13 @@ interface VendorDriver {
     /** Close the transport. Should be idempotent. */
     fun disconnect()
 
+    /**
+     * Abort an in-flight [connect] attempt. Must take effect promptly (i.e.
+     * without waiting out the full connect timeout) and be a no-op if no
+     * connect is in progress.
+     */
+    fun cancelConnect()
+
     /** Begin inventory (LLRP ENABLE_ROSPEC / SDK start). */
     fun startInventory()
 

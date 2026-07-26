@@ -21,6 +21,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get online => 'В сети';
 
   @override
+  String get offline => 'Не в сети';
+
+  @override
   String get heroEyebrow => 'КОЛЛЕКЦИЯ FW26';
 
   @override

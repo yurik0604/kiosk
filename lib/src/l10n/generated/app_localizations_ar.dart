@@ -21,6 +21,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get online => 'متصل';
 
   @override
+  String get offline => 'غير متصل';
+
+  @override
   String get heroEyebrow => 'مجموعة FW26';
 
   @override

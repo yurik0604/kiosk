@@ -123,6 +123,12 @@ class RfidReaderController extends Notifier<RfidReaderState> {
     await _reader?.disconnect();
   }
 
+  /// Abort an in-flight connect attempt. Takes effect immediately instead of
+  /// waiting out the connect timeout (e.g. after a wrong host/IP was entered).
+  Future<void> cancelConnect() async {
+    await _reader?.cancelConnect();
+  }
+
   Future<void> startInventory() => _reader?.startInventory() ?? Future.value();
 
   Future<void> stopInventory() => _reader?.stopInventory() ?? Future.value();

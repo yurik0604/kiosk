@@ -4,6 +4,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
+    <!-- Android 14+ requires a "connectedDevice" FGS to also hold one of a set
+         of device-connection permissions. The LLRP reader connects over TCP/
+         Wi-Fi, so CHANGE_NETWORK_STATE satisfies the runtime check for
+         LlrpForegroundService. -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
         android:label="Kiosk"

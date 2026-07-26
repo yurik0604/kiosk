@@ -30,6 +30,14 @@ class LlrpForegroundService : Service() {
 
     private val executor = Executors.newSingleThreadExecutor()
     private var client: LlrpClient? = null
+
+    // The client for the CURRENT connect attempt. Held in a @Volatile field —
+    // separate from [client], which is only set on a *successful* connect — so
+    // that cancelConnect() can reach and abort an in-flight attempt from the
+    // binder thread while the executor thread is blocked inside connect().
+    @Volatile
+    private var connectingClient: LlrpClient? = null
+
     @Volatile
     private var sink: ReaderEventSink? = null
 
@@ -40,6 +48,7 @@ class LlrpForegroundService : Service() {
         }
         fun connect(config: Map<String, Any?>) = this@LlrpForegroundService.handleConnect(config)
         fun disconnect() = this@LlrpForegroundService.handleDisconnect()
+        fun cancelConnect() = this@LlrpForegroundService.handleCancelConnect()
         fun startInventory() = this@LlrpForegroundService.handleStart()
         fun stopInventory() = this@LlrpForegroundService.handleStop()
     }
@@ -101,18 +110,40 @@ class LlrpForegroundService : Service() {
                     txPowerDbm = txPowerDbm,
                     sink = s,
                 )
+                // Publish BEFORE the blocking connect so cancelConnect() can
+                // reach it while this thread is parked inside connect().
+                connectingClient = c
                 c.connect()
                 client = c
+                connectingClient = null
                 updateNotification("Connected to $host")
+            } catch (t: LlrpClient.CancelledException) {
+                // User aborted the attempt — not an error.
+                Log.i(TAG, "LLRP connect cancelled by user")
+                connectingClient = null
+                sink?.emitStatus(ReaderEventSink.Status.DISCONNECTED)
+                updateNotification("Cancelled")
             } catch (t: Throwable) {
                 Log.e(TAG, "LLRP connect failed", t)
+                connectingClient = null
                 sink?.emitError(t.message ?: t.toString(), code = "CONNECT_FAILED", fatal = true)
                 updateNotification("Connect failed")
             }
         }
     }
 
+    /**
+     * Abort an in-flight connect. Runs the abort DIRECTLY on the binder thread
+     * (not the single-thread executor, which is blocked inside connect()) so it
+     * takes effect immediately instead of waiting out the connect timeout.
+     */
+    private fun handleCancelConnect() {
+        connectingClient?.cancelConnect()
+    }
+
     private fun handleDisconnect() {
+        // Abort any in-flight attempt first, off the (possibly blocked) executor.
+        connectingClient?.cancelConnect()
         executor.execute {
             try {
                 client?.close()
@@ -120,6 +151,7 @@ class LlrpForegroundService : Service() {
                 Log.w(TAG, "Disconnect: $t")
             } finally {
                 client = null
+                connectingClient = null
                 sink?.emitStatus(ReaderEventSink.Status.DISCONNECTED)
                 updateNotification("Disconnected")
             }

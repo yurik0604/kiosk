@@ -64,7 +64,17 @@ class LlrpClient(
         try {
             connector.connect(CONNECT_TIMEOUT_MS.toLong())
         } catch (e: LLRPConnectionAttemptFailedException) {
+            // A concurrent cancelConnect() disconnects the MINA session, which
+            // surfaces here as a failed attempt. Treat that as a clean cancel
+            // rather than an error so the UI doesn't flash a spurious failure.
+            if (closed) throw CancelledException()
             throw IllegalStateException("LLRP connect to $host:$port failed: ${e.message}", e)
+        }
+
+        // The socket opened, but a cancel may have landed in the meantime.
+        if (closed) {
+            try { connector.disconnect() } catch (_: Throwable) {}
+            throw CancelledException()
         }
 
         sink.emitStatus(ReaderEventSink.Status.CONNECTED)
@@ -73,6 +83,17 @@ class LlrpClient(
         configureReader()
         addRoSpec(caps)
         sink.emitStatus(ReaderEventSink.Status.IDLE)
+    }
+
+    /**
+     * Abort an in-flight [connect] from another thread. Closing the MINA
+     * session unblocks the connector's timeout wait immediately, so a bad host/
+     * IP no longer forces the caller to sit through the full connect timeout.
+     * Safe to call before, during, or after [connect].
+     */
+    fun cancelConnect() {
+        closed = true
+        try { connector.disconnect() } catch (_: Throwable) {}
     }
 
     fun startInventory() {
@@ -309,6 +330,9 @@ class LlrpClient(
     }
 
     private fun nowIso(): String = isoFormatter.get()!!.format(Date())
+
+    /** Thrown by [connect] when [cancelConnect] aborted the attempt. */
+    class CancelledException : Exception("LLRP connect cancelled")
 
     private data class CapabilitiesSummary(
         val maxPowerIndex: Int,
