@@ -858,6 +858,24 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get logout;
 
+  /// No description provided for @logoutConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out?'**
+  String get logoutConfirmTitle;
+
+  /// No description provided for @logoutConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You will need to sign in again to use the kiosk.'**
+  String get logoutConfirmBody;
+
+  /// No description provided for @logoutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get logoutConfirm;
+
   /// No description provided for @menu.
   ///
   /// In en, this message translates to:

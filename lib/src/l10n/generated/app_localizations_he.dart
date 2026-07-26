@@ -467,6 +467,15 @@ class AppLocalizationsHe extends AppLocalizations {
   String get logout => 'התנתקות';
 
   @override
+  String get logoutConfirmTitle => 'להתנתק?';
+
+  @override
+  String get logoutConfirmBody => 'יהיה עליך להתחבר שוב כדי להשתמש בעמדה.';
+
+  @override
+  String get logoutConfirm => 'התנתקות';
+
+  @override
   String get menu => 'תפריט';
 
   @override

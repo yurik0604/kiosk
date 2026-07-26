@@ -478,6 +478,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get logout => 'Выйти';
 
   @override
+  String get logoutConfirmTitle => 'Выйти из системы?';
+
+  @override
+  String get logoutConfirmBody =>
+      'Для использования киоска потребуется войти снова.';
+
+  @override
+  String get logoutConfirm => 'Выйти';
+
+  @override
   String get menu => 'Меню';
 
   @override

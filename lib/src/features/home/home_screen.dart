@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/locale/locale_controller.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/logout_confirm_dialog.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../auth/data/auth_controller.dart';
 import '../member/presentation/member_lookup_dialog.dart';
@@ -99,6 +100,8 @@ Future<void> _openKioskMenu(BuildContext context, WidgetRef ref) async {
     case _MenuAction.readerSettings:
       context.push(AppRoutes.readerSettings);
     case _MenuAction.logout:
+      final confirmed = await showLogoutConfirmDialog(context);
+      if (!confirmed || !context.mounted) return;
       ref.read(authControllerProvider.notifier).logout();
   }
 }
